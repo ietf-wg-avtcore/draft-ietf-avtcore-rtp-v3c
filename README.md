@@ -1,6 +1,9 @@
 # RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 
-This repository is used for discussion and development of a personal draft for V3C RTP payload format (draft-ilola-avtcore-rtp-v3c). The current version of the draft can be found in [IETF Datatracker](https://datatracker.ietf.org/doc/draft-ilola-avtcore-rtp-v3c/).
+This repository is used for discussion and development of a personal draft for V3C RTP payload format (draft-ilola-avtcore-rtp-v3c). 
+
+* Current draft in [IETF Datatracker](https://datatracker.ietf.org/doc/draft-ilola-avtcore-rtp-v3c/).
+* [Editor's copy](https://github.com/laurilo/draft-ilola-avtcore-rtp-v3c/blob/main/draft/draft-ilola-avtcore-rtp-v3c.md)
 
 ## Copy of abstract
 
@@ -8,10 +11,10 @@ This memo describes an RTP payload format for visual volumetric video-based codi
 
 ## Building the draft
 
-The draft can be built into .txt or .xml versions using [kramdown-rfc](https://github.com/cabo/kramdown-rfc). Please see details about kramdown-rfc usage from the related github project. 
+The draft can be built into .txt or .xml files using [kramdown-rfc](https://github.com/cabo/kramdown-rfc). Please see details about kramdown-rfc usage from the related github project. 
 
-Alteratively, [IETF conversion tool](https://author-tools.ietf.org/) may be used without installing additional software packages.
+Alteratively, [IETF conversion tool](https://author-tools.ietf.org/) can be used without installing additional software packages.
 
 ## Contributing
 
-All material in this repository is considered as contributions to the IETF Standards Process and the applicaple policies shall apply. 
+All material in this repository is considered as contributions to the IETF Standards Process and the applicaple policies shall apply. See guidelines for [contributions](https://github.com/laurilo/draft-ilola-avtcore-rtp-v3c/blob/main/CONTRIBUTING.md)

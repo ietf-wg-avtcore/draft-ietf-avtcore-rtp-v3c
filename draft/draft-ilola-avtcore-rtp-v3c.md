@@ -293,7 +293,7 @@ vuh_map_index when present indicates the map index of the current geometry or at
 
 vuh_auxiliary_video_flag equal indicates if the associated geometry or attribute video data unit is a RAW and/or EOM coded points video only sub-bitstream.  
 
-#### Atlas NAL units {#Atlas-NAL-units}
+### Atlas NAL units {#Atlas-NAL-units}
 
 Atlas NAL unit (nal_unit(NumBytesInNalUnit)) is a byte-aligned syntax structure defined by  {{ISO.IEC.23090-5}} to carry atlas data. atlas NAL unit always contains a 16-bit NAL unit header (nal_unit_header()), which indicates among other things the type of the NAL unit (nal_unit_type). 
 

@@ -13,7 +13,7 @@ This memo describes an RTP payload format for visual volumetric video-based codi
 
 The draft can be built into .txt or .xml files using [kramdown-rfc](https://github.com/cabo/kramdown-rfc). Please see details about kramdown-rfc usage from the related github project. 
 
-Alteratively, [IETF conversion tool](https://author-tools.ietf.org/) can be used without installing additional software packages.
+Alternatively, [IETF conversion tool](https://author-tools.ietf.org/) can be used without installing additional software packages.
 
 ## Contributing
 

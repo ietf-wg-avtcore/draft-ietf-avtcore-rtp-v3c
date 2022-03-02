@@ -491,7 +491,7 @@ Aggregation packets (APs) may wrap multiple NAL units belonging to the same acce
     |                               :...OPTIONAL RTP padding        |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-{: #fig-aggregation-packet title="Single time aggregation packet"}
+{: #fig-aggregation-packet title="Aggregation Packet (AP)"}
 
 The fields in the payload header are set as follows. The F bit MUST be equal to 0 if the F bit of each aggregated NAL unit is equal to zero; otherwise, it MUST be equal to 1. The NUT field MUST be equal to 56. The value of NLI MUST be equal to the lowest value of NLI of all the aggregated NAL units. The value of TID MUST be the lowest value of TID of all the aggregated NAL units.
 
@@ -516,7 +516,7 @@ AP MUST carry at least two aggregation units (AU) and can carry as many aggregat
     |                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-{: #fig-single-time-aggregation-unit title="Aggregation unit for single time aggregaton packet"}
+{: #fig-single-time-aggregation-unit title="Aggregation Unit (AU)"}
 
 If sprop-max-don-diff is greater than 0 for any of the RTP streams, an AU begins with the DOND / DONL field. The first AU in the AP contains DONL field, which specifies the 16-bit value of the decoding order number of the aggregated NAL unit. The variable DON for the aggregated NAL unit is derived as equal to the value of the DONL field. All subsequent AUs in the AP MUST contain an (8-bit) DOND field, which specifies the difference between the decoding order number values of the current aggregated NAL unit and the preceding aggregated NAL unit in the same AP. The variable DON for the aggregated NAL unit is derived as equal to the DON of the preceding aggregated NAL unit in the same AP plus the value of the DOND field plus 1 modulo 65536.
 

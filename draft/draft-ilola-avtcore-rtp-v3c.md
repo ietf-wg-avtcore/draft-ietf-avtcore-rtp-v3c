@@ -434,13 +434,14 @@ Receivers MUST support all of SRST, MRST, and MRMT. The required support of MRMT
 
 ### General
 
-The payload format defines three different basic payload structures. A receiver can identify the payload structure by the first two bytes of the RTP packet payload, which co-serves as the RTP payload header. These two bytes are always structured as a NAL unit header. The NAL unit type field indicates which structure is present in the payload. The possible structures are as follows.
+The payload format defines three different payload structures. A receiver can identify the payload structure by the first two bytes of the RTP packet payload, which co-serves as the RTP payload header. These two bytes are always structured as a NAL unit header. The NAL unit type field indicates which structure is present in the payload. 
+The possible structures are as follows:
 
-Single NAL Unit Packet: Contains a single NAL unit in the payload. This payload structure is specified in {{Single-NAL-unit-packet}}. 
+* Single NAL Unit Packet: Contains a single NAL unit in the payload. This payload structure is specified in {{Single-NAL-unit-packet}}. 
 
-Aggregation Packet: Packet type used to aggregate multiple NAL units into a single RTP payload. This packet exists in two versions, Single-Time Aggregation Packet type and Multi-Time Aggregation Packet. The payload structure is specified in {{Aggregation-packets}}. 
+* Aggregation Packet: Contains multiple NAL units into single RTP payload. This payload structure is specified in {{Aggregation-packets}}.
 
-Fragmentation Unit: Used to fragment a single NAL unit over multiple RTP packets. This payload structure is specified in {{Fragmentation-unit}}. 
+* Fragmentation Unit: Contains a subset of a single NAL unit. This payload structure is specified in {{Fragmentation-unit}}. 
 
 NOTE: (informative) This specification does not limit the size of NAL units encapsulated in NAL unit packets and fragmentation units.  {{ISO.IEC.23090-5}} does not restrict the maximum size of a NAL unit directly either. Instead a NAL unit sample stream format may be used, which provides flexibility to signal NAL unit size up to UINT64_MAX bytes. 
 

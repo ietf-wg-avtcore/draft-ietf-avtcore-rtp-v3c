@@ -203,8 +203,6 @@ DON     decoding order number
 
 IRAP    intra random access point
 
-MTAP    multi time aggregation packet
-
 MTU     maximum transmission unit
 
 NAL     network abstraction layer
@@ -212,8 +210,6 @@ NAL     network abstraction layer
 NALU    NAL unit
 
 RBSP    raw byte sequence payload
-
-STAP    single time aggreation packet
 
 V3C     visual volumetric video-based coding
 

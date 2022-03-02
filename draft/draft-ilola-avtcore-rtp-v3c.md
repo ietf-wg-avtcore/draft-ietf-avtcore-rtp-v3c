@@ -430,8 +430,9 @@ Receivers MUST support all of SRST, MRST, and MRMT. The required support of MRMT
 
 ### General
 
-The payload format defines three different payload structures. A receiver can identify the payload structure by the first two bytes of the RTP packet payload, which co-serves as the RTP payload header. These two bytes are always structured as a NAL unit header. The NAL unit type field indicates which structure is present in the payload. 
-The possible structures are as follows:
+Three different types of RTP packet payload structures are specified. A receiver can identify the payload structure by the first two bytes of the RTP packet payload, which co-serves as the RTP payload header. These two bytes are always structured as a NAL unit header. The NAL unit type field indicates which structure is present in the payload. 
+
+The three different payload structures are as follows:
 
 * Single NAL Unit Packet: Contains a single NAL unit in the payload. This payload structure is specified in {{Single-NAL-unit-packet}}. 
 

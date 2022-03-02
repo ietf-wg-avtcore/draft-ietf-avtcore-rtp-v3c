@@ -45,6 +45,7 @@ normative:
     date: 2021
     seriesinfo:
       ISO/IEC: 23090-5
+    target: https://www.iso.org/standard/73025.html
   ISO.IEC.23090-12:
     title: "Information technology — Coded representation of immersive media — Part 12: MPEG Immersive video (MIV)"
     author: 
@@ -52,6 +53,7 @@ normative:
     date: 2022
     seriesinfo:
       ISO/IEC: 23090-12
+    target: "https://www.iso.org/standard/79113.html"
   RFC2119:
   RFC3550:
   RFC3551:
@@ -77,6 +79,7 @@ informative:
     date: 2020
     seriesinfo:
       ISO/IEC: 14496-10
+    target: "https://www.iso.org/standard/75400.html"
   ISO.IEC.14496-12:
     title: "Information technology — Coding of audio-visual objects — Part 12: ISO base media file format"
     author: 
@@ -84,6 +87,7 @@ informative:
     date: 2020
     seriesinfo:
       ISO/IEC: 14496-12
+    target: "https://www.iso.org/standard/74428.html"
   ISO.IEC.23008-2:
     title: "Information technology — High efficiency coding and media delivery in heterogeneous environments — Part 2: High efficiency video coding"
     author: 
@@ -91,6 +95,7 @@ informative:
     date: 2020
     seriesinfo:
       ISO/IEC: 23008-2
+    target: "https://www.iso.org/standard/75484.html"
   ISO.IEC.23090-3:
     title: "Information technology — Coded representation of immersive media — Part 3: Versatile video coding"
     author: 
@@ -98,6 +103,7 @@ informative:
     date: 2021
     seriesinfo:
       ISO/IEC: 23090-3
+    target: "https://www.iso.org/standard/73022.html"
   ISO.IEC.23090-10:
     title: "Information technology — Coded representation of immersive media — Part 10: Carriage of visual volumetric video-based coding data"
     author: 
@@ -105,6 +111,7 @@ informative:
     date: 2022
     seriesinfo:
       ISO/IEC: FDIS 23090-10
+    target: "https://www.iso.org/standard/78991.html"
   RFC7202:
   
 

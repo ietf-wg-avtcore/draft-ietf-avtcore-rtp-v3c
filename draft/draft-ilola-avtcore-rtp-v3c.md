@@ -443,7 +443,7 @@ The three different payload structures are as follows:
 
 * Single NAL Unit Packet: Contains a single NAL unit in the payload. This payload structure is specified in {{Single-NAL-unit-packet}}. 
 
-* Aggregation Packet: Contains multiple NAL units into single RTP payload. This payload structure is specified in {{Aggregation-packets}}.
+* Aggregation Packet: Contains multiple NAL units in a single RTP payload. This payload structure is specified in {{Aggregation-packet}}.
 
 * Fragmentation Unit: Contains a subset of a single NAL unit. This payload structure is specified in {{Fragmentation-unit}}. 
 
@@ -480,11 +480,11 @@ The v3c-tile-id field, when present, specifies the 16-bit tile identifier for th
 
 NOTE: (informative) Only values for NAL unit type (NUT) in range 0-35, inclusive, are allocated for atlas tile layer data, defined in {{ISO.IEC.23090-5}}, which means that NAL unit types outside of the range are not specific to atlas tiles and SHOULD NOT contain v3c-tile-ids.
 
-### Aggregation packets {#Aggregation-packets}
+### Aggregation packet {#Aggregation-packet}
 
 Aggregation Packets (APs) enable the reduction of packetization overhead for small NAL units, such as most of the non-ACL NAL units, which are often only a few octets in size.
 
-Aggregation packets (APs) may wrap multiple NAL units belonging to the same access unit in a single RTP payload. The first two bytes of the AP MUST contain RTP payload header. The NAL unit type (NUT) for the NAL unit header contained in the RTP payload header MUST be equal to 56, which falls in the unspecified range of the NAL unit types defined in  {{ISO.IEC.23090-5}}. AP may contain a conditional v3c-tile-id field. AP MUST contain two or more aggregation units. The structure of AP is shown in {{fig-aggregation-packet}}.
+Aggregation packets may wrap multiple NAL units belonging to the same access unit in a single RTP payload. The first two bytes of the AP MUST contain RTP payload header. The NAL unit type (NUT) for the NAL unit header contained in the RTP payload header MUST be equal to 56, which falls in the unspecified range of the NAL unit types defined in {{ISO.IEC.23090-5}}. AP may contain a conditional v3c-tile-id field. AP MUST contain two or more aggregation units. The structure of AP is shown in {{fig-aggregation-packet}}.
 
 ~~~
     0                   1                   2                   3
@@ -507,7 +507,7 @@ All ACL NAL units in an aggregation packet have the same TID value since they be
 
 The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all ACL NAL units in the AP. If v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present.
 
-AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-single-time-aggregation-unit}}.
+AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
 
 ~~~
     0                   1                   2                   3
@@ -524,7 +524,7 @@ AP MUST carry at least two aggregation units (AU) and can carry as many aggregat
     |                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-{: #fig-single-time-aggregation-unit title="Aggregation Unit (AU)"}
+{: #fig-aggregation-unit title="Aggregation Unit (AU)"}
 
 If sprop-max-don-diff is greater than 0 for any of the RTP streams, an AU begins with the DOND / DONL field. The first AU in the AP contains DONL field, which specifies the 16-bit value of the decoding order number of the aggregated NAL unit. The variable DON for the aggregated NAL unit is derived as equal to the value of the DONL field. All subsequent AUs in the AP MUST contain an (8-bit) DOND field, which specifies the difference between the decoding order number values of the current aggregated NAL unit and the preceding aggregated NAL unit in the same AP. The variable DON for the aggregated NAL unit is derived as equal to the DON of the preceding aggregated NAL unit in the same AP plus the value of the DOND field plus 1 modulo 65536.
 

@@ -45,6 +45,7 @@ normative:
     date: 2021
     seriesinfo:
       ISO/IEC: 23090-5
+    target: https://www.iso.org/standard/73025.html
   ISO.IEC.23090-12:
     title: "Information technology — Coded representation of immersive media — Part 12: MPEG Immersive video (MIV)"
     author: 
@@ -52,6 +53,7 @@ normative:
     date: 2022
     seriesinfo:
       ISO/IEC: 23090-12
+    target: "https://www.iso.org/standard/79113.html"
   RFC2119:
   RFC3550:
   RFC3551:
@@ -77,6 +79,7 @@ informative:
     date: 2020
     seriesinfo:
       ISO/IEC: 14496-10
+    target: "https://www.iso.org/standard/75400.html"
   ISO.IEC.14496-12:
     title: "Information technology — Coding of audio-visual objects — Part 12: ISO base media file format"
     author: 
@@ -84,6 +87,7 @@ informative:
     date: 2020
     seriesinfo:
       ISO/IEC: 14496-12
+    target: "https://www.iso.org/standard/74428.html"
   ISO.IEC.23008-2:
     title: "Information technology — High efficiency coding and media delivery in heterogeneous environments — Part 2: High efficiency video coding"
     author: 
@@ -91,6 +95,7 @@ informative:
     date: 2020
     seriesinfo:
       ISO/IEC: 23008-2
+    target: "https://www.iso.org/standard/75484.html"
   ISO.IEC.23090-3:
     title: "Information technology — Coded representation of immersive media — Part 3: Versatile video coding"
     author: 
@@ -98,6 +103,7 @@ informative:
     date: 2021
     seriesinfo:
       ISO/IEC: 23090-3
+    target: "https://www.iso.org/standard/73022.html"
   ISO.IEC.23090-10:
     title: "Information technology — Coded representation of immersive media — Part 10: Carriage of visual volumetric video-based coding data"
     author: 
@@ -105,6 +111,7 @@ informative:
     date: 2022
     seriesinfo:
       ISO/IEC: FDIS 23090-10
+    target: "https://www.iso.org/standard/78991.html"
   RFC7202:
   
 
@@ -203,8 +210,6 @@ DON     decoding order number
 
 IRAP    intra random access point
 
-MTAP    multi time aggregation packet
-
 MTU     maximum transmission unit
 
 NAL     network abstraction layer
@@ -212,8 +217,6 @@ NAL     network abstraction layer
 NALU    NAL unit
 
 RBSP    raw byte sequence payload
-
-STAP    single time aggreation packet
 
 V3C     visual volumetric video-based coding
 
@@ -434,13 +437,15 @@ Receivers MUST support all of SRST, MRST, and MRMT. The required support of MRMT
 
 ### General
 
-The payload format defines three different basic payload structures. A receiver can identify the payload structure by the first two bytes of the RTP packet payload, which co-serves as the RTP payload header. These two bytes are always structured as a NAL unit header. The NAL unit type field indicates which structure is present in the payload. The possible structures are as follows.
+Three different types of RTP packet payload structures are specified. A receiver can identify the payload structure by the first two bytes of the RTP packet payload, which co-serves as the RTP payload header. These two bytes are always structured as a NAL unit header. The NAL unit type field indicates which structure is present in the payload. 
 
-Single NAL Unit Packet: Contains a single NAL unit in the payload. This payload structure is specified in {{Single-NAL-unit-packet}}. 
+The three different payload structures are as follows:
 
-Aggregation Packet: Packet type used to aggregate multiple NAL units into a single RTP payload. This packet exists in two versions, Single-Time Aggregation Packet type and Multi-Time Aggregation Packet. The payload structure is specified in {{Aggregation-packets}}. 
+* Single NAL Unit Packet: Contains a single NAL unit in the payload. This payload structure is specified in {{Single-NAL-unit-packet}}. 
 
-Fragmentation Unit: Used to fragment a single NAL unit over multiple RTP packets. This payload structure is specified in {{Fragmentation-unit}}. 
+* Aggregation Packet: Contains multiple NAL units in a single RTP payload. This payload structure is specified in {{Aggregation-packet}}.
+
+* Fragmentation Unit: Contains a subset of a single NAL unit. This payload structure is specified in {{Fragmentation-unit}}. 
 
 NOTE: (informative) This specification does not limit the size of NAL units encapsulated in NAL unit packets and fragmentation units.  {{ISO.IEC.23090-5}} does not restrict the maximum size of a NAL unit directly either. Instead a NAL unit sample stream format may be used, which provides flexibility to signal NAL unit size up to UINT64_MAX bytes. 
 
@@ -475,17 +480,11 @@ The v3c-tile-id field, when present, specifies the 16-bit tile identifier for th
 
 NOTE: (informative) Only values for NAL unit type (NUT) in range 0-35, inclusive, are allocated for atlas tile layer data, defined in {{ISO.IEC.23090-5}}, which means that NAL unit types outside of the range are not specific to atlas tiles and SHOULD NOT contain v3c-tile-ids.
 
-### Aggregation packets {#Aggregation-packets}
+### Aggregation packet {#Aggregation-packet}
 
-Aggregation Packets (APs) are introduced to enable the reduction of packetization overhead for small NAL units, such as most of the non-ACL NAL units, which are often only a few octets in size.
+Aggregation Packets (APs) enable the reduction of packetization overhead for small NAL units, such as most of the non-ACL NAL units, which are often only a few octets in size.
 
-Aggregation packets (AP) may wrap multiple NAL units belonging to the same access unit in a single RTP payload. This is referred to as single time aggregation packet (STAP). This mode is specified in {{Single-time-aggregation-packet}}.
-
-Aggregation packets (AP) may also wrap multiple NAL units from different access units into the same RTP payload. This is referred to as multi time aggregation packet (MTAP). This mode is specified in {{Multi-time-aggregation-packet}}.
-
-#### Single time aggregation packet {#Single-time-aggregation-packet}
-
-Single time aggregation packet (STAP) may be used to combine NAL units that belong to the same access unit. Similarily to the single NAL unit packet, the first two bytes of the STAP MUST contain RTP payload header. The NAL unit type (NUT) for the NAL unit header contained in the RTP payload header MUST be equal to 56, which falls in the unspecified range of the NAL unit types defined in  {{ISO.IEC.23090-5}}. STAP may contain a conditional v3c-tile-id field. STAP MUST contain two or more aggregation units. The structure of STAP is described below in {{fig-single-time-aggregation-packet}}.
+Aggregation packets may wrap multiple NAL units belonging to the same access unit in a single RTP payload. The first two bytes of the AP MUST contain RTP payload header. The NAL unit type (NUT) for the NAL unit header contained in the RTP payload header MUST be equal to 56, which falls in the unspecified range of the NAL unit types defined in {{ISO.IEC.23090-5}}. AP may contain a conditional v3c-tile-id field. AP MUST contain two or more aggregation units. The structure of AP is shown in {{fig-aggregation-packet}}.
 
 ~~~
     0                   1                   2                   3
@@ -500,15 +499,15 @@ Single time aggregation packet (STAP) may be used to combine NAL units that belo
     |                               :...OPTIONAL RTP padding        |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-{: #fig-single-time-aggregation-packet title="Single time aggregation packet"}
+{: #fig-aggregation-packet title="Aggregation Packet (AP)"}
 
 The fields in the payload header are set as follows. The F bit MUST be equal to 0 if the F bit of each aggregated NAL unit is equal to zero; otherwise, it MUST be equal to 1. The NUT field MUST be equal to 56. The value of NLI MUST be equal to the lowest value of NLI of all the aggregated NAL units. The value of TID MUST be the lowest value of TID of all the aggregated NAL units.
 
-All ACL NAL units in a single time aggregation packet have the same TID value since they belong to the same access unit. However, the packet may contain non-ACL NAL units for which the TID value in the NAL unit header may be different than the TID value of the ACL NAL units in the same AP.
+All ACL NAL units in an aggregation packet have the same TID value since they belong to the same access unit. However, the packet may contain non-ACL NAL units for which the TID value in the NAL unit header may be different than the TID value of the ACL NAL units in the same AP.
 
-The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all ACL NAL units in the STAP. If v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present.
+The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all ACL NAL units in the AP. If v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present.
 
-STAP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary; however, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. {{fig-single-time-aggregation-unit}} below illustrates structure of an AU for STAP.
+AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
 
 ~~~
     0                   1                   2                   3
@@ -525,9 +524,9 @@ STAP MUST carry at least two aggregation units (AU) and can carry as many aggreg
     |                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-{: #fig-single-time-aggregation-unit title="Aggregation unit for single time aggregaton packet"}
+{: #fig-aggregation-unit title="Aggregation Unit (AU)"}
 
-If sprop-max-don-diff is greater than 0 for any of the RTP streams, an AU begins with the DOND / DONL field. The first AU in the AP contains DONL field, which specifies the 16-bit value of the decoding order number of the aggregated NAL unit. The variable DON for the aggregated NAL unit is derived as equal to the value of the DONL field. All subsequent AUs in the AP MUST contain an (8-bit) DOND field, which specifies the difference between the decoding order number values of the current aggregated NAL unit and the preceding aggregated NAL unit in the same AP. The variable DON for the aggregated NAL unit is derived as equal to the DON of the preceding aggregated NAL unit in the same AP plus the value of the DOND field plus 1 modulo 65536. 
+If sprop-max-don-diff is greater than 0 for any of the RTP streams, an AU begins with the DOND / DONL field. The first AU in the AP contains DONL field, which specifies the 16-bit value of the decoding order number of the aggregated NAL unit. The variable DON for the aggregated NAL unit is derived as equal to the value of the DONL field. All subsequent AUs in the AP MUST contain an (8-bit) DOND field, which specifies the difference between the decoding order number values of the current aggregated NAL unit and the preceding aggregated NAL unit in the same AP. The variable DON for the aggregated NAL unit is derived as equal to the DON of the preceding aggregated NAL unit in the same AP plus the value of the DOND field plus 1 modulo 65536.
 
 When sprop-max-don-diff is equal to 0 for all the RTP streams, DOND / DONL fields MUST NOT be present in an aggregation unit. The aggregation units MUST be stored in the aggregation packet so that the decoding order of the containing NAL units is preserved. This means that the first aggregation unit in the aggregation packet SHOULD contain the NAL unit that SHOULD be decoded first.
 
@@ -535,68 +534,11 @@ If v3c-tile-id-pres is equal to 2 and the AU NAL unit header type is in range 0-
 
 The conditional fields of the aggregation unit are followed by a 16-bit NALU size field, which provides the size of the NAL unit (in bytes) in the aggregation unit. The remainder of the data in the aggregation unit SHOULD contain the NAL unit (including the unmodified NAL unit header).
 
-#### Multi time aggregation packet {#Multi-time-aggregation-packet}
-
-Multi-time aggregation packet (MTAP) enables packing NAL units in a single RTP packet from different access units. This means that a single RTP packet can contain NAL units belonging to different temporal instances. The first two bytes of the MTAP MUST contain RTP payload header, where the NAL unit type (NUT) MUST be equal to 57, which falls in the unspecified range of the NAL unit types defined in  {{ISO.IEC.23090-5}}. The MTAP may contain conditional DONB and v3c-tile-id fields. MTAP must contain two or more aggregation units. {{fig-multi-time-aggregation-packet}} below illustrates MTAP structure. 
-
-~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=57)  |          DONB (cond)          |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |      v3c-tile-id (cond)       |                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |   
-    |                  Two or more aggregation units                |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               :...OPTIONAL RTP padding        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-{: #fig-multi-time-aggregation-packet title="Multi time aggregation packet"}
-
-The fields in the payload header are set as follows. The F bit MUST be equal to 0 if the F bit of each aggregated NAL unit is equal to zero; otherwise, it MUST be equal to 1. The NUT field MUST be equal to 57. The value of NLI MUST be equal to the lowest value of NLI of all the aggregated NAL units. The value of TID MUST be the lowest value of TID of all the aggregated NAL units.
-
-If sprop-max-don-diff is greater than 0 for any of the RTP streams, the RTP payload header must be followed by 16-bit field containing the base decoding order number (DONB). DONB MUST contain the value of DON for the first NAL unit in the NAL unit decoding order among the NAL units of the MTAP. The first NAL unit in the NAL unit decoding order is not necessarily the first NAL unit in the order in which the NAL units are encapsulated in an MTAP.
-
-When sprop-max-don-diff is equal to 0 for all the RTP streams, MTAP MUST NOT contain DONB-field. Instead, aggregation units MUST be stored in the MTAP so that the decoding order of the NAL units is preserved. This means that the first aggregation unit in the aggregation packet SHOULD contain the NAL unit that SHOULD be decoded first.
-
-The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all NAL units in the MTAP. If v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present after the conditional DONB field. Otherwise, the v3c-tile-id field MUST NOT be present.
-
-MTAP MUST carry at least two aggregation units (AU). The structure of the aggregation unit depends both on the presence of the decoding order number and v3c-tile-id field. {{fig-multi-time-aggregation-unit}} below illustrates aggregation unit for MTAP.
-
-~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |          TS Offset            |  DOND (cond)  |  v3c-tile...  |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
-    | ...-id (cond) |           NALU size           |               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
-    |                                                               |
-    |                            NAL unit                           |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-{: #fig-multi-time-aggregation-unit title="Aggregation unit for multi time aggreagation packet"}
-
-Each aggregation unit SHOULD begin with a 16-bit timestamp offset (TS offset) field, which contains difference in 90kHz clock-ticks to the RTP header timestamp. RTP header timestamp MUST be set equal to the earliest access unit in the aggregation unit.
-
-If MTAP contains base NAL decoding order number (DONB), the timestamp offset field MUST be followed by an 8-bit field containing the decoding order number difference (DOND). The DOND field specifies the difference between the decoding order number values of aggregation unit and the base decoding order number of the MTAP. The variable DON for the aggregated NAL unit is derived as equal to the DONB plus the value of the DOND field plus 1 modulo 65536.
-
-If v3c-tile-id-pres is equal to 2 and AU NAL unit header type is in range 0-35, inclusive, the v3c-tile-id field MUST be present in the aggregation unit after the conditional DOND field. Otherwise v3c-tile-id field MUST NOT be present in the aggregation unit. 
-
-The conditional fields are followed by a 16-bit NALU size field, which provides the size of the NAL unit (in bytes) in the aggregation unit. 
-
-The remainder of the data in the aggregation unit SHOULD contain the NAL unit (including the unmodified NAL unit header).
-
 ### Fragmentation unit {#Fragmentation-unit}
 
 Fragmentation Units (FUs) are introduced to enable fragmenting a single NAL unit into multiple RTP packets, possibly without co-operation or knowledge of the encoder. A fragment of a NAL unit consists of an integer number of consecutive octets of that NAL unit. Fragments of the same NAL unit MUST be sent in consecutive order with ascending RTP sequence numbers (with no other RTP packets within the same RTP stream being sent between the first and last fragment.
 
-When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fragmented NAL unit. Aggregation packets for STAP or MTAP MUST NOT be fragmented. FUs MUST NOT be nested; i.e., an FU MUST NOT contain a subset of another FU. The RTP header timestamp of an RTP packet carrying an FU is set to the NALU-time of the fragmented NAL unit.
+When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fragmented NAL unit. Aggregation packets MUST NOT be fragmented. FUs MUST NOT be nested; i.e., an FU MUST NOT contain a subset of another FU. The RTP header timestamp of an RTP packet carrying an FU is set to the NALU-time of the fragmented NAL unit.
 
 A FU consists of a RTP payload header with NUT equal to 58, an 8-bit FU header, a conditional 16-bit DONL field, a conditional 16-bit v3c-tile-id field and an FU payload. The structure of an FU is illustrated below in {{fig-fragmentation-unit}}. 
 

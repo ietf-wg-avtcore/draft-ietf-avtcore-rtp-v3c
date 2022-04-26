@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ilola-avtcore-rtp-v3c-00
-date: 2022-01-20
+docname: draft-ilola-avtcore-rtp-v3c-01
+date: 2022-04-26
 
 ipr: trust200902
 area: Application
@@ -68,7 +68,7 @@ normative:
   RFC7201:
   RFC7798:
   RFC8083:
-  RFC8843:
+  RFC9143:
   RFC8866:
 
 informative:
@@ -210,6 +210,10 @@ DON     decoding order number
 
 IRAP    intra random access point
 
+MRMT    Multiple RTP streams on Multiple media Transports
+
+MRST    Multiple RTP streams over a Single media Transport
+
 MTU     maximum transmission unit
 
 NAL     network abstraction layer
@@ -217,6 +221,8 @@ NAL     network abstraction layer
 NALU    NAL unit
 
 RBSP    raw byte sequence payload
+
+SRST    Single RTP stream on a Single media Transport
 
 V3C     visual volumetric video-based coding
 
@@ -421,7 +427,7 @@ This memo enables transmission of an V3C atlas bitstream over:
 * Multiple RTP streams over a Single media Transport (MRST), or
 * Multiple RTP streams on Multiple media Transports (MRMT).
 
-When in MRST or MRMT, multiple RTP streams may be grouped together as specified in {{RFC5888}} and {{RFC8843}}.
+When in MRST or MRMT, multiple RTP streams may be grouped together as specified in {{RFC5888}} and {{RFC9143}}.
 
 SRST or MRST SHOULD be used for point-to-point unicast scenarios, whereas MRMT SHOULD be used for point-to-multipoint multicast scenarios where different receivers require different operation points of the same V3C atlas bitstream, to improve bandwidth utilizing efficiency.
 
@@ -639,9 +645,7 @@ Examples describing the different payload formats is provided.
 
 ## V3C fragmentation unit
 
-This example illustrates how fragmetation unit may be used to divide one NAL unit into to RTP packets. 
-
-Packet 1
+This example illustrates how fragmetation unit may be used to divide one NAL unit into to RTP packets. The {{fig-fragmentation-unit-packet-1}} illustrates the structure of the first packet with the first part of the fragmented NAL unit.
 
 ~~~
     0                   1                   2                   3
@@ -665,8 +669,9 @@ Packet 1
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
+{: #fig-fragmentation-unit-packet-1 title="First packet of fragmented NAL unit"}
 
-Packet 2
+The {{fig-fragmentation-unit-packet-2}} illustrates the structure of the second packet with the rest of the fragmented NAL unit. 
 
 ~~~
     0                   1                   2                   3
@@ -690,6 +695,7 @@ Packet 2
     |                               :...OPTIONAL RTP padding        |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
+{: #fig-fragmentation-unit-packet-2 title="Second packet of fragmented NAL unit"}
 
 # Payload Format Parameters
 
@@ -1174,7 +1180,7 @@ An example of answer which only receives V3C data with the selected versions.
     a=recvonly
 ~~~
 
-An example offer, which allows bundling different V3C components on one stream, based on {{RFC8843}}.
+An example offer, which allows bundling different V3C components on one stream, based on {{RFC9143}}.
 
 ~~~
     ...

@@ -65,7 +65,6 @@ normative:
   RFC6184:
   RFC6190:
   RFC6838:
-  RFC7201:
   RFC7798:
   RFC8083:
   RFC9143:
@@ -112,6 +111,7 @@ informative:
     seriesinfo:
       ISO/IEC: FDIS 23090-10
     target: "https://www.iso.org/standard/78991.html"
+  RFC7201:
   RFC7202:
   
 
@@ -304,18 +304,15 @@ vuh_auxiliary_video_flag equal indicates if the associated geometry or attribute
 
 ### Atlas NAL units {#Atlas-NAL-units}
 
-Atlas NAL unit (nal_unit(NumBytesInNalUnit)) is a byte-aligned syntax structure defined by  {{ISO.IEC.23090-5}} to carry atlas data. atlas NAL unit always contains a 16-bit NAL unit header (nal_unit_header()), which indicates among other things the type of the NAL unit (nal_unit_type). 
-
+Atlas NAL unit (nal_unit(NumBytesInNalUnit)) is a byte-aligned syntax structure defined by {{ISO.IEC.23090-5}} to carry atlas data. atlas NAL unit always contains a 16-bit NAL unit header (nal_unit_header()), which indicates among other things the type of the NAL unit (nal_unit_type). The sample code below describes the NAL unit syntax, including the NAL unit header. 
 
 ~~~
-/* nal unit header defintion */
 nal_unit_header(){
     bit(1) nal_forbidden_zero_bit;
     bit(6) nal_unit_type;
     bit(6) nal_layer_id;
     bit(3) nal_temporal_id_plus1;
 }
-/* nal unit description */
 nal_unit(NumBytesInNalUnit){
     nal_unit_header();
     NumBytesInRbsp = 0;
@@ -863,84 +860,25 @@ Security considerations:
 
 Please see {{Security-considerations}}.
 
-Interoperability considerations:
+Interoperability considerations: N/A
 
-Published specification:
+Published specification: 
 
-Applications that use this media type:
+Applications that use this media type: N/A
 
-Additional information:
+Additional information: N/A
 
-~~~
-  Deprecated alias names for this type:
+Person & email address to contact for further information: 
 
-    [Only applicable if there exists widely deployed alias for this
-    media type; see Section 4.2.9 of [RFC6838].  Remove or use N/A
-    otherwise.
+Intended usage: COMMON
 
-  Magic number(s):
-
-   \[Only applicable for media types that has file format
-   specification. Remove or use N/A otherwise.]
-
-  File extension(s):
-
-    [Only applicable for media types that has file format
-    specification.  Remove or use N/A otherwise.]
-
-  Macintosh file type code(s):
-
-    [Only applicable for media types that has file format
-    specification.  Even for file formats they can be skipped as
-    they are not relied on after Mac OS 9.X.  Remove or use N/A
-    otherwise.]
-~~~
-
-Person & email address to contact for further information:
-
-Intended usage:
-
-~~~
-    [One of COMMON, LIMITED USE, or OBSOLETE.]
-~~~
-
-Restrictions on usage:
-
-~~~
-  \[The below text is for media types that is only defined for RTP
-  payload formats. There exist certain media types that are defined
-  both as RTP payload formats and file transfer. The rules for such
-  types are documented in RFC4855 [RFC4855].]
-
-  This media type depends on RTP framing and, hence, is only defined
-  for transfer via RTP [RFC3550]. Transport within other framing
-  protocols is not defined at this time.
-~~~
+Restrictions on usage: N/A
 
 Author: See Authors' Addresses section of this memo.
 
 Change controller: IETF Payload working group delegated from the IESG.
 
-Provisional registration? (standards tree only):
-
-~~~
-    No
-~~~
-
-(Any other information that the author deems interesting may be added
-below this line.)
-
-[From RFC 6838:
-
-~~~
-    "N/A", written exactly that way, can be used in any field if
-    desired to emphasize the fact that it does not apply or that the
-    question was not omitted by accident.  Do not use 'none' or other
-    words that could be mistaken for a response.
-
-    Limited-use media types SHOULD also note in the applications list
-    whether or not that list is exhaustive.]
-~~~
+Provisional registration? (standards tree only): No
 
 # Congestion Control Considerations
 
@@ -1252,9 +1190,6 @@ This RTP payload format and its media decoder do not exhibit any significant non
 --- back
 
 <!-- Nothing here -->
-
-
-
 
 --- fluff
 

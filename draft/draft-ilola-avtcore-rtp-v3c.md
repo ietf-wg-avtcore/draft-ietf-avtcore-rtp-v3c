@@ -1,7 +1,7 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ilola-avtcore-rtp-v3c-01
+docname: draft-ilola-avtcore-rtp-v3c-02
 date: 2022-04-26
 
 ipr: trust200902
@@ -250,7 +250,7 @@ While this memo intends to describe encapsulation of V3C atlas data, aspects rel
 
 ### General
 
-In V3C bitstream the atlas component is identified by vuh_unit_type equal to V3C_AD in the V3C unit header. The V3C atlas component consists of atlas NAL units that define header and payload pairs and are described in {{Atlas-NAL-units}}. V3C video components are identified by vuh_unit_type equal to V3C_OVD, V3C_GVD, V3C_AVD, and V3C_PVD respectively. V3C video components can be further separated by other values in the V3C unit header such as vuh_attribute_index, vuh_attribute_index, vuh_attribute_partition_index, vuh_map_index and vuh_auxiliary_video_flag. By mapping V3C parameter set information to vuh_attribute_index, a V3C decoder identifies which attribute a given V3C video component contains, e.g. color.
+In V3C bitstream the atlas component is identified by vuh_unit_type equal to V3C_AD, or V3C_CAD in case of common atlas data, in the V3C unit header. The V3C atlas component consists of atlas NAL units that define header and payload pairs and are described in {{Atlas-NAL-units}}. V3C video components are identified by vuh_unit_type equal to V3C_OVD, V3C_GVD, V3C_AVD, and V3C_PVD. V3C video components can be further separated by other values in the V3C unit header such as vuh_attribute_index, vuh_attribute_partition_index, vuh_map_index and vuh_auxiliary_video_flag. By mapping V3C parameter set information to vuh_attribute_index, a V3C decoder identifies which attribute a given V3C video component contains, e.g. color.
 
 The information supplied by V3C unit header SHOULD be provided in one form or another to a V3C decoder, e.g. as part of SDP as described in this memo in {{Session-Description-Protocol}}. The four-byte V3C unit header syntax and semantics are copied below as defined in {{ISO.IEC.23090-5}}.
 
@@ -288,7 +288,18 @@ v3c_unit_header( ) {
 }
 ~~~
 
-vuh_unit_type indicates the V3C unit type for the V3C component as specified in  {{ISO.IEC.23090-5}}.
+vuh_unit_type indicates the V3C unit type for the V3C component as specified in  {{ISO.IEC.23090-5}}. As a convenience, the mapping table from vuh_unit_type values to semantics is copied below in {{table-v3c-unit-type-descriptions}}.
+
+| vuh_unit_type | Identifier | V3C unit type | Description |
+| 0 |	V3C_VPS |	V3C parameter set |	V3C level parameters |
+| 1 |	V3C_AD | Atlas data | Atlas information |
+| 2 |	V3C_OVD |	Occupancy video data | Occupancy information |
+| 3 |	V3C_GVD |	Geometry video data |	Geometry information |
+| 4 |	V3C_AVD | Attribute video data | Attribute information |
+| 5 |	V3C_PVD |	Packed video data |	Packing information |
+| 6 |	V3C_CAD | Common atlas data |	Information that is common for atlases in a CVS. Specified in ISO/IEC 23090-12 |
+| 7…31 | V3C_RSVD |	Reserved | - |
+{: #table-v3c-unit-type-descriptions title="V3C unit type semantics"}
 
 vuh_v3c_parameter_set_id specifies the value of vps_v3c_parameter_set_id for the active V3C VPS. 
 
@@ -979,7 +990,7 @@ The following example shows an SDP including four media lines, three describing 
     a=rtpmap:98 H264/90000
     a=fmtp:98 v3c-unit-header=20000000 // attribute
     a=mid:3
-    m=video 40008 RTP/AVP 100 
+    m=application 40008 RTP/AVP 100 
     a=rtpmap:100 v3c/90000 
     a=fmtp:100 v3c-unit-header=08000000; // atlas
     a=mid:4
@@ -1035,7 +1046,7 @@ The example below describes how content with two atlases can be signaled as sepa
     a=rtpmap:98 H264/90000
     a=fmtp:98 v3c-unit-header=20000000 // attribute, atlas 0
     a=mid:3
-    m=video 40008 RTP/AVP 100 
+    m=application 40008 RTP/AVP 100 
     a=rtpmap:100 v3c/90000 
     a=fmtp:100 v3c-unit-header=08000000; // atlas 0
     a=mid:4
@@ -1051,7 +1062,7 @@ The example below describes how content with two atlases can be signaled as sepa
     a=rtpmap:103 H264/90000
     a=fmtp:103 v3c-unit-header=20020000 // attribute, atlas 1
     a=mid:7
-    m=video 40018 RTP/AVP 104 
+    m=application 40018 RTP/AVP 104 
     a=rtpmap:104 v3c/90000 
     a=fmtp:104 v3c-unit-header=08020000; // V3C_AD, atlas 1
     a=mid:8
@@ -1092,7 +1103,7 @@ An example of offer which only sends V3C content. The following example contains
     a=fmtp:98 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
     a=mid:3
     a=sendonly
-    m=video 40006 RTP/AVP 100
+    m=application 40006 RTP/AVP 100
     a=rtpmap:100 v3c/90000 
     a=fmtp:100 v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0
     a=mid:4
@@ -1113,7 +1124,7 @@ An example of answer which only receives V3C data with the selected versions.
     m=video 50004 RTP/AVP 98 
     a=rtpmap:98 H266/90000
     a=recvonly
-    m=video 50006 RTP/AVP 96
+    m=application 50006 RTP/AVP 96
     a=rtpmap:96 v3c/90000 
     a=recvonly
 ~~~
@@ -1139,7 +1150,7 @@ An example offer, which allows bundling different V3C components on one stream, 
     a=fmtp:96 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
     a=mid:3
     a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=video 40006 RTP/AVP 97
+    m=application 40006 RTP/AVP 97
     a=rtpmap:97 v3c/90000 
     a=fmtp:97 v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0
     a=mid:4
@@ -1165,7 +1176,7 @@ An example answer, which accepts bundling of different V3C components.
     a=bundle-only
     a=mid:3
     a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=video 0 RTP/AVP 97
+    m=application 0 RTP/AVP 97
     a=rtpmap:97 v3c/90000
     a=bundle-only 
     a=mid:4

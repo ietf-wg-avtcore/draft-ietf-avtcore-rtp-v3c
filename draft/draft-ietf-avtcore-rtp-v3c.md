@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-01
-date: 2023-03-16
+docname: draft-ietf-avtcore-rtp-v3c-02
+date: 2023-06-20
 
 ipr: trust200902
 area: Application
@@ -64,7 +64,6 @@ normative:
   RFC5888:
   RFC6184:
   RFC6190:
-  RFC6838:
   RFC7798:
   RFC8083:
   RFC9143:
@@ -120,17 +119,17 @@ entity:
 
 --- abstract
 
-This memo describes an RTP payload format for visual volumetric video-based coding (V3C) {{ISO.IEC.23090-5}}. A V3C bitstream is composed of V3C units that contain V3C video sub-bitstreams, V3C atlas sub-bitstreams, or a V3C parameter set. The RTP payload format for V3C video sub-bitstreams is defined by appropriate Internet Standards for the applicable video codec. The RTP payload format for V3C atlas sub-bitstreams is described by this memo. The V3C RTP payload format allows for packetization of one or more V3C Network Abstraction Layer (NAL) units in a RTP packet payload as well as fragmentation of a V3C NAL unit into multiple RTP packets. The memo also describes the mechanisms for grouping RTP streams of V3C component sub-bitstreams, providing a complete solution for streaming V3C content. 
+This memo describes an RTP payload format for visual volumetric video-based coding (V3C) {{ISO.IEC.23090-5}}. A V3C bitstream is composed of V3C units that contain V3C video sub-bitstreams, V3C atlas sub-bitstreams, or a V3C parameter set. The RTP payload format for V3C video sub-bitstreams is defined by relevant Internet Standards for the applicable video codec. The RTP payload format for V3C atlas sub-bitstreams is described by this memo. The V3C RTP payload format allows for packetization of one or more V3C atlas Network Abstraction Layer (NAL) units in an RTP packet payload as well as fragmentation of a V3C atlas NAL unit into multiple RTP packets. The memo also describes the mechanisms for grouping RTP streams of V3C component sub-bitstreams, providing a complete solution for streaming V3C encoded content. 
 
 --- middle
 
 # Introduction
 
-Volumetric video, similar to traditional 2D video, when uncompressed, is represented by a large amount of data. The Visual Volumetric Video-based Coding (V3C) specification {{ISO.IEC.23090-5}} leverages the compression efficiency of existing 2D video codecs to reduce the amount of data needed for storage and transmission of volumetric video. 
+Volumetric video, similar to traditional 2D video, when uncompressed, is represented by a large amount of data. The Visual Volumetric Video-based Coding (V3C) specification {{ISO.IEC.23090-5}} leverages the compression efficiency of existing 2D video codecs to reduce the amount of data needed for storage and transmission of volumetric video. V3C is a generic mechanism for volumetric video coding, and it can be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc. Examples of such applications are Video-based Point Cloud Compression (V-PCC) {{ISO.IEC.23090-5}}, and MPEG Immersive Video (MIV) {{ISO.IEC.23090-12}}.
 
-V3C encoder converts volumetric frames, 3D volumetric information, into a collection of 2D images and associated data, known as atlas data. The converted 2D images are subsequently coded using existing video or image codecs, e.g., ISO/IEC International Standard 14496-10 (H.264) {{ISO.IEC.14496-10}}, ISO/IEC International Standard 23008-2 (H.265) {{ISO.IEC.23008-2}} or ISO/IEC International Standard 23090-3 (H.266) {{ISO.IEC.23090-3}}. The atlas data is coded with mechanisms specified in {{ISO.IEC.23090-5}}. V3C is generic mechanism for volumetric video coding, and it can be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc. Examples of such applications are Video-based Point Cloud Compression (V-PCC) {{ISO.IEC.23090-5}}, and MPEG Immersive Video (MIV) {{ISO.IEC.23090-12}}.
+V3C encoder converts volumetric frames, i.e., 3D volumetric information, into a collection of 2D images and associated data, known as atlas data. The converted 2D images are subsequently coded using any video or image codec, e.g., ISO/IEC International Standard 14496-10 (Advanced Video Coding, AVC/H.264) {{ISO.IEC.14496-10}}, ISO/IEC International Standard 23008-2 (High Efficiency Video Coding, HEVC/H.265) {{ISO.IEC.23008-2}} or ISO/IEC International Standard 23090-3 (Versatile Video Coding, VVC/H.266) {{ISO.IEC.23090-3}}. The atlas data is coded with mechanisms specified in {{ISO.IEC.23090-5}}.
 
-V3C utilizes high level syntax (HLS) design, familiar from traditional 2D video codecs, to represent the associated coded data, i.e., atlas data. The atlas data is represented by Network Abstraction Layer (NAL) units. Consequently, RTP payload format for V3C atlas data described in this memo shares design philosophy, security, congestion control, and overall implementation complexity with the other NAL unit-based RTP payload formats such as the ones defined in {{RFC6184}}, {{RFC6190}}, and {{RFC7798}}.
+V3C utilizes high level syntax (HLS) design, familiar from traditional 2D video codecs, to represent the associated coded data, i.e., atlas data. The coded atlas data is represented by Network Abstraction Layer (NAL) units. Consequently, RTP payload format for V3C atlas data described in this memo shares design philosophy, security, congestion control, and overall implementation complexity with the other NAL unit-based RTP payload formats such as the ones defined in {{RFC6184}}, {{RFC6190}}, and {{RFC7798}}.
 
 # Conventions
 
@@ -138,15 +137,15 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 All fields defined in this specification related to RTP payload structures SHALL be considered in network order.
 
-# Definitions, and Abbreviations
+# Definitions, and abbreviations
 
 ## Definitions
 
 ### General
 
-This document uses the definitions of {{ISO.IEC.23090-5}}. The following terms, defined in {{ISO.IEC.23090-5}}, are provided here for convenience:
+This document uses the definitions of {{ISO.IEC.23090-5}}. {{v3c-definitions}} below lists relevant definitions from {{ISO.IEC.23090-5}} for convenience.
 
-### Definitions from the V3C Specification
+### Definitions from the V3C specification {#v3c-definitions}
 
 atlas: collection of 2D bounding boxes and their associated information placed onto a rectangular frame and corresponding to a volume in 3D space on which volumetric data is rendered.
 
@@ -160,7 +159,7 @@ atlas frame parameter set: syntax structure containing syntax elements that appl
 
 atlas sequence parameter set: syntax structure containing syntax elements that apply to zero or more entire coded atlas sequences as determined by the content of a syntax element found in the AFPS referred to by a syntax element found in each tile header.
 
-attribute: scalar or vector property optionally associated with each point in a volumetric frame such as colour, reflectance, surface normal, time stamps, material ID, etc.
+attribute: scalar or vector property optionally associated with each point in a volumetric frame such as colour, reflectance, surface normal, timestamps, material ID, etc.
 
 coded atlas sequence: sequence of coded atlas access units, in decoding order, of an IRAP coded atlas access unit, followed by zero or more coded atlas access units that are not IRAP coded atlas access units, including all subsequent access units up to but not including any subsequent coded atlas access unit that is an IRAP coded atlas access unit.
 
@@ -176,7 +175,7 @@ patch: rectangular region within an atlas associated with volumetric information
 
 raw byte sequence payload: syntax structure containing an integer number of bytes that is encapsulated in a NAL unit and that is either empty or has the form of a string of data bits containing syntax elements followed by an RBSP stop bit and zero or more subsequent bits equal to 0.
 
-tile: independently decodable rectangular region of an atlas frame
+tile: independently decodable rectangular region of an atlas frame.
 
 visual volumetric video-based coding atlas sub-bitstream: extracted sub-bitstream from the V3C bitstream containing whole or portion of an atlas bitstream.
 
@@ -184,11 +183,11 @@ visual volumetric video-based coding video sub-bitstream: extracted sub-bitstrea
 
 visual volumetric video-based coding component: atlas, occupancy, geometry, or attribute of a particular type that is associated with a V3C volumetric content representation.
 
-visual volumetric video-based coding  parameter set: syntax structure containing syntax elements that apply to zero or more entire CVSs and may be referred to by syntax elements found in the V3C unit header
+visual volumetric video-based coding  parameter set: syntax structure containing syntax elements that apply to zero or more entire CVSs and may be referred to by syntax elements found in the V3C unit header.
 
 volumetric frame: set of 3D points specified by their cartesian coordinates and zero or more corresponding sets of attributes at a particular time instance.
 
-## Abbreviations
+## Abbreviations {#abbreaviations}
 
 ACL     atlas coding layer
 
@@ -224,34 +223,42 @@ V3C     visual volumetric video-based coding
 
 VPS     V3C parameter set
 
-# Media Format Description 
+# Media format description 
 
-## Overview of the V3C codec
+## Overview of the V3C codec (informative)
 
-ISO/IEC International Standards 23090-5 {{ISO.IEC.23090-5}} defines encoding and decoding processes of volumetric video which leverages 2D video coding technologies. V3C encoding of volumetric frame is achieved through a conversion of volumetric frame from its 3D representation to multiple 2D representations and a generation of associated data documenting such conversions and transformations. The associated data, also known as atlas data, is necessary to define how to reproject the 2D representations back into 3D volumetric frame. 
+V3C encoding of a volumetric frame is achieved through a conversion of the volumetric frame from its 3D representation into multiple 2D representations and a generation of associated data documenting such conversions and transformations. The associated data, also known as the atlas data, provides information on how to reproject the 2D representations back into the 3D volumetric frame. 
 
 2D representations, known as V3C video components, of volumetric frame are encoded using traditional 2D video codecs. V3C video component may, for example, include occupancy, geometry, or attribute data. The occupancy data informs a V3C decoder which pixels in other V3C video components contribute to reconstructed 3D representation. The geometry data describes information on the position of the reconstructed voxels, while attribute data provides additional properties for the voxels, e.g., colour or material information. 
 
 Atlas data, known as V3C atlas component, provides information to interpret V3C video components and enables the reconstruction from a 2D representation back into a 3D representation of volumetric frame. Atlas data is composed of a collection of patches. Each patch identifies a region in the V3C video components and provides information necessary to perform the appropriate inverse projection of the indicated region back into 3D space. The shape of the patch region is determined by a 2D bounding box associated with each patch as well as their coding order. The shape of these patches is also further refined based on occupancy data. 
 
-To enable parallelization, random access, as well as a variety of other functionalities, an atlas frame can be divided into one or more rectangular partitions referred to as tiles. Tiles are not allowed to overlap and SHOULD be independently decodable. An atlas frame may contain regions that are not associated with any tile or patch. 
+To enable parallelization, random access, as well as a variety of other functionalities, an atlas frame can be divided into one or more rectangular partitions referred to as tiles. Tiles are not allowed to overlap and should be independently decodable. An atlas frame may contain regions that are not associated with any tile or patch. 
 
-The binary form of V3C video components, i.e., video bitstream, and V3C atlas components, i.e., V3C atlas bitstream, can be grouped and represented by a single V3C bitstream. The V3C bitstream is composed of a set of V3C units. Each V3C unit has a V3C unit header and a V3C unit payload. The V3C unit header describes the V3C unit type for the payload. V3C unit payload contains V3C video components, V3C atlas components or V3C parameter set. V3C video component, i.e., occupancy, geometry, and attribute, corresponds to video data units (e.g., NAL units defined in {{ISO.IEC.23008-2}}) that could be decoded by an appropriate video decoder.
+The binary form of V3C video components, i.e., video bitstream, and V3C atlas components, i.e., V3C atlas bitstream, can be grouped and represented by a single V3C bitstream. The V3C bitstream is composed of a set of V3C units. Each V3C unit has a V3C unit header and a V3C unit payload. The V3C unit header describes the V3C unit type for the payload. V3C unit payload contains V3C video components, V3C atlas components or a V3C parameter set. V3C video components, i.e., occupancy, geometry, or attribute components, correspond to video data units (e.g., NAL units defined in {{ISO.IEC.23008-2}}) that could be decoded by an appropriate video decoder. An example of V3C bitstream consisting of a V3C parameter set, V3C atlas bitstream and three video component bitsreams (geometry, occupancy, attribute) is provided in {{fig-V3C-bitstream}}.
 
-## V3C parameter set
+~~~
+  +-------------------+------------------+-------------------+
+  | V3C Unit(V3C_VPS) | V3C Unit(V3C_AD) | V3C Unit(V3C_GVD) | 
+  +------------------++------------------+-----------------+-+---
+  |V3C Unit(V3C_OVD) | V3C Unit(V3C_AVD) | V3C Unit(V3C_AD)| ...
+  +------------------+-------------------+-----------------+-----
+~~~
+{: #fig-V3C-bitstream title="Example of V3C bitstream"}
 
-While this memo intends to describe encapsulation of V3C atlas data, aspects related to signalling of V3C parameter set need to be considered. V3C parameter set is signalled in its own V3C unit, which allows decoupling the transmission of V3C parameter set from the V3C video and atlas components. V3C parameter set can be transmitted by external means (e.g., as a result of the capability exchange) or through a (reliable or unreliable) control protocol. This memo provides information how V3C parameter set can be signalled as part of session description protocol, see {{Session-Description-Protocol}}. 
+## V3C parameter set (informative)
 
-Generally, it is useful to signal V3C parameter set out-of-band, because it describes what overall resources are needed to decode and reconstruct the associated V3C bitstream. Signalling it dynamically as part of an RTP stream might result in undefined behaviour when receiver does not have the required capabilities to decode the received video component sub-bitstreams or when reconstruction process relies on information that the receiver does not support. 
+While this memo intends to describe encapsulation of V3C atlas data, aspects related to signalling of V3C parameter set need to be considered. V3C parameter set is encapsulated in its own V3C unit, which allows decoupling the transmission of V3C parameter set from the V3C video and atlas components. V3C parameter set may be transmitted by external means (e.g., as a result of the capability exchange) or through a (reliable or unreliable) control protocol. This memo provides information on how a V3C parameter set may be signalled as part of session description protocol, see {{Session-Description-Protocol}}. 
 
-## V3C atlas and video components
+Generally, it is useful to signal V3C parameter set out-of-band, because it describes what overall resources are needed to decode and reconstruct the associated V3C bitstream. Signalling it dynamically as part of an RTP stream might result in undefined behaviour when receiver does not have the required capabilities to decode the received V3C video component sub-bitstreams or when reconstruction process relies on information that the receiver does not support. 
+
+## V3C atlas and video components (informative)
 
 ### General
 
-In V3C bitstream the atlas component is identified by vuh_unit_type equal to V3C_AD, or V3C_CAD in case of common atlas data, in the V3C unit header. The V3C atlas component consists of atlas NAL units that define header and payload pairs and are described in {{Atlas-NAL-units}}. V3C video components are identified by vuh_unit_type equal to V3C_OVD, V3C_GVD, V3C_AVD, and V3C_PVD. V3C video components can be further separated by other values in the V3C unit header such as vuh_attribute_index, vuh_attribute_partition_index, vuh_map_index and vuh_auxiliary_video_flag. By mapping V3C parameter set information to vuh_attribute_index, a V3C decoder identifies which attribute a given V3C video component contains, e.g., colour.
+In V3C bitstream the atlas component is identified by vuh_unit_type equal to V3C_AD, or V3C_CAD in case of common atlas data, in the V3C unit header. The V3C atlas component consists of atlas NAL units that define header and payload pairs, see {{Atlas-NAL-units}}. V3C video components are identified by vuh_unit_type equal to V3C_OVD, V3C_GVD, V3C_AVD, and V3C_PVD. V3C video components can be further differentiated by other values in the V3C unit header such as vuh_attribute_index, vuh_attribute_partition_index, vuh_map_index and vuh_auxiliary_video_flag. By mapping V3C parameter set information to vuh_attribute_index, a V3C decoder identifies which attribute a given V3C video component contains, e.g., colour.
 
-The information supplied by V3C unit header SHOULD be provided in one form or another to a V3C decoder, e.g., as part of SDP as described in this memo in {{Session-Description-Protocol}}. The four-byte V3C unit header syntax and semantics are copied below as defined in {{ISO.IEC.23090-5}}.
-
+The information supplied by V3C unit header should be provided in one form or another to a V3C decoder, e.g., as part of SDP as described in this memo in {{Session-Description-Protocol}}. The four-byte V3C unit header syntax and semantics are copied below as defined in {{ISO.IEC.23090-5}}.
 
 ~~~
 v3c_unit_header( ) {
@@ -313,7 +320,7 @@ vuh_auxiliary_video_flag equal indicates if the associated geometry or attribute
 
 ### Atlas NAL units {#Atlas-NAL-units}
 
-Atlas NAL unit (nal_unit(NumBytesInNalUnit)) is a byte-aligned syntax structure defined by {{ISO.IEC.23090-5}} to carry atlas data. Atlas NAL unit always contains a 16-bit NAL unit header (nal_unit_header()), which indicates among other things the type of the NAL unit (nal_unit_type). The sample code below describes the NAL unit syntax, including the NAL unit header. 
+Atlas NAL unit (nal_unit(NumBytesInNalUnit)) is a byte-aligned syntax structure defined by {{ISO.IEC.23090-5}} to carry atlas data. Atlas NAL unit always contains a 16-bit NAL unit header (nal_unit_header()), which indicates among other things the type of the NAL unit (nal_unit_type). The payload of a NAL unit refers to the NAL unit excluding the NAL unit header. The Atlas NAL unit syntax and semantics are copied here as defined in {{ISO.IEC.23090-5}}.
 
 ~~~
 nal_unit_header(){
@@ -338,19 +345,19 @@ nal_layer_id indicates the identifier of the layer to which an ACL NAL unit belo
 
 nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit. The value of nal_temporal_id_plus1 MUST NOT be equal to 0. (TID)
 
-## Systems and transport interfaces
+## Systems and transport interfaces (informative)
 
-In addition to releasing specifications on V3C {{ISO.IEC.23090-5}} and {{ISO.IEC.23090-12}}, MPEG is conducting further systems level work on file format level to encapsulate compressed V3C content. The seventh edition of the ISOBMFF specification {{ISO.IEC.14496-12}} introduces a new media handler 'volv', intended to support volumetric visual media. It also specifies other structures to enable development of derived specifications detailing how various volumetric visual media may be stored in ISOBMFF.
+In addition to releasing specifications on V3C applications {{ISO.IEC.23090-5}} and {{ISO.IEC.23090-12}}, MPEG conducted further systems level work on file formats to encapsulate compressed V3C content. The seventh edition of the ISOBMFF specification {{ISO.IEC.14496-12}} introduces a new media handler 'volv', intended to support volumetric visual media. It also specifies other structures to enable development of derived specifications detailing how various volumetric visual media may be stored in ISOBMFF.
 
-One of such derived specifications is {{ISO.IEC.23090-10}}, which focuses on defining how V3C content SHOULD be stored in a file and streamed over DASH. To a large extent ISO/IEC 23090-10 focuses on describing how ISOBMFF boxes and syntax elements may be used to store volumetric media, but in some cases new boxes and syntax elements are introduced to accommodate the fundamentally different type of new media. While the specification is not directly relevant for defining RTP payload format for V3C atlas data, it is a useful resource that SHOULD be considered especially when designing ingestion of encoded V3C content into RTP streaming pipelines.
+One of such derived specifications is {{ISO.IEC.23090-10}}, which defines how V3C content can be stored in a file and streamed over DASH. To a large extent ISO/IEC 23090-10 focuses on describing how ISOBMFF boxes and syntax elements may be used to store volumetric media, but in some cases new boxes and syntax elements are introduced to accommodate the fundamentally different type of new media. While the specification is not directly relevant for defining RTP payload format for V3C atlas data, it is a useful resource that may be considered especially when designing ingestion of encoded V3C content into RTP streaming pipelines.
 
-# V3C Atlas RTP payload format
+# V3C atlas RTP payload format
 
 ## General
 
-This section describes details related to V3C atlas RTP payload definitions. Aspects related to RTP header, RTP payload header and general payload structure are considered along with different packetization modes. 
+This section describes details related to V3C atlas RTP payload format definitions. Aspects related to RTP header, RTP payload header and general payload structure are considered along with different packetization modes. 
 
-## RTP Header
+## RTP header
 
 The format of the RTP header is specified in {{RFC3550}} and replicated below in {{fig-RTP-header}} for convenience. This payload format uses the fields of the header in a manner consistent with that specification.
 
@@ -392,7 +399,7 @@ Timestamp (32 bits):
     
 The RTP timestamp is set to the sampling timestamp of the content. A 90 kHz clock rate MUST be used.
 
-If the NAL unit has no timing properties of its own (e.g., parameter set and SEI NAL units), the RTP timestamp MUST be set to the RTP timestamp of the coded picture of the access unit in which case the NAL unit (according to Section 8.4.5.3 of {{ISO.IEC.23090-5}}) is included.
+If the NAL unit has no timing properties of its own (e.g., parameter set and SEI NAL units), the RTP timestamp MUST be set to the RTP timestamp of the coded atlas of the access unit in which the NAL unit (according to Section 8.4.5.3 of {{ISO.IEC.23090-5}}) is included.
 
 Receivers MUST use the RTP timestamp for the display process, even when the bitstream contains atlas frame timing SEI messages as specified in {{ISO.IEC.23090-5}}. 
 
@@ -419,7 +426,7 @@ The first two bytes of the payload of an RTP packet are referred to as the paylo
 
 F: nal_forbidden_zero_bit as specified in {{ISO.IEC.23090-5}} MUST be equal to 0.
 
-NUT: nal_unit_type as specified in {{ISO.IEC.23090-5}} defines the type of the RBSP data structure contained in the NAL unit. NUT value could carry other meaning depending on the RTP packet type.
+NUT: nal_unit_type as specified in {{ISO.IEC.23090-5}} defines the type of the RBSP data structure contained in the NAL unit payload. NUT value could carry other meaning depending on the RTP packet type.
 
 NLI: nal_layer_id as specified in {{ISO.IEC.23090-5}} defines the identifier of the layer to which an ACL NAL unit belongs or the identifier of a layer to which a non-ACL NAL unit applies.
 
@@ -433,11 +440,11 @@ This memo enables transmission of an V3C atlas bitstream over:
 * Multiple RTP streams over a Single media Transport (MRST), or
 * Multiple RTP streams on Multiple media Transports (MRMT).
 
-When in MRST or MRMT, multiple RTP streams may be grouped together as specified in {{RFC5888}} and {{RFC9143}}.
+When in MRST or MRMT, multiple RTP streams MAY be grouped together as specified in {{RFC5888}} and {{RFC9143}}.
 
 SRST or MRST SHOULD be used for point-to-point unicast scenarios, whereas MRMT SHOULD be used for point-to-multipoint multicast scenarios where different receivers require different operation points of the same V3C atlas bitstream, to improve bandwidth utilizing efficiency.
 
-NOTE: A multicast may degrade to a unicast at some point when only one receiver has left. This is a justification of the first "SHOULD" instead of "MUST". There might be scenarios where MRMT is desirable but not possible, e.g., when IP multicast is not deployed in certain network. This is a justification of the second "SHOULD" instead of "MUST".
+NOTE: A multicast may degrade to a unicast at some point when only one receiver is left. This is a justification of the first "SHOULD" instead of "MUST". There might be scenarios where MRMT is desirable but not possible, e.g., when IP multicast is not deployed in a certain network. This is a justification of the second "SHOULD" instead of "MUST".
 
 The transmission mode is indicated by the tx-mode media parameter. If tx-mode is equal to "SRST", SRST MUST be used. Otherwise, if tx-mode is equal to "MRST", MRST MUST be used. Otherwise (tx-mode is equal to "MRMT"), MRMT MUST be used.
 
@@ -459,11 +466,11 @@ The three different payload structures are as follows:
 
 * Fragmentation Unit: Contains a subset of a single NAL unit. This payload structure is specified in {{Fragmentation-unit}}. 
 
-NOTE: (informative) This specification does not limit the size of NAL units encapsulated in NAL unit packets and fragmentation units.  {{ISO.IEC.23090-5}} does not restrict the maximum size of a NAL unit directly either. Instead, a NAL unit sample stream format may be used, which provides flexibility to signal NAL unit size up to UINT64_MAX bytes. 
+NOTE: (informative) This memo does not limit the size of NAL units encapsulated in NAL unit packets and fragmentation units. {{ISO.IEC.23090-5}} does not restrict the maximum size of a NAL unit directly either. Instead, a NAL unit sample stream format may be used, which provides flexibility to signal NAL unit size up to UINT64_MAX bytes. 
 
 ### Single NAL unit packet {#Single-NAL-unit-packet}
 
-Single NAL unit packet contains exactly one NAL unit, and consists of a RTP payload header and following conditional fields: 16-bit DONL and 16-bit v3c-tile-id. The rest of the payload data contain the NAL unit payload data (excluding the NAL unit header). Single NAL unit packet may contain atlas NAL units of the types defined in Table 4 of {{ISO.IEC.23090-5}}. The structure of the single NAL unit packet is shown below in {{fig-single-nal-unit-packet}}.
+Single NAL unit packet contains exactly one NAL unit, and consists of an RTP payload header and following conditional fields: 16-bit DONL and 16-bit v3c-tile-id. The rest of the payload data contain the NAL unit payload data (excluding the NAL unit header). Single NAL unit packet MUST only contain atlas NAL units of the types defined in Table 4 of {{ISO.IEC.23090-5}}. The structure of the single NAL unit packet is shown below in {{fig-single-nal-unit-packet}}.
 
 ~~~
     0                   1                   2                   3
@@ -482,7 +489,7 @@ Single NAL unit packet contains exactly one NAL unit, and consists of a RTP payl
 ~~~
 {: #fig-single-nal-unit-packet title="Single NAL unit packet"}
 
-RTP payload header SHOULD be an exact copy of the NAL unit header of the contained NAL unit.
+RTP payload header MUST be an exact copy of the NAL unit header of the contained NAL unit.
 
 A NAL unit stream composed by de-packetizing single NAL unit packets in RTP sequence number order MUST conform to the NAL unit decoding order, when DONL is not present. 
 
@@ -490,13 +497,13 @@ The DONL field, when present, specifies the value of the 16-bit decoding order n
 
 The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the NAL unit, as signalled in V3C atlas tile header defied in {{ISO.IEC.23090-5}}. If v3c-tile-id-pres is equal to 1 and RTP payload header NUT is in range 0-35, inclusive, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present. 
 
-NOTE: (informative) Only values for NAL unit type (NUT) in range 0-35, inclusive, are allocated for atlas tile layer data, defined in {{ISO.IEC.23090-5}}, which means that NAL unit types outside of the range are not specific to atlas tiles and SHOULD NOT contain v3c-tile-ids.
+NOTE: (informative) Only values for NAL unit type (NUT) in range 0-35, inclusive, are allocated for atlas tile layer data in {{ISO.IEC.23090-5}}.
 
 ### Aggregation packet {#Aggregation-packet}
 
 Aggregation Packets (APs) enable the reduction of packetization overhead for small NAL units, such as most of the non-ACL NAL units, which are often only a few octets in size.
 
-Aggregation packets may wrap multiple NAL units belonging to the same access unit in a single RTP payload. The first two bytes of the AP MUST contain RTP payload header. The NAL unit type (NUT) for the NAL unit header contained in the RTP payload header MUST be equal to 56, which falls in the unspecified range of the NAL unit types defined in {{ISO.IEC.23090-5}}. AP may contain a conditional v3c-tile-id field. AP MUST contain two or more aggregation units. The structure of AP is shown in {{fig-aggregation-packet}}.
+Aggregation packets MAY be used wrap multiple NAL units belonging to the same access unit in a single RTP payload. The first two bytes of the AP MUST contain RTP payload header. The NAL unit type (NUT) for the NAL unit header contained in the RTP payload header MUST be equal to 56, which falls in the unspecified range of the NAL unit types defined in {{ISO.IEC.23090-5}}. AP MAY contain a conditional v3c-tile-id field. AP MUST contain two or more aggregation units. The structure of AP is shown in {{fig-aggregation-packet}}.
 
 ~~~
     0                   1                   2                   3
@@ -515,7 +522,7 @@ Aggregation packets may wrap multiple NAL units belonging to the same access uni
 
 The fields in the payload header are set as follows. The F bit MUST be equal to 0 if the F bit of each aggregated NAL unit is equal to zero; otherwise, it MUST be equal to 1. The NUT field MUST be equal to 56. The value of NLI MUST be equal to the lowest value of NLI of all the aggregated NAL units. The value of TID MUST be the lowest value of TID of all the aggregated NAL units.
 
-All ACL NAL units in an aggregation packet have the same TID value since they belong to the same access unit. However, the packet may contain non-ACL NAL units for which the TID value in the NAL unit header may be different than the TID value of the ACL NAL units in the same AP.
+All ACL NAL units in an aggregation packet have the same TID value since they belong to the same access unit. However, the packet MAY contain non-ACL NAL units for which the TID value in the NAL unit header MAY be different than the TID value of the ACL NAL units in the same AP.
 
 The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all ACL NAL units in the AP. If v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present.
 
@@ -552,13 +559,13 @@ Fragmentation Units (FUs) are introduced to enable fragmenting a single NAL unit
 
 When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fragmented NAL unit. Aggregation packets MUST NOT be fragmented. FUs MUST NOT be nested; i.e., an FU MUST NOT contain a subset of another FU. The RTP header timestamp of an RTP packet carrying an FU is set to the NALU-time of the fragmented NAL unit.
 
-A FU consists of a RTP payload header with NUT equal to 58, an 8-bit FU header, a conditional 16-bit DONL field, a conditional 16-bit v3c-tile-id field and an FU payload. The structure of an FU is illustrated below in {{fig-fragmentation-unit}}. 
+A FU consists of an RTP payload header with NUT equal to 57, an 8-bit FU header, a conditional 16-bit DONL field, a conditional 16-bit v3c-tile-id field and an FU payload. The structure of an FU is illustrated below in {{fig-fragmentation-unit}}. 
 
 ~~~
     0                   1                   2                   3       
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=58)  |   FU header   |  DONL (cond)  |
+    |  RTP payload header (NUT=57)  |   FU header   |  DONL (cond)  |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
     |  DONL (cond)  |    v3c-tile-id (cond)         |               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
@@ -571,7 +578,7 @@ A FU consists of a RTP payload header with NUT equal to 58, an 8-bit FU header, 
 ~~~
 {: #fig-fragmentation-unit title="Fragmentation Unit"}
 
-The fields in the RTP payload header are set as follows. The NUT field MUST be equal to 58. The rest of the fields MUST be equal to the fragmented NAL unit.
+The fields in the RTP payload header are set as follows. The NUT field MUST be equal to 57. The rest of the fields MUST be equal to the fragmented NAL unit.
 
 The FU header consists of an S bit, an E bit, and a 6-bit FUT field. The structure of FU header is illustrated below in {{fig-fragmentation-unit-header}}.
 
@@ -602,7 +609,61 @@ The NAL unit header of the fragmented NAL unit is not included as such in the FU
 
 If an FU is lost, the receiver SHOULD discard all following fragmentation units in transmission order corresponding to the same fragmented NAL unit, unless the decoder in the receiver is known to be prepared to gracefully handle incomplete NAL units.
 
-## Decoding Order Number
+### Example of fragmentation unit (informative)
+
+This example illustrates how fragmentation unit may be used to divide one NAL unit into two RTP packets. The {{fig-fragmentation-unit-packet-1}} depicts the structure of the first packet with the first part of the fragmented NAL unit.
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           timestamp                           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |           synchronization source (SSRC) identifier            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            contributing source (CSRC) identifiers             |
+    |                             ....                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |  RTP payload header (NUT=57)  |1|0|    FUT    |               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
+    |                                                               |
+    |                          FU payload                           |
+    |                                                               |
+    |                                                               |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+{: #fig-fragmentation-unit-packet-1 title="First packet of fragmented NAL unit"}
+
+The {{fig-fragmentation-unit-packet-2}} visualizes the structure of the second packet with the rest of the fragmented NAL unit. 
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                           timestamp                           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |           synchronization source (SSRC) identifier            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |            contributing source (CSRC) identifiers             |
+    |                             ....                              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |  RTP payload header (NUT=57)  |0|1|    FUT    |               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
+    |                                                               |
+    |                          FU payload                           |
+    |                                                               |
+    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                               :...OPTIONAL RTP padding        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+{: #fig-fragmentation-unit-packet-2 title="Second packet of fragmented NAL unit"}
+
+## Decoding order number
 
 For each atlas NAL unit, the variable AbsDon is derived, representing the decoding order number that is indicative of the NAL unit decoding order. Let NAL unit n be the n-th NAL unit in transmission order within an RTP stream. 
 
@@ -610,13 +671,21 @@ If sprop-max-don-diff is equal to 0 for all the RTP streams carrying the V3C atl
 
 Otherwise (sprop-max-don-diff is greater than 0 for any of the RTP streams), AbsDon\[n] is derived as follows, where DON\[n] is the value of the variable DON for NAL unit n:
 
-* If n is equal to 0 (i.e., NAL unit n is the very first NAL unit in transmission order), AbsDon\[0] is set equal to DON\[0].
-* Otherwise (n is greater than 0), the following applies for derivation of AbsDon\[n]:
-  * If DON\[n] == DON\[n-1], AbsDon\[n] = AbsDon\[n-1]
-  * If (DON\[n] > DON\[n-1] and DON\[n] - DON\[n-1] < 32768), AbsDon\[n] = AbsDon\[n-1] + DON\[n] - DON\[n-1]
-  * If (DON\[n] < DON\[n-1] and DON\[n-1] - DON\[n] >= 32768), AbsDon\[n] = AbsDon\[n-1] + 65536 - DON\[n-1] + DON\[n]
-  * If (DON\[n] > DON\[n-1] and DON\[n] - DON\[n-1] >= 32768), AbsDon\[n] = AbsDon\[n-1] - (DON\[n-1] + 65536 - DON\[n])
-  * If (DON\[n] < DON\[n-1] and DON\[n-1] - DON\[n] < 32768), AbsDon\[n] = AbsDon\[n-1] - (DON\[n-1] - DON\[n])
+~~~
+  If (n == 0)
+    AbsDon[n] = DON[0]
+  Else
+    If (DON[n] == DON[n-1]) 
+      AbsDon[n] = AbsDon[n-1]
+    If (DON[n] > DON[n-1] and DON[n] - DON[n-1] < 32768) 
+      AbsDon[n] = AbsDon[n-1] + DON[n] - DON[n-1]
+    If (DON[n] < DON[n-1] and DON[n-1] - DON[n] >= 32768) 
+      AbsDon[n] = AbsDon[n-1] + 65536 - DON[n-1] + DON[n]
+    If (DON[n] > DON[n-1] and DON[n] - DON[n-1] >= 32768) 
+      AbsDon[n] = AbsDon[n-1] - (DON[n-1] + 65536 - DON[n])
+    If (DON[n] < DON[n-1] and DON[n-1] - DON[n] < 32768)
+      AbsDon[n] = AbsDon[n-1] - (DON[n-1] - DON[n])
+~~~
 
 For any two NAL units m and n, the following applies:
 
@@ -637,90 +706,59 @@ The general concept behind de-packetization is to get the NAL units out of the R
 
 The de-packetization process is implementation dependent. Therefore, the following de-packetization rules SHOULD be taken as an example.
 
-* All normal RTP mechanisms related to buffer management apply. In particular, duplicated or outdated RTP packets (as indicated by the RTP sequences number and the RTP timestamp) are removed. To determine the exact time for decoding, factors such as a possible intentional delay to allow for proper inter-stream synchronization must be factored in.
-* NAL units with NAL unit type values in the range of 0 to 55, inclusive, may be passed to the decoder. NAL-unit-like structures with NAL unit type values in the range of 55 to 63, inclusive, MUST NOT be passed to the decoder.
-* When sprop-max-don-diff is equal to 0 for the received RTP stream, the NAL units carried in the RTP stream may be directly passed to the decoder in their transmission order, which is identical to their decoding order.
+* All normal RTP mechanisms related to buffer management apply. In particular, duplicated or outdated RTP packets (as indicated by the RTP sequence number and the RTP timestamp) are removed. To determine the exact time for decoding, factors such as a possible intentional delay to allow for proper inter-stream synchronization must be factored in.
+* NAL units with NAL unit type values in the range of 0 to 55, inclusive, MAY be passed to the decoder. NAL-unit-like structures with NAL unit type values in the range of 55 to 63, inclusive, MUST NOT be passed to the decoder.
+* When sprop-max-don-diff is equal to 0 for the received RTP stream, the NAL units carried in the RTP stream MAY be directly passed to the decoder in their transmission order, which is identical to their decoding order.
 * When sprop-max-don-diff is greater than 0 for any of the received RTP streams, the received NAL units need to be arranged into decoding order before handing them over to the decoder.
 * For further de-packetization examples, the reader is referred to Section 6 of {{RFC7798}}.
 
-# Payload Examples
+# Payload format parameters
 
-## General
+This section specifies the optional parameters. A mapping of the parameters into the Session Description Protocol (SDP) {{RFC8866}} is also provided for applications that use SDP. Equivalent parameters could be defined elsewhere for use with control protocols that do not use SDP.
 
-Examples describing the different payload formats is provided. 
+## Media type registration {#Media-type-definition}
 
-## V3C fragmentation unit
-
-This example illustrates how fragmentation unit may be used to divide one NAL unit into to RTP packets. The {{fig-fragmentation-unit-packet-1}} illustrates the structure of the first packet with the first part of the fragmented NAL unit.
-
-~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |V=2|P|X|  CC   |M|     PT      |       sequence number         |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                           timestamp                           |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |           synchronization source (SSRC) identifier            |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |            contributing source (CSRC) identifiers             |
-    |                             ....                              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=58)  |1|0|    FUT    |               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
-    |                                                               |
-    |                          FU payload                           |
-    |                                                               |
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-{: #fig-fragmentation-unit-packet-1 title="First packet of fragmented NAL unit"}
-
-The {{fig-fragmentation-unit-packet-2}} illustrates the structure of the second packet with the rest of the fragmented NAL unit. 
-
-~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |V=2|P|X|  CC   |M|     PT      |       sequence number         |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                           timestamp                           |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |           synchronization source (SSRC) identifier            |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |            contributing source (CSRC) identifiers             |
-    |                             ....                              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=58)  |0|1|    FUT    |               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
-    |                                                               |
-    |                          FU payload                           |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               :...OPTIONAL RTP padding        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-{: #fig-fragmentation-unit-packet-2 title="Second packet of fragmented NAL unit"}
-
-# Payload Format Parameters
-
-This section specifies the parameters that MAY be used to select optional features of the payload format and certain features or properties of the bitstream or the RTP stream. The parameters are specified here as part of the media type registration for the V3C codec. A mapping of the parameters into the Session Description Protocol (SDP) {{RFC8866}} is also provided for applications that use SDP. Equivalent parameters could be defined elsewhere for use with control protocols that do not use SDP.
-
-## Media Type Definition
+The receiver MUST ignore any parameter unspecified in this memo.
 
 Type name: application
 
 Subtype name: v3c
 
+Required parameters: N/A
+
 Optional parameters: v3c-unit-header, v3c-unit-type, v3c-vps-id, v3c-atlas-id, v3c-attr-idx, v3c-attr-part-idx, v3c-map-idx, v3c-aux-video-flag, v3c-parameter-set, v3c-tile-id, v3c-tile-id-pres, v3c-atlas-data, v3c-common-atlas-data, v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, tx-mode and sprop-max-don-diff. 
 
+Encoding considerations: This type is only defined for transfer via RTP {{RFC3550}}.
+
+Security considerations: Please see {{Security-considerations}}.
+
+Interoperability considerations: N/A
+
+Published specification: Please refer to {{ISO.IEC.23090-5}}
+
+Applications that use this media type: Any application that relies on V3C-based media services over RTP
+
+Additional information: N/A
+
+Person & email address to contact for further information: 
+
+Intended usage: COMMON
+
+Restrictions on usage: N/A
+
+Author: See Authors' Addresses section of this memo.
+
+Change controller: IETF <avtcore@ietf.org>
+
+Provisional registration? (standards tree only): No
+
+## Optional parameters definition
 
 ~~~
     v3c-unit-header: 
 ~~~
 
-provides a V3C unit header bytes defined in  {{ISO.IEC.23090-5}}. The value contains base16 {{RFC4648}} (hexadecimal) representation of the 4 bytes of V3C unit header.
+provides a V3C unit header bytes defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the 4 bytes of V3C unit header.
 
 ~~~
     v3c-unit-type: 
@@ -768,7 +806,7 @@ v3c-aux-video-flag provides a value corresponding to vuh_auxiliary_video_flag de
     v3c-parameter-set: 
 ~~~
 
-v3c-parameter-set provides V3C parameter set bytes as defined in {{ISO.IEC.23090-5}}. The value contains base16 {{RFC4648}} (hexadecimal) representation of the V3C parameter set bytes.
+v3c-parameter-set provides V3C parameter set bytes as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the V3C parameter set bytes.
 
 ~~~
     v3c-tile-id:
@@ -786,20 +824,20 @@ v3c-tile-id-pres indicates that the RTP packets contain v3c-tile-id field.
     v3c-atlas-data:
 ~~~
 
-v3c-atlas-data may be used to convey any atlas data NAL units of the V3C atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the atlas NAL units as specified in  {{ISO.IEC.23090-5}}. 
-The NAL units SHOULD be encoded as base16 {{RFC4648}} (hexadecimal) representations.
+v3c-atlas-data MAY be used to convey any atlas data NAL units of the V3C atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the atlas NAL units as specified in {{ISO.IEC.23090-5}}. 
+The NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
 
 ~~~
     v3c-common-atlas-data:
 ~~~
 
-v3c-common-atlas-data may be used to convey common atlas data NAL units of the V3C common atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the common atlas NAL units (i.e., NAL_CASPS and NAL_CAF_IDR) as specified in {{ISO.IEC.23090-5}}. The NAL units SHOULD be encoded as base16 {{RFC4648}} (hexadecimal) representations.
+v3c-common-atlas-data MAY be used to convey common atlas data NAL units of the V3C common atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the common atlas NAL units (i.e., NAL_CASPS and NAL_CAF_IDR) as specified in {{ISO.IEC.23090-5}}. The NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
 
 ~~~
     v3c-sei:
 ~~~
 
-v3c-sei may be used to convey SEI NAL units of V3C atlas and common atlas sub bitstreams for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of SEI NAL units (i.e., NAL_PREFIX_NSEI and NAL_SUFFIX_NSEI, NAL_PREFIX_ESEI, NAL_SUFFIX_ESEI) as specified in  {{ISO.IEC.23090-5}}. The SEI NAL units SHOULD be encoded as base16 {{RFC4648}} (hexadecimal) representations.
+v3c-sei MAY be used to convey SEI NAL units of V3C atlas and common atlas sub bitstreams for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of SEI NAL units (i.e., NAL_PREFIX_NSEI and NAL_SUFFIX_NSEI, NAL_PREFIX_ESEI, NAL_SUFFIX_ESEI) as specified in  {{ISO.IEC.23090-5}}. The SEI NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
 
 ~~~
     v3c-ptl-level-idc: 
@@ -861,98 +899,76 @@ The value of sprop-max-don-diff MUST be an integer in the range of 0 to 32767, i
 
 When not present, the value of sprop-max-don-diff is inferred to be equal to 0.
 
-Encoding considerations:
+# Congestion control considerations
 
-This media type is framed and binary; see Section 4.8 in {{RFC6838}}.
+Congestion control for RTP SHALL be used in accordance with {{RFC3550}}, and with any applicable RTP profile: e.g., {{RFC3551}}. An additional requirement if best-effort service is being used is users of this payload format MUST monitor packet loss to ensure that the packet loss rate is within acceptable parameters.
 
-Security considerations:
-
-Please see {{Security-considerations}}.
-
-Interoperability considerations: N/A
-
-Published specification: 
-
-Applications that use this media type: N/A
-
-Additional information: N/A
-
-Person & email address to contact for further information: 
-
-Intended usage: COMMON
-
-Restrictions on usage: N/A
-
-Author: See Authors' Addresses section of this memo.
-
-Change controller: IETF Payload working group delegated from the IESG.
-
-Provisional registration? (standards tree only): No
-
-# Congestion Control Considerations
-
-This section is to describe the possibility to vary the bitrate as a response to congestion. Below is also a proposal for an initial text that reference RTP and profiles definition of congestion control.
-
-Congestion control for RTP SHALL be used in accordance with {{RFC3550}}, and with any applicable RTP profile: e.g., {{RFC3551}}.  An additional requirement if best-effort service is being used is users of this payload format MUST monitor packet loss to ensure that the packet loss rate is within acceptable parameters. 
+Simple bitrate adaptation for congestion control can be achieved when real-time coding is used for V3C video components, where quality parameter can be adaptively tuned. Video coding specifications MAY define further adaptation techniques.
 
 Circuit Breakers {{RFC8083}} is an update to RTP {{RFC3550}} that defines criteria for when one is required to stop sending RTP Packet Streams. The circuit breakers is to be implemented and followed.
 
-# Session Description Protocol {#Session-Description-Protocol}
+# Session description protocol {#Session-Description-Protocol}
 
-The mapping of above defined payload format media type is mapped to fields in the Session Description Protocol (SDP) according to {{RFC8866}}.
+The mapping of above defined payload format media type to the corresponding fields in the Session Description Protocol (SDP) is done according to {{RFC8866}}.
 
 ## Mapping of payload type parameters to SDP
 
 ### For V3C atlas components
 
 * The media name in the "m=" line of SDP MUST be application.
-* The encoding name in the "a=rtpmap" line of SDP must be v3c
+* The encoding name in the "a=rtpmap" line of SDP MUST be v3c
 * The clock rate in the "a=rtpmap" line MUST be 90000.
 * The OPTIONAL parameters v3c-unit-header, v3c-unit-type, v3c-vps-id, v3c-atlas-id, v3c-attr-idx, v3c-attr-part-idx, v3c-map-idx, v3c-aux-video-flag, sprop-max-don-diff, v3c-parameter-set, v3c-atlas-data, v3c-common-atlas-data, v3c-sei, v3c-tile-id, v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
 
-An example of media representation in SDP is as follows:
+An example of media representation corresponding to atlas data component (V3C_AD) in SDP is as follows:
 
 ~~~
     m=application 49170 RTP/AVP 98
     a=rtpmap:98 v3c/90000
-    a=fmtp:98 v3c-unit-header=08000000; // V3C_AD
+    a=fmtp:98 v3c-unit-header=CAAAAA==;
               v3c-ptl-tier-flag=1
 ~~~
 
 ### For V3C video components
 
 * The media name in the "m=" line of SDP MUST be video.
-* The encoding name in the "a=rtpmap" line of SDP can be any video subtype, e.g., avc, hevc, vvc etc.
+* The encoding name in the "a=rtpmap" line of SDP can be any video subtype, e.g., H.264, H.265, H.266 etc.
 * The clock rate in the "a=rtpmap" line MUST be 90000.
 * The OPTIONAL parameters v3c-unit-header, v3c-unit-type, v3c-vps-id, v3c-atlas-id, v3c-attr-idx, v3c-attr-part-idx, v3c-map-idx, v3c-aux-video-flag, sprop-max-don-diff, v3c-parameter-set, v3c-atlas-data, v3c-common-atlas-data, v3c-sei, v3c-tile-id, v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
-* The OPTIONAL parameters may include any optional parameters from the respective video payload specifications. 
+* The OPTIONAL parameters MAY include any optional parameters from the respective video payload specifications. 
 
-An example of media representation corresponding to occupancy component in SDP is as follows:
+An example of media representation corresponding to occupancy video component (V3C_OVD) in SDP is as follows:
 
 ~~~
     m=video 49170 RTP/AVP 99
     a=rtpmap:99 H265/90000
     a=fmtp:99 sprop-max-don-diff=0;
-              v3c-unit-header=10000000
+              v3c-unit-header=EAAAAA==
 ~~~
 
-When v3c-unit-header or v3c-unit-type indicate V3C unit type V3C_PVD, v3c-parameter-set, v3c-atlas-data or v3c-common-atlas-data may be signalled along the video stream. When v3c-parameter-set, v3c-atlas-data or v3c-common-atlas-data are present it indicates that the provided data is static for the whole duration of the stream.
+When v3c-unit-header or v3c-unit-type indicate V3C unit type V3C_PVD, v3c-parameter-set, v3c-atlas-data or v3c-common-atlas-data MAY be signalled along the video stream. When v3c-parameter-set, v3c-atlas-data or v3c-common-atlas-data are present it indicates that the provided data is static for the whole duration of the stream.
 
 When v3c-parameter-set, v3c-atlas-data or v3c-common-atlas-data are signalled along the video stream it is expected the respective v3c-parameter-set, v3c-atlas-data or v3c-common-atlas-data remain static for the duration of the stream.
 
-An example of media representation in SDP is as follows:
+Below is an example of media representation corresponding to packed video component (V3C_PVD), where V3C parameter set, atlas data and common atlas data are carried out-of-band in SDP.
 
 ~~~
     m=video 49170 RTP/AVP 99
     a=rtpmap:99 H265/90000
-    a=fmtp:99 v3c-unit-header=28000000;
-              v3c-parameter-set=F6F0093992;
-              v3c-atlas-data=ABCA,5D5A,68
+    a=fmtp:99 packetization-mode=1;
+              v3c-unit-header=KAAAAA==;
+              v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM
+              5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
+              v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABa
+              AAAAAAA+;
+              v3c-common-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8
+              oqfhC5JQVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA=
+              =
 ~~~
 
-## Grouping Framework
+## Grouping framework {#grouping-framework}
 
-Different V3C components can be represented by their own respective RTP streams. A grouping tool, as defined in {{RFC5888}}, may be extended to support V3C grouping.
+Different V3C components MAY be represented by their own respective RTP streams. A grouping tool, as defined in {{RFC5888}}, is extended to support V3C grouping.
 
 Group attribute with V3C type is provided to allow application to identify "m" lines that belong to the same V3C bitstream. Grouping type V3C MUST be used with the group attribute. The tokens that follow are mapped to 'mid'-values of individual media lines in the SDP. 
 
@@ -960,7 +976,7 @@ Group attribute with V3C type is provided to allow application to identify "m" l
     a=group:V3C <tokens> <v3c specific session-level parameters>
 ~~~
 
-The V3C grouping type attribute related v3c-specific session level parameters can include the following optional information:
+The V3C grouping type attribute related v3c-specific session level parameters MAY include the following optional information:
 
 ~~~
     v3c-parameter-set=<value>
@@ -971,109 +987,122 @@ The V3C grouping type attribute related v3c-specific session level parameters ca
 
 When signalled as a session level parameter, the data is considered to be static for the duration of the stream.
 
-The following example shows an SDP including four media lines, three describing V3C video components and one V3C atlas component. All the media lines are grouped under one V3C group which provides the V3C parameter set.
+The following example shows an SDP including four media lines, three describing V3C video components (PT:96=occupancy, PT:97=geometry, PT:98=attribute) and one V3C atlas component (PT:100). All the media lines are grouped under one V3C group which provides the V3C parameter set.
 
 ~~~
     ...
-    a=group:V3C 1 2 3 4 v3c-parameter-set=AF6F00939921878 
+    a=group:V3C 1 2 3 4 
+      v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
     m=video 40000 RTP/AVP 96
     a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-header=10000000 // occupancy
+    a=fmtp:96 v3c-unit-header=EAAAAA==
     a=mid:1
     m=video 40002 RTP/AVP 97 
     a=rtpmap:97 H264/90000
-    a=fmtp:97 v3c-unit-header=18000000 // geometry
+    a=fmtp:97 v3c-unit-header=GAAAAA==
     a=mid:2
     m=video 40004 RTP/AVP 98 
     a=rtpmap:98 H264/90000
-    a=fmtp:98 v3c-unit-header=20000000 // attribute
+    a=fmtp:98 v3c-unit-header=IAAAAA==
     a=mid:3
     m=application 40008 RTP/AVP 100 
     a=rtpmap:100 v3c/90000 
-    a=fmtp:100 v3c-unit-header=08000000; // atlas
+    a=fmtp:100 v3c-unit-header=CAAAAA==
     a=mid:4
 ~~~
 
-V3C group attribute type can be used as follows to indicate different V3C components and associate static atlas data with them.
+V3C group attribute type can be used as follows to indicate different V3C components (PT:96=occupancy, PT:97=geometry, PT:98=attribute) and associate static atlas data with them.
 
 ~~~
     ...
-    a=group:v3c 1 2 3 v3c-parameter-set=AF6F00939921878;
-                        v3c-atlas-data=ABCA,5D5D,68
+    a=group:v3c 1 2 3 
+      v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==;
+      v3c-atlas-data=SAGAHgQAhyo7lgAAoCFA,SgHmIA==,LgFoDIA8EAWiAPAAFoCg
+      AAAAGALRAHgAC0BQAAAAiAPBgDwABaAoAAAAhwB4AAtAUAAAAYHw
     m=video 40000 RTP/AVP 96
     a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-header=10000000; // occupancy
+    a=fmtp:96 v3c-unit-header=EAAAAA==
     a=mid:1
     m=video 40002 RTP/AVP 97 
     a=rtpmap:97 H264/90000
-    a=fmtp:96 v3c-unit-header=18000000; // geometry
+    a=fmtp:96 v3c-unit-header=GAAAAA==
     a=mid:2
     m=video 40004 RTP/AVP 98 
     a=rtpmap:98 H264/90000
-    a=fmtp:96 v3c-unit-header=20000000; // attribute
+    a=fmtp:96 v3c-unit-header=IAAAAA==
     a=mid:3
 ~~~
 
-The following example describes how every v3c video component is packed into a single stream and associated with static atlas data.
+The following example describes how every V3C video component is packed into a single stream (V3C_PVD) and associated with static atlas data.
 
 ~~~
     ...
     m=video 40000 RTP/AVP 96
     a=rtpmap:96 H265/90000
-    a=fmtp:96 v3c-unit-header=28000000; // packed video
-              v3c-parameter-set=AF6F00939921878;
-              v3c-atlas-data=ABCA,5D5D,68
+    a=fmtp:96 v3c-unit-header=KAAAAA==;
+              v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM
+              5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
+              v3c-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8oqfhC5J
+              QVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA==
     a=mid:1
 ~~~
 
-The example below describes how content with two atlases can be signalled as separate streams. 
+The example below describes how content with two atlases can be signalled as separate streams. V3C parameter set and common atlas data are carried as group attribute parameters. PT equal to 96, 97, 98 and 100 correspond to occupancy, geometry and attribute video component as well as atlas data component for atlas zero. PT equal to 101, 102, 103 and 104 correspond to respective components for atlas one. 
 
 ~~~
     ...
-    a=group:V3C 1 2 3 4 5 6 7 8 v3c-parameter-set=AF6F00939921878;
-                                v3c-common-atlas-data=AFFA,0110;
+    a=group:V3C 1 2 3 4 5 6 7 8 
+      v3c-parameter-set=AAUH/AAAP/zwAAABAADwIAWhBwAAOADjgQAADgAA8CAFoQc
+      AADgA44EAAA6AkAgABRIA=;
+      v3c-common-atlas-data=YAEHgFA=,YgEAMAAAa+96Z5v6VP1D+P7LzRsbWDJ/yz
+      +ALzMZNfvCg2389Kjd+d6fZyM6QZBfhrDW3K0vaP2Rr8L+gLAq/ny3wAzs9veiXEj
+      jS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9UCodqj
+      LwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwCCf4Fno
+      gvB+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZoCmZmd
+      A=
     m=video 40000 RTP/AVP 96
     a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-header=10000000 // occupancy, atlas 0
+    a=fmtp:96 v3c-unit-header=EAAAAA==
     a=mid:1
     m=video 40002 RTP/AVP 97 
     a=rtpmap:97 H264/90000
-    a=fmtp:97 v3c-unit-header=18000000 // geometry, atlas 0
+    a=fmtp:97 v3c-unit-header=GAAAAA==
     a=mid:2
     m=video 40004 RTP/AVP 98 
     a=rtpmap:98 H264/90000
-    a=fmtp:98 v3c-unit-header=20000000 // attribute, atlas 0
+    a=fmtp:98 v3c-unit-header=IAAAAA==
     a=mid:3
     m=application 40008 RTP/AVP 100 
     a=rtpmap:100 v3c/90000 
-    a=fmtp:100 v3c-unit-header=08000000; // atlas 0
+    a=fmtp:100 v3c-unit-header=CAAAAA==
     a=mid:4
     m=video 40010 RTP/AVP 101
     a=rtpmap:101 H264/90000
-    a=fmtp:101 v3c-unit-header=10020000 // occupancy, atlas 1
+    a=fmtp:101 v3c-unit-header=EAIAAA==
     a=mid:5
     m=video 40012 RTP/AVP 102
     a=rtpmap:102 H264/90000
-    a=fmtp:102 v3c-unit-header=18020000 // geometry, atlas 1
+    a=fmtp:102 v3c-unit-header=GAIAAA==
     a=mid:6
     m=video 40014 RTP/AVP 103 
     a=rtpmap:103 H264/90000
-    a=fmtp:103 v3c-unit-header=20020000 // attribute, atlas 1
+    a=fmtp:103 v3c-unit-header=IAIAAA==
     a=mid:7
     m=application 40018 RTP/AVP 104 
     a=rtpmap:104 v3c/90000 
-    a=fmtp:104 v3c-unit-header=08020000; // V3C_AD, atlas 1
+    a=fmtp:104 v3c-unit-header=CAIAAA==
     a=mid:8
 ~~~
 
-## Offer/Answer Considerations
+## Offer and answer considerations
 
-An example of offer which only sends V3C content. The following example contains video components at three different versions.
+An example of offer which only sends V3C content. The following example contains video components as three different versions (H.264, H.265, H.266). Further differences between the alternatives would be signaled as part of the media attribute parameters, as is the practice with regular video streams. 
 
 ~~~
     ...
-    a=group:v3c 1 2 3 4 v3c-ptl-level-idc=10;
-                        v3c-parameter-set=AF6F00939921878 
+    a=group:v3c 1 2 3 4 
+      v3c-ptl-level-idc=60;
+      v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
     m=video 40000 RTP/AVP 96 97 98
     a=rtpmap:96 H264/90000
     a=rtpmap:97 H265/90000
@@ -1132,7 +1161,8 @@ An example offer, which allows bundling different V3C components on one stream, 
 ~~~
     ...
     a=group:BUNDLE 1 2 3 4
-    a=group:v3c 1 2 3 4 v3c-parameter-set=AF6F00939921878 
+    a=group:v3c 1 2 3 4 
+      v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
     m=video 40000 RTP/AVP 96
     a=rtpmap:96 H264/90000
     a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
@@ -1181,20 +1211,29 @@ An example answer, which accepts bundling of different V3C components.
     a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
 ~~~
 
-## Declarative SDP Considerations
+## Declarative SDP considerations
 
-Placeholder
+When V3C content over RTP is offered with SDP in a declarative style, the parameters capable of indicating both bitstream properties as well as receiver capabilities are used to indicate only bitstream properties. For example, in this case, the parameters  v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc and v3c-ptl-rec-idc declare the values used by the bitstream, not the capabilities for receiving bitstreams.
 
-#  IANA Considerations
+A receiver of the SDP is required to support all parameters and values of the parameters provided; otherwise, the receiver MUST reject or not participate in the session. It falls on the creator of the session to use values that are expected to be supported by the receiving application.
 
-Placeholder
+# IANA considerations
 
-# Security Considerations {#Security-considerations}
+A new media type will be registered with IANA; see Section {{Media-type-definition}}.
+
+Furthermore new group type (V3C) for the group attribute will be registered as defined in {{grouping-framework}}. This document registers the semantics in {{table-v3c-group-type}} with IANA in the "Semantics for the 'group' SDP Attribute" subregistry (under the "Session Description Protocol (SDP) Parameters" registry):
+
+| Semantics | Token | Mux Category | Reference |
+| V3C grouping | V3C | NORMAL | "this memo" |
+{: #table-v3c-group-type title="Additional semantics for V3C SDP group type"}
+
+NOTE: (informative) "this memo" to be replaced wit the RFC number, once it becomes available.
+
+# Security considerations {#Security-considerations}
 
 RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification {{RFC3550}}, and in any applicable RTP profile such as RTP/AVP {{RFC3551}}, RTP/AVPF {{RFC4585}}, RTP/SAVP {{RFC3711}}, or RTP/SAVPF {{RFC5124}}. However, as "Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution" {{RFC7202}} discusses, it is not an RTP payload format's responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lays on anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in "Options for Securing RTP Sessions" {{RFC7201}}. Applications SHOULD use one or more appropriate strong security mechanisms. The rest of this Security Considerations section discusses the security impacting properties of the payload format itself.
 
 This RTP payload format and its media decoder do not exhibit any significant non-uniformity in the receiver-side computational complexity for packet processing, and thus are unlikely to pose a denial-of-service threat due to the receipt of pathological data. Nor does the RTP payload format contain any active content.
-
 
 --- back
 

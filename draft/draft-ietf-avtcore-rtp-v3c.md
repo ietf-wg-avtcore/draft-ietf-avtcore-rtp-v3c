@@ -279,15 +279,19 @@ v3c_unit_header( ) {
     unsigned int(4) vuh_map_index;
     unsigned int(1) vuh_auxiliary_video_flag;
   } 
-  if( vuh_unit_type == V3C_GVD ) {	
+  else if( vuh_unit_type == V3C_GVD ) {	
     unsigned int(4) vuh_map_index;
     unsigned int(1) vuh_auxiliary_video_flag;
     bit(12) vuh_reserved_zero_12bits;
   } 
-  if( vuh_unit_type == V3C_OVD || vuh_unit_type == V3C_AD || 
+  else if( vuh_unit_type == V3C_OVD || vuh_unit_type == V3C_AD || 
       vuh_unit_type == V3C_PVD) {	
     bit(17) vuh_reserved_zero_17bits;
-  } else {	
+  }
+  else if( vuh_unit_type == V3C_CAD ) {
+    bit(23) vuh_reserved_zero_23bits;
+  }
+  else {
     bit(27) vuh_reserved_zero_27bits;
   }
 }

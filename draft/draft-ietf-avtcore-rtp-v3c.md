@@ -187,7 +187,7 @@ visual volumetric video-based coding  parameter set: syntax structure containing
 
 volumetric frame: set of 3D points specified by their cartesian coordinates and zero or more corresponding sets of attributes at a particular time instance.
 
-## Abbreviations {#abbreaviations}
+## Abbreviations {#abbreviations}
 
 ACL     atlas coding layer
 

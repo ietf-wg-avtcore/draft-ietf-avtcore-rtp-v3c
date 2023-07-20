@@ -187,7 +187,7 @@ visual volumetric video-based coding  parameter set: syntax structure containing
 
 volumetric frame: set of 3D points specified by their cartesian coordinates and zero or more corresponding sets of attributes at a particular time instance.
 
-## Abbreviations {#abbreaviations}
+## Abbreviations {#abbreviations}
 
 ACL     atlas coding layer
 
@@ -279,15 +279,19 @@ v3c_unit_header( ) {
     unsigned int(4) vuh_map_index;
     unsigned int(1) vuh_auxiliary_video_flag;
   } 
-  if( vuh_unit_type == V3C_GVD ) {	
+  else if( vuh_unit_type == V3C_GVD ) {	
     unsigned int(4) vuh_map_index;
     unsigned int(1) vuh_auxiliary_video_flag;
     bit(12) vuh_reserved_zero_12bits;
   } 
-  if( vuh_unit_type == V3C_OVD || vuh_unit_type == V3C_AD || 
+  else if( vuh_unit_type == V3C_OVD || vuh_unit_type == V3C_AD || 
       vuh_unit_type == V3C_PVD) {	
     bit(17) vuh_reserved_zero_17bits;
-  } else {	
+  }
+  else if( vuh_unit_type == V3C_CAD ) {
+    bit(23) vuh_reserved_zero_23bits;
+  }
+  else {
     bit(27) vuh_reserved_zero_27bits;
   }
 }
@@ -495,7 +499,7 @@ A NAL unit stream composed by de-packetizing single NAL unit packets in RTP sequ
 
 The DONL field, when present, specifies the value of the 16-bit decoding order number of the contained NAL unit. If sprop-max-don-diff is greater than 0 for any of the RTP streams, the DONL field MUST be present, and the variable DONL for the contained NAL unit is derived as equal to the value of the DONL field. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams), the DONL field MUST NOT be present.
 
-The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the NAL unit, as signalled in V3C atlas tile header defied in {{ISO.IEC.23090-5}}. If v3c-tile-id-pres is equal to 1 and RTP payload header NUT is in range 0-35, inclusive, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present. 
+The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the NAL unit, as signalled in V3C atlas tile header defined in {{ISO.IEC.23090-5}}. If v3c-tile-id-pres is equal to 1 and RTP payload header NUT is in range 0-35, inclusive, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present. 
 
 NOTE: (informative) Only values for NAL unit type (NUT) in range 0-35, inclusive, are allocated for atlas tile layer data in {{ISO.IEC.23090-5}}.
 

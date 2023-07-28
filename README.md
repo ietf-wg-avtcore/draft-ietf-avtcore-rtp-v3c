@@ -3,7 +3,7 @@
 This repository is used for discussion and development of a personal draft for V3C RTP payload format (draft-ilola-avtcore-rtp-v3c). 
 
 * Current draft in [IETF Datatracker](https://datatracker.ietf.org/doc/draft-ietf-avtcore-rtp-v3c/).
-* [Editor's copy](https://github.com/laurilo/draft-ilola-avtcore-rtp-v3c/blob/main/draft/draft-ilola-avtcore-rtp-v3c.md)
+* [Editor's copy](https://github.com/laurilo/draft-ilola-avtcore-rtp-v3c/blob/main/draft/draft-ietf-avtcore-rtp-v3c.md)
 
 ## Copy of abstract
 

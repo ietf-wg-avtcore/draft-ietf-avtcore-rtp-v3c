@@ -357,18 +357,18 @@ This section describes details related to V3C atlas RTP payload format definitio
 The format of the RTP header is specified in {{RFC3550}} and replicated below in {{fig-RTP-header}} for convenience. This payload format uses the fields of the header in a manner consistent with that specification.
 
 ~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |V=2|P|X|  CC   |M|     PT      |       sequence number         |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                           timestamp                           |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |           synchronization source (SSRC) identifier            |
-    +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
-    |            contributing source (CSRC) identifiers             |
-    |                             ....                              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           timestamp                           |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |           synchronization source (SSRC) identifier            |
+  +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+  |            contributing source (CSRC) identifiers             |
+  |                             ....                              |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-RTP-header title="RTP Header"}
 
@@ -411,11 +411,11 @@ The remaining RTP header fields are used as specified in {{RFC3550}}.
 The first two bytes of the payload of an RTP packet are referred to as the payload header. The payload header consists of the same fields (F, NUT, NLI, and TID) as the NAL unit header as shown in {{Atlas-NAL-units}}, irrespective of the type of the payload structure. For convenience the structure of RTP payload header is described below in {{fig-RTP-payload-header}}.
 
 ~~~
-     0                   1            
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |F|    NUT    |    NLI    | TID |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1            
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |F|    NUT    |    NLI    | TID |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-RTP-payload-header title="RTP Payload Header"}
 
@@ -468,19 +468,19 @@ NOTE: (informative) This memo does not limit the size of NAL units encapsulated 
 Single NAL unit packet contains exactly one NAL unit, and consists of an RTP payload header and following conditional fields: 16-bit DONL and 16-bit v3c-tile-id. The rest of the payload data contain the NAL unit payload data (excluding the NAL unit header). Single NAL unit packet MUST only contain atlas NAL units of the types defined in Table 4 of {{ISO.IEC.23090-5}}. The structure of the single NAL unit packet is shown below in {{fig-single-nal-unit-packet}}.
 
 ~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |      RTP payload header       |      DONL (conditional)       |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
-    |      v3c-tile-id (cond)       |                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
-    |                                                               |
-    |                        NAL unit data                          |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               :...OPTIONAL RTP padding        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |      RTP payload header       |      DONL (conditional)       |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
+  |      v3c-tile-id (cond)       |                               |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
+  |                                                               |
+  |                        NAL unit data                          |
+  |                                                               |
+  |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                               :...OPTIONAL RTP padding        |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-single-nal-unit-packet title="Single NAL unit packet"}
 
@@ -501,17 +501,17 @@ Aggregation Packets (APs) enable the reduction of packetization overhead for sma
 Aggregation packets MAY be used wrap multiple NAL units belonging to the same access unit in a single RTP payload. The first two bytes of the AP MUST contain RTP payload header. The NAL unit type (NUT) for the NAL unit header contained in the RTP payload header MUST be equal to 56, which falls in the unspecified range of the NAL unit types defined in {{ISO.IEC.23090-5}}. AP MAY contain a conditional v3c-tile-id field. AP MUST contain two or more aggregation units. The structure of AP is shown in {{fig-aggregation-packet}}.
 
 ~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=56)  |      v3c-tile-id (cond)       |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    |                  Two or more aggregation units                |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               :...OPTIONAL RTP padding        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |  RTP payload header (NUT=56)  |      v3c-tile-id (cond)       |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                                                               |
+  |                  Two or more aggregation units                |
+  |                                                               |
+  |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                               :...OPTIONAL RTP padding        |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-aggregation-packet title="Aggregation Packet (AP)"}
 
@@ -524,19 +524,19 @@ The v3c-tile-id field, when present, specifies the 16-bit tile identifier for al
 AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
 
 ~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  DOND (cond)  /  DONL (cond)  |      v3c-tile-id (cond)       |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
-    |            NALU size          |                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
-    |                                                               |
-    |                            NAL unit                           |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |  DOND (cond)  /  DONL (cond)  |      v3c-tile-id (cond)       |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
+  |            NALU size          |                               |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
+  |                                                               |
+  |                            NAL unit                           |
+  |                                                               |
+  |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                               |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-aggregation-unit title="Aggregation Unit (AU)"}
 
@@ -557,19 +557,19 @@ When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fr
 A FU consists of an RTP payload header with NUT equal to 57, an 8-bit FU header, a conditional 16-bit DONL field, a conditional 16-bit v3c-tile-id field and an FU payload. The structure of an FU is illustrated below in {{fig-fragmentation-unit}}. 
 
 ~~~
-     0                   1                   2                   3       
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=57)  |   FU header   |  DONL (cond)  |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
-    |  DONL (cond)  |    v3c-tile-id (cond)         |               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
-    |                                                               |
-    |                          FU payload                           |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               :...OPTIONAL RTP padding        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1                   2                   3       
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |  RTP payload header (NUT=57)  |   FU header   |  DONL (cond)  |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|
+  |  DONL (cond)  |    v3c-tile-id (cond)         |               |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
+  |                                                               |
+  |                          FU payload                           |
+  |                                                               |
+  |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                               :...OPTIONAL RTP padding        |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-fragmentation-unit title="Fragmentation Unit"}
 
@@ -578,10 +578,10 @@ The fields in the RTP payload header are set as follows. The NUT field MUST be e
 The FU header consists of an S bit, an E bit, and a 6-bit FUT field. The structure of FU header is illustrated below in {{fig-fragmentation-unit-header}}.
 
 ~~~
-    0 1 2 3 4 5 6 7
-   +-+-+-+-+-+-+-+-+
-   |S|E|    FUT    |
-   +-+-+-----------+
+   0 1 2 3 4 5 6 7
+  +-+-+-+-+-+-+-+-+
+  |S|E|    FUT    |
+  +-+-+-----------+
 ~~~
 {: #fig-fragmentation-unit-header title="Fragmentation unit header"}
 
@@ -608,52 +608,52 @@ If an FU is lost, the receiver SHOULD discard all following fragmentation units 
 This example illustrates how fragmentation unit may be used to divide one NAL unit into two RTP packets. The {{fig-fragmentation-unit-packet-1}} depicts the structure of the first packet with the first part of the fragmented NAL unit.
 
 ~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |V=2|P|X|  CC   |M|     PT      |       sequence number         |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                           timestamp                           |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |           synchronization source (SSRC) identifier            |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |            contributing source (CSRC) identifiers             |
-    |                             ....                              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=57)  |1|0|    FUT    |               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
-    |                                                               |
-    |                          FU payload                           |
-    |                                                               |
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           timestamp                           |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |           synchronization source (SSRC) identifier            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |            contributing source (CSRC) identifiers             |
+  |                             ....                              |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |  RTP payload header (NUT=57)  |1|0|    FUT    |               |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
+  |                                                               |
+  |                          FU payload                           |
+  |                                                               |
+  |                                                               |
+  |                                                               |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-fragmentation-unit-packet-1 title="First packet of fragmented NAL unit"}
 
 The {{fig-fragmentation-unit-packet-2}} visualizes the structure of the second packet with the rest of the fragmented NAL unit. 
 
 ~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |V=2|P|X|  CC   |M|     PT      |       sequence number         |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                           timestamp                           |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |           synchronization source (SSRC) identifier            |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |            contributing source (CSRC) identifiers             |
-    |                             ....                              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  RTP payload header (NUT=57)  |0|1|    FUT    |               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
-    |                                                               |
-    |                          FU payload                           |
-    |                                                               |
-    |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                               :...OPTIONAL RTP padding        |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                           timestamp                           |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |           synchronization source (SSRC) identifier            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |            contributing source (CSRC) identifiers             |
+  |                             ....                              |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |  RTP payload header (NUT=57)  |0|1|    FUT    |               |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+               |
+  |                                                               |
+  |                          FU payload                           |
+  |                                                               |
+  |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |                               :...OPTIONAL RTP padding        |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 {: #fig-fragmentation-unit-packet-2 title="Second packet of fragmented NAL unit"}
 
@@ -919,12 +919,12 @@ The OPTIONAL parameters, when present in the V3C atlas component media line form
 An example of media representation corresponding to atlas data component (V3C_AD), where static V3C parameter set and V3C unit header is carried out-of-band in SDP, is as follows:
 
 ~~~
-    m=application 49170 RTP/AVP 98
-    a=rtpmap:98 v3c/90000
-    a=fmtp:98
-      v3c-unit-header=CAAAAA==;
-      v3c-ptl-tier-flag=1;
-      v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+  m=application 49170 RTP/AVP 98
+  a=rtpmap:98 v3c/90000
+  a=fmtp:98
+    v3c-unit-header=CAAAAA==;
+    v3c-ptl-tier-flag=1;
+    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
 ~~~
 
 ### For V3C video components
@@ -940,25 +940,26 @@ The OPTIONAL parameters, when present in the V3C video component media line form
 An example of media representation corresponding to occupancy video component (V3C_OVD) in SDP is as follows:
 
 ~~~
-    m=video 49170 RTP/AVP 99
-    a=rtpmap:99 H265/90000
-    a=fmtp:99 sprop-max-don-diff=0;
-              v3c-unit-header=EAAAAA==
+  m=video 49170 RTP/AVP 99
+  a=rtpmap:99 H265/90000
+  a=fmtp:99 sprop-max-don-diff=0;
+            v3c-unit-header=EAAAAA==
 ~~~
 
 Below is an example of media representation corresponding to packed video component (V3C_PVD), where static V3C parameter set, atlas data and common atlas data are carried out-of-band in SDP. The values are considered static for the session, as they can't be signaled in-band in a video stream.
 
 ~~~
-    m=video 49170 RTP/AVP 99
-    a=rtpmap:99 H265/90000
-    a=fmtp:99 v3c-unit-header=KAAAAA==;
-              v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM
-              5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
-              v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABa
-              AAAAAAA+;
-              v3c-common-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8
-              oqfhC5JQVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA=
-              =
+  m=video 49170 RTP/AVP 99
+  a=rtpmap:99 H265/90000
+  a=fmtp:99 
+    v3c-unit-header=KAAAAA==;
+    v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM
+    5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
+    v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABa
+    AAAAAAA+;
+    v3c-common-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8
+    oqfhC5JQVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA=
+    =
 ~~~
 
 ## Grouping framework {#grouping-framework}
@@ -974,72 +975,74 @@ Group attribute with V3C type is provided to allow application to identify "m" l
 The following example shows an SDP including four media lines, three describing V3C video components (PT:96=occupancy, PT:97=geometry, PT:98=attribute) and one V3C atlas component (PT:100). All the media lines are grouped under one V3C group. V3C parameter set is provided via media format parameter attribute of the atlas media line. 
 
 ~~~
-    ...
-    a=group:V3C 1 2 3 4 
-    m=video 40000 RTP/AVP 96
-    a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-header=EAAAAA==
-    a=mid:1
-    m=video 40002 RTP/AVP 97 
-    a=rtpmap:97 H264/90000
-    a=fmtp:97 v3c-unit-header=GAAAAA==
-    a=mid:2
-    m=video 40004 RTP/AVP 98 
-    a=rtpmap:98 H264/90000
-    a=fmtp:98 v3c-unit-header=IAAAAA==
-    a=mid:3
-    m=application 40008 RTP/AVP 100 
-    a=rtpmap:100 v3c/90000 
-    a=fmtp:100 v3c-unit-header=CAAAAA==
-               v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
-    a=mid:4
+  ...
+  a=group:V3C 1 2 3 4 
+  m=video 40000 RTP/AVP 96
+  a=rtpmap:96 H264/90000
+  a=fmtp:96 v3c-unit-header=EAAAAA==
+  a=mid:1
+  m=video 40002 RTP/AVP 97 
+  a=rtpmap:97 H264/90000
+  a=fmtp:97 v3c-unit-header=GAAAAA==
+  a=mid:2
+  m=video 40004 RTP/AVP 98 
+  a=rtpmap:98 H264/90000
+  a=fmtp:98 v3c-unit-header=IAAAAA==
+  a=mid:3
+  m=application 40008 RTP/AVP 100 
+  a=rtpmap:100 v3c/90000 
+  a=fmtp:100 
+    v3c-unit-header=CAAAAA==;
+    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+  a=mid:4
 ~~~
 
 The example below describes how content with two atlases can be signalled as separate streams. V3C parameter set and common atlas data are carried as media format parameters of the atlas media line corresponding to atlas zero. PT equal to 96, 97, 98 and 100 correspond to occupancy, geometry and attribute video component as well as atlas data component for atlas zero. PT equal to 101, 102, 103 and 104 correspond to respective components for atlas one. 
 
 ~~~
-    ...
-    a=group:V3C 1 2 3 4 5 6 7 8
-    m=video 40000 RTP/AVP 96
-    a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-header=EAAAAA==
-    a=mid:1
-    m=video 40002 RTP/AVP 97 
-    a=rtpmap:97 H264/90000
-    a=fmtp:97 v3c-unit-header=GAAAAA==
-    a=mid:2
-    m=video 40004 RTP/AVP 98 
-    a=rtpmap:98 H264/90000
-    a=fmtp:98 v3c-unit-header=IAAAAA==
-    a=mid:3
-    m=application 40008 RTP/AVP 100 
-    a=rtpmap:100 v3c/90000 
-    a=fmtp:100 v3c-unit-header=CAAAAA==
-      v3c-parameter-set=AAUH/AAAP/zwAAABAADwIAWhBwAAOADjgQAADgAA8CAFoQc
-      AADgA44EAAA6AkAgABRIA=;
-      v3c-common-atlas-data=YAEHgFA=,YgEAMAAAa+96Z5v6VP1D+P7LzRsbWDJ/yz
-      +ALzMZNfvCg2389Kjd+d6fZyM6QZBfhrDW3K0vaP2Rr8L+gLAq/ny3wAzs9veiXEj
-      jS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9UCodqj
-      LwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwCCf4Fno
-      gvB+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZoCmZmd
-      A=
-    a=mid:4
-    m=video 40010 RTP/AVP 101
-    a=rtpmap:101 H264/90000
-    a=fmtp:101 v3c-unit-header=EAIAAA==
-    a=mid:5
-    m=video 40012 RTP/AVP 102
-    a=rtpmap:102 H264/90000
-    a=fmtp:102 v3c-unit-header=GAIAAA==
-    a=mid:6
-    m=video 40014 RTP/AVP 103 
-    a=rtpmap:103 H264/90000
-    a=fmtp:103 v3c-unit-header=IAIAAA==
-    a=mid:7
-    m=application 40018 RTP/AVP 104 
-    a=rtpmap:104 v3c/90000 
-    a=fmtp:104 v3c-unit-header=CAIAAA==
-    a=mid:8
+  ...
+  a=group:V3C 1 2 3 4 5 6 7 8
+  m=video 40000 RTP/AVP 96
+  a=rtpmap:96 H264/90000
+  a=fmtp:96 v3c-unit-header=EAAAAA==
+  a=mid:1
+  m=video 40002 RTP/AVP 97 
+  a=rtpmap:97 H264/90000
+  a=fmtp:97 v3c-unit-header=GAAAAA==
+  a=mid:2
+  m=video 40004 RTP/AVP 98 
+  a=rtpmap:98 H264/90000
+  a=fmtp:98 v3c-unit-header=IAAAAA==
+  a=mid:3
+  m=application 40008 RTP/AVP 100 
+  a=rtpmap:100 v3c/90000 
+  a=fmtp:100 
+    v3c-unit-header=CAAAAA==;
+    v3c-parameter-set=AAUH/AAAP/zwAAABAADwIAWhBwAAOADjgQAADgAA8CAFoQc
+    AADgA44EAAA6AkAgABRIA=;
+    v3c-common-atlas-data=YAEHgFA=,YgEAMAAAa+96Z5v6VP1D+P7LzRsbWDJ/yz
+    +ALzMZNfvCg2389Kjd+d6fZyM6QZBfhrDW3K0vaP2Rr8L+gLAq/ny3wAzs9veiXEj
+    jS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9UCodqj
+    LwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwCCf4Fno
+    gvB+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZoCmZmd
+    A=
+  a=mid:4
+  m=video 40010 RTP/AVP 101
+  a=rtpmap:101 H264/90000
+  a=fmtp:101 v3c-unit-header=EAIAAA==
+  a=mid:5
+  m=video 40012 RTP/AVP 102
+  a=rtpmap:102 H264/90000
+  a=fmtp:102 v3c-unit-header=GAIAAA==
+  a=mid:6
+  m=video 40014 RTP/AVP 103 
+  a=rtpmap:103 H264/90000
+  a=fmtp:103 v3c-unit-header=IAIAAA==
+  a=mid:7
+  m=application 40018 RTP/AVP 104 
+  a=rtpmap:104 v3c/90000 
+  a=fmtp:104 v3c-unit-header=CAIAAA==
+  a=mid:8
 ~~~
 
 ## Offer and answer considerations
@@ -1047,122 +1050,122 @@ The example below describes how content with two atlases can be signalled as sep
 An example of offer which only sends V3C content. The following example contains video components as three different versions (H.264, H.265, H.266). Further differences between the alternatives would be signaled as part of the media attribute parameters, as is the practice with regular video streams. 
 
 ~~~
-    ...
-    a=group:v3c 1 2 3 4 
-    m=video 40000 RTP/AVP 96 97 98
-    a=rtpmap:96 H264/90000
-    a=rtpmap:97 H265/90000
-    a=rtpmap:98 H266/90000
-    a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
-    a=fmtp:97 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
-    a=fmtp:98 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
-    a=sendonly
-    a=mid:1
-    m=video 40002 RTP/AVP 96 97 98
-    a=rtpmap:96 H264/90000
-    a=rtpmap:97 H265/90000
-    a=rtpmap:98 H266/90000
-    a=fmtp:96 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-    a=fmtp:97 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-    a=fmtp:98 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-    a=mid:2
-    a=sendonly
-    m=video 40004 RTP/AVP 96 97 98
-    a=rtpmap:96 H264/90000
-    a=rtpmap:97 H265/90000
-    a=rtpmap:98 H266/90000
-    a=fmtp:96 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
-    a=fmtp:97 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
-    a=fmtp:98 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
-    a=mid:3
-    a=sendonly
-    m=application 40006 RTP/AVP 100
-    a=rtpmap:100 v3c/90000 
-    a=fmtp:100 
-      v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
-      v3c-ptl-level-idc=60;
-      v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
-    a=mid:4
-    a=sendonly
+  ...
+  a=group:v3c 1 2 3 4 
+  m=video 40000 RTP/AVP 96 97 98
+  a=rtpmap:96 H264/90000
+  a=rtpmap:97 H265/90000
+  a=rtpmap:98 H266/90000
+  a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
+  a=fmtp:97 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
+  a=fmtp:98 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
+  a=sendonly
+  a=mid:1
+  m=video 40002 RTP/AVP 96 97 98
+  a=rtpmap:96 H264/90000
+  a=rtpmap:97 H265/90000
+  a=rtpmap:98 H266/90000
+  a=fmtp:96 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=fmtp:97 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=fmtp:98 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=mid:2
+  a=sendonly
+  m=video 40004 RTP/AVP 96 97 98
+  a=rtpmap:96 H264/90000
+  a=rtpmap:97 H265/90000
+  a=rtpmap:98 H266/90000
+  a=fmtp:96 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
+  a=fmtp:97 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
+  a=fmtp:98 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
+  a=mid:3
+  a=sendonly
+  m=application 40006 RTP/AVP 100
+  a=rtpmap:100 v3c/90000 
+  a=fmtp:100 
+    v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
+    v3c-ptl-level-idc=60;
+    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+  a=mid:4
+  a=sendonly
 ~~~
 
 An example of answer which only receives V3C data with the selected versions. 
 
 ~~~
-    ...
-    a=group:v3c 1 2 3 4
-    m=video 50000 RTP/AVP 96
-    a=rtpmap:96 H264/90000
-    a=recvonly
-    a=mid:1
-    m=video 50002 RTP/AVP 97
-    a=rtpmap:97 H265/90000
-    a=recvonly
-    a=mid:2
-    m=video 50004 RTP/AVP 98
-    a=rtpmap:98 H266/90000
-    a=recvonly
-    a=mid:3
-    m=application 50006 RTP/AVP 96
-    a=rtpmap:96 v3c/90000 
-    a=recvonly
-    a=mid:4
+  ...
+  a=group:v3c 1 2 3 4
+  m=video 50000 RTP/AVP 96
+  a=rtpmap:96 H264/90000
+  a=recvonly
+  a=mid:1
+  m=video 50002 RTP/AVP 97
+  a=rtpmap:97 H265/90000
+  a=recvonly
+  a=mid:2
+  m=video 50004 RTP/AVP 98
+  a=rtpmap:98 H266/90000
+  a=recvonly
+  a=mid:3
+  m=application 50006 RTP/AVP 96
+  a=rtpmap:96 v3c/90000 
+  a=recvonly
+  a=mid:4
 ~~~
 
 An example offer, which allows bundling different V3C components into one stream, based on {{RFC9143}}.
 
 ~~~
-    ...
-    a=group:BUNDLE 1 2 3 4
-    a=group:v3c 1 2 3 4 
-    m=video 40000 RTP/AVP 96
-    a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
-    a=mid:1
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=video 40002 RTP/AVP 96 
-    a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-    a=mid:2
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=video 40004 RTP/AVP 96 
-    a=rtpmap:96 H264/90000
-    a=fmtp:96 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
-    a=mid:3
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=application 40006 RTP/AVP 97
-    a=rtpmap:97 v3c/90000 
-    a=fmtp:97 
-      v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
-      v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
-    a=mid:4
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  ...
+  a=group:BUNDLE 1 2 3 4
+  a=group:v3c 1 2 3 4 
+  m=video 40000 RTP/AVP 96
+  a=rtpmap:96 H264/90000
+  a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
+  a=mid:1
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  m=video 40002 RTP/AVP 96 
+  a=rtpmap:96 H264/90000
+  a=fmtp:96 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=mid:2
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  m=video 40004 RTP/AVP 96 
+  a=rtpmap:96 H264/90000
+  a=fmtp:96 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
+  a=mid:3
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  m=application 40006 RTP/AVP 97
+  a=rtpmap:97 v3c/90000 
+  a=fmtp:97 
+    v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
+    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+  a=mid:4
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
 ~~~
 
 An example answer, which accepts bundling of different V3C components.
 
 ~~~
-    a=group:BUNDLE 1 2 3 4
-    a=group:v3c 1 2 3 4
-    m=video 50000 RTP/AVP 96
-    a=rtpmap:96 H264/90000
-    a=mid:1
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=video 0 RTP/AVP 96
-    a=rtpmap:96 H264/90000
-    a=bundle-only
-    a=mid:2
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=video 0 RTP/AVP 96
-    a=rtpmap:96 H264/90000
-    a=bundle-only
-    a=mid:3
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-    m=application 0 RTP/AVP 97
-    a=rtpmap:97 v3c/90000
-    a=bundle-only
-    a=mid:4
-    a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  a=group:BUNDLE 1 2 3 4
+  a=group:v3c 1 2 3 4
+  m=video 50000 RTP/AVP 96
+  a=rtpmap:96 H264/90000
+  a=mid:1
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  m=video 0 RTP/AVP 96
+  a=rtpmap:96 H264/90000
+  a=bundle-only
+  a=mid:2
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  m=video 0 RTP/AVP 96
+  a=rtpmap:96 H264/90000
+  a=bundle-only
+  a=mid:3
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
+  m=application 0 RTP/AVP 97
+  a=rtpmap:97 v3c/90000
+  a=bundle-only
+  a=mid:4
+  a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
 ~~~
 
 ## Declarative SDP considerations

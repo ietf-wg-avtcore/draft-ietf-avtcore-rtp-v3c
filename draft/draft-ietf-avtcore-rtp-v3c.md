@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-05
-date: 2024-03-06
+docname: draft-ietf-avtcore-rtp-v3c-06
+date: 2024-03-18
 
 ipr: trust200902
 area: Application
@@ -1061,27 +1061,27 @@ An example of offer which only sends V3C content. The following example contains
   a=fmtp:98 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
   a=sendonly
   a=mid:1
-  m=video 40002 RTP/AVP 96 97 98
-  a=rtpmap:96 H264/90000
-  a=rtpmap:97 H265/90000
-  a=rtpmap:98 H266/90000
-  a=fmtp:96 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-  a=fmtp:97 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-  a=fmtp:98 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  m=video 40002 RTP/AVP 99 100 101
+  a=rtpmap:99 H264/90000
+  a=rtpmap:100 H265/90000
+  a=rtpmap:101 H266/90000
+  a=fmtp:99 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=fmtp:100 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=fmtp:101 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
   a=mid:2
   a=sendonly
-  m=video 40004 RTP/AVP 96 97 98
-  a=rtpmap:96 H264/90000
-  a=rtpmap:97 H265/90000
-  a=rtpmap:98 H266/90000
-  a=fmtp:96 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
-  a=fmtp:97 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
-  a=fmtp:98 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
+  m=video 40004 RTP/AVP 102 103 104
+  a=rtpmap:102 H264/90000
+  a=rtpmap:103 H265/90000
+  a=rtpmap:104 H266/90000
+  a=fmtp:102 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
+  a=fmtp:103 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
+  a=fmtp:104 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
   a=mid:3
   a=sendonly
-  m=application 40006 RTP/AVP 100
-  a=rtpmap:100 v3c/90000 
-  a=fmtp:100 
+  m=application 40006 RTP/AVP 105
+  a=rtpmap:105 v3c/90000 
+  a=fmtp:105 
     v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
     v3c-ptl-level-idc=60;
     v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
@@ -1098,16 +1098,16 @@ An example of answer which only receives V3C data with the selected versions.
   a=rtpmap:96 H264/90000
   a=recvonly
   a=mid:1
-  m=video 50002 RTP/AVP 97
-  a=rtpmap:97 H265/90000
+  m=video 50002 RTP/AVP 100
+  a=rtpmap:100 H265/90000
   a=recvonly
   a=mid:2
-  m=video 50004 RTP/AVP 98
-  a=rtpmap:98 H266/90000
+  m=video 50004 RTP/AVP 104
+  a=rtpmap:104 H266/90000
   a=recvonly
   a=mid:3
-  m=application 50006 RTP/AVP 96
-  a=rtpmap:96 v3c/90000 
+  m=application 50006 RTP/AVP 105
+  a=rtpmap:105 v3c/90000 
   a=recvonly
   a=mid:4
 ~~~
@@ -1123,19 +1123,19 @@ An example offer, which allows bundling different V3C components into one stream
   a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
   a=mid:1
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-  m=video 40002 RTP/AVP 96 
-  a=rtpmap:96 H264/90000
-  a=fmtp:96 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  m=video 40002 RTP/AVP 97 
+  a=rtpmap:97 H264/90000
+  a=fmtp:97 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
   a=mid:2
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-  m=video 40004 RTP/AVP 96 
-  a=rtpmap:96 H264/90000
-  a=fmtp:96 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
+  m=video 40004 RTP/AVP 98 
+  a=rtpmap:98 H264/90000
+  a=fmtp:98 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
   a=mid:3
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-  m=application 40006 RTP/AVP 97
-  a=rtpmap:97 v3c/90000 
-  a=fmtp:97 
+  m=application 40006 RTP/AVP 99
+  a=rtpmap:99 v3c/90000 
+  a=fmtp:99 
     v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
     v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
   a=mid:4
@@ -1151,18 +1151,18 @@ An example answer, which accepts bundling of different V3C components.
   a=rtpmap:96 H264/90000
   a=mid:1
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-  m=video 0 RTP/AVP 96
-  a=rtpmap:96 H264/90000
+  m=video 0 RTP/AVP 97
+  a=rtpmap:97 H264/90000
   a=bundle-only
   a=mid:2
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-  m=video 0 RTP/AVP 96
-  a=rtpmap:96 H264/90000
+  m=video 0 RTP/AVP 98
+  a=rtpmap:98 H264/90000
   a=bundle-only
   a=mid:3
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
-  m=application 0 RTP/AVP 97
-  a=rtpmap:97 v3c/90000
+  m=application 0 RTP/AVP 99
+  a=rtpmap:99 v3c/90000
   a=bundle-only
   a=mid:4
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid

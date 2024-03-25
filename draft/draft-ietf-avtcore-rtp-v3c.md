@@ -288,7 +288,7 @@ v3c_unit_header( ) {
 }
 ~~~
 
-vuh_unit_type indicates the V3C unit type for the V3C component as specified in  {{ISO.IEC.23090-5}}. As a convenience, the mapping table from vuh_unit_type values to semantics is copied below in {{table-v3c-unit-type-descriptions}}.
+vuh_unit_type indicates the V3C unit type for the V3C component as specified in  {{ISO.IEC.23090-5}}. As a convenience, the mapping table from vuh_unit_type values to semantics is copied below in {{table-sprop-v3c-unit-type-descriptions}}.
 
 | vuh_unit_type | Identifier | V3C unit type | Description |
 | 0 |	V3C_VPS |	V3C parameter set |	V3C level parameters |
@@ -299,7 +299,7 @@ vuh_unit_type indicates the V3C unit type for the V3C component as specified in 
 | 5 |	V3C_PVD |	Packed video data |	Packing information |
 | 6 |	V3C_CAD | Common atlas data |	Information that is common for atlases in a CVS. Specified in ISO/IEC 23090-12 |
 | 7…31 | V3C_RSVD |	Reserved | - |
-{: #table-v3c-unit-type-descriptions title="V3C unit type semantics"}
+{: #table-sprop-v3c-unit-type-descriptions title="V3C unit type semantics"}
 
 vuh_v3c_parameter_set_id specifies the value of vps_v3c_parameter_set_id for the active V3C VPS. 
 
@@ -490,7 +490,7 @@ A NAL unit stream composed by de-packetizing single NAL unit packets in RTP sequ
 
 The DONL field, when present, specifies the value of the 16-bit decoding order number of the contained NAL unit. If sprop-max-don-diff is greater than 0 for any of the RTP streams, the DONL field MUST be present, and the variable DONL for the contained NAL unit is derived as equal to the value of the DONL field. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams), the DONL field MUST NOT be present.
 
-The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the NAL unit, as signalled in V3C atlas tile header defined in {{ISO.IEC.23090-5}}. If v3c-tile-id-pres is equal to 1 and RTP payload header NUT is in range 0-35, inclusive, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present. 
+The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the NAL unit, as signalled in V3C atlas tile header defined in {{ISO.IEC.23090-5}}. If sprop-v3c-tile-id-pres is equal to 1 and RTP payload header NUT is in range 0-35, inclusive, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present. 
 
 NOTE: (informative) Only values for NAL unit type (NUT) in range 0-35, inclusive, are allocated for atlas tile layer data in {{ISO.IEC.23090-5}}.
 
@@ -519,7 +519,7 @@ The fields in the payload header are set as follows. The F bit MUST be equal to 
 
 All ACL NAL units in an aggregation packet have the same TID value since they belong to the same access unit. However, the packet MAY contain non-ACL NAL units for which the TID value in the NAL unit header MAY be different than the TID value of the ACL NAL units in the same AP.
 
-The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all ACL NAL units in the AP. If v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present.
+The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all ACL NAL units in the AP. If sprop-v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present.
 
 AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
 
@@ -544,7 +544,7 @@ If sprop-max-don-diff is greater than 0 for any of the RTP streams, an AU begins
 
 When sprop-max-don-diff is equal to 0 for all the RTP streams, DOND / DONL fields MUST NOT be present in an aggregation unit. The aggregation units MUST be stored in the aggregation packet so that the decoding order of the containing NAL units is preserved. This means that the first aggregation unit in the aggregation packet SHOULD contain the NAL unit that SHOULD be decoded first.
 
-If v3c-tile-id-pres is equal to 2 and the AU NAL unit header type is in range 0-35, inclusive, the 16-bit v3c-tile-id field MUST be present in the aggregation unit after the conditional DOND/DONL field. Otherwise v3c-tile-id field MUST NOT be present in the aggregation unit.
+If sprop-v3c-tile-id-pres is equal to 2 and the AU NAL unit header type is in range 0-35, inclusive, the 16-bit v3c-tile-id field MUST be present in the aggregation unit after the conditional DOND/DONL field. Otherwise v3c-tile-id field MUST NOT be present in the aggregation unit.
 
 The conditional fields of the aggregation unit are followed by a 16-bit NALU size field, which provides the size of the NAL unit (in bytes) in the aggregation unit. The remainder of the data in the aggregation unit SHOULD contain the NAL unit (including the unmodified NAL unit header).
 
@@ -595,7 +595,7 @@ A non-fragmented NAL unit MUST NOT be transmitted in one FU; i.e., the Start bit
 
 The DONL field, when present, specifies the value of the 16-bit decoding order number of the fragmented NAL unit. If sprop-max-don-diff is greater than 0 for any of the RTP streams, and the S bit is equal to 1, the DONL field MUST be present in the FU, and the variable DON for the fragmented NAL unit is derived as equal to the value of the DONL field. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams, or the S bit is equal to 0), the DONL field MUST NOT be present in the FU.
 
-The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the fragmented NAL unit. If v3c-tile-id-pres is equal to 1, FUT is in range 0-35, and the S bit is equal to 1, the v3c-tile-id field MUST be present after the conditional DONL field. Otherwise, the v3c-tile-id field MUST NOT be present.
+The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the fragmented NAL unit. If sprop-v3c-tile-id-pres is equal to 1, FUT is in range 0-35, and the S bit is equal to 1, the v3c-tile-id field MUST be present after the conditional DONL field. Otherwise, the v3c-tile-id field MUST NOT be present.
 
 The FU payload consists of fragments of the payload of the fragmented NAL unit so that if the FU payloads of consecutive FUs, starting with an FU with the S bit equal to 1 and ending with an FU with the E bit equal to 1, are sequentially concatenated, the payload of the fragmented NAL unit can be reconstructed. 
 
@@ -720,7 +720,7 @@ Subtype name: v3c
 
 Required parameters: N/A
 
-Optional parameters: v3c-unit-header, v3c-unit-type, v3c-vps-id, v3c-atlas-id, v3c-attr-idx, v3c-attr-part-idx, v3c-map-idx, v3c-aux-video-flag, v3c-parameter-set, v3c-tile-id, v3c-tile-id-pres, v3c-atlas-data, v3c-common-atlas-data, v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, tx-mode and sprop-max-don-diff. 
+Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-parameter-set, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, tx-mode and sprop-max-don-diff. 
 
 Encoding considerations: This type is only defined for transfer via RTP {{RFC3550}}.
 
@@ -749,89 +749,89 @@ Provisional registration? (standards tree only): No
 ## Optional parameters definition
 
 ~~~
-    v3c-unit-header: 
+    sprop-v3c-unit-header: 
 ~~~
 
 provides a V3C unit header bytes defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the 4 bytes of V3C unit header.
 
 ~~~
-    v3c-unit-type: 
+    sprop-v3c-unit-type: 
 ~~~
 
-v3c-unit-type provides a V3C unit type value corresponding to vuh_unit_type defined in {{ISO.IEC.23090-5}}, i.e., defines V3C sub-bitstream type.
+sprop-v3c-unit-type provides a V3C unit type value corresponding to vuh_unit_type defined in {{ISO.IEC.23090-5}}, i.e., defines V3C sub-bitstream type.
 
 ~~~
-    v3c-vps-id:
+    sprop-v3c-vps-id:
 ~~~
 
-v3c-vps-id provides a value corresponding to vuh_v3c_parameter_set_id defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-vps-id provides a value corresponding to vuh_v3c_parameter_set_id defined in {{ISO.IEC.23090-5}}.
 
 ~~~
-    v3c-atlas-id:
+    sprop-v3c-atlas-id:
 ~~~
 
-v3c-atlas-id provides a value corresponding to vuh_atlas_id defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-atlas-id provides a value corresponding to vuh_atlas_id defined in {{ISO.IEC.23090-5}}.
 
 ~~~
-    v3c-attr-idx: 
+    sprop-v3c-attr-idx: 
 ~~~
 
-v3c-attr-idx provides a value corresponding to vuh_attribute_index defined in {{ISO.IEC.23090-5}}. 
+sprop-v3c-attr-idx provides a value corresponding to vuh_attribute_index defined in {{ISO.IEC.23090-5}}. 
 
 ~~~
-    v3c-attr-part-idx: 
+    sprop-v3c-attr-part-idx: 
 ~~~
 
-v3c-attr-part-idx provides a value corresponding to vuh_attribute_partition_index defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-attr-part-idx provides a value corresponding to vuh_attribute_partition_index defined in {{ISO.IEC.23090-5}}.
 
 ~~~
-    v3c-map-idx:
+    sprop-v3c-map-idx:
 ~~~
 
-v3c-map-idx provides a value corresponding to vuh_map_index defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-map-idx provides a value corresponding to vuh_map_index defined in {{ISO.IEC.23090-5}}.
 
 ~~~
-    v3c-aux-video-flag: 
+    sprop-v3c-aux-video-flag: 
 ~~~
 
-v3c-aux-video-flag provides a value corresponding to vuh_auxiliary_video_flag defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-aux-video-flag provides a value corresponding to vuh_auxiliary_video_flag defined in {{ISO.IEC.23090-5}}.
 
 ~~~
-    v3c-parameter-set: 
+    sprop-v3c-parameter-set: 
 ~~~
 
-v3c-parameter-set provides V3C parameter set bytes as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the V3C parameter set bytes.
+sprop-v3c-parameter-set provides V3C parameter set bytes as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the V3C parameter set bytes.
 
 ~~~
-    v3c-tile-id:
+    sprop-v3c-tile-id:
 ~~~
 
-v3c-tile-id indicates that the RTP stream contains only portion of the tiles in the atlas. v3c-tile-id is a comma-separated (',') list of integer values, which indicate the v3c-tile-ids that are present in the RTP stream.
+sprop-v3c-tile-id indicates that the RTP stream contains only portion of the tiles in the atlas. sprop-v3c-tile-id is a comma-separated (',') list of integer values, which indicate the sprop-v3c-tile-ids that are present in the RTP stream.
 
 ~~~
-    v3c-tile-id-pres:
+    sprop-v3c-tile-id-pres:
 ~~~
 
-v3c-tile-id-pres indicates that the RTP packets contain v3c-tile-id field.
+sprop-v3c-tile-id-pres indicates that the RTP packets contain v3c-tile-id field.
 
 ~~~
-    v3c-atlas-data:
+    sprop-v3c-atlas-data:
 ~~~
 
-v3c-atlas-data MAY be used to convey any atlas data NAL units of the V3C atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the atlas NAL units as specified in {{ISO.IEC.23090-5}}. 
+sprop-v3c-atlas-data MAY be used to convey any atlas data NAL units of the V3C atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the atlas NAL units as specified in {{ISO.IEC.23090-5}}. 
 The NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
 
 ~~~
-    v3c-common-atlas-data:
+    sprop-v3c-common-atlas-data:
 ~~~
 
-v3c-common-atlas-data MAY be used to convey common atlas data NAL units of the V3C common atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the common atlas NAL units (i.e., NAL_CASPS and NAL_CAF_IDR) as specified in {{ISO.IEC.23090-5}}. The NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
+sprop-v3c-common-atlas-data MAY be used to convey common atlas data NAL units of the V3C common atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the common atlas NAL units (i.e., NAL_CASPS and NAL_CAF_IDR) as specified in {{ISO.IEC.23090-5}}. The NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
 
 ~~~
-    v3c-sei:
+    sprop-v3c-sei:
 ~~~
 
-v3c-sei MAY be used to convey SEI NAL units of V3C atlas and common atlas sub bitstreams for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of SEI NAL units (i.e., NAL_PREFIX_NSEI and NAL_SUFFIX_NSEI, NAL_PREFIX_ESEI, NAL_SUFFIX_ESEI) as specified in  {{ISO.IEC.23090-5}}. The SEI NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
+sprop-v3c-sei MAY be used to convey SEI NAL units of V3C atlas and common atlas sub bitstreams for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of SEI NAL units (i.e., NAL_PREFIX_NSEI and NAL_SUFFIX_NSEI, NAL_PREFIX_ESEI, NAL_SUFFIX_ESEI) as specified in  {{ISO.IEC.23090-5}}. The SEI NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
 
 ~~~
     v3c-ptl-level-idc: 
@@ -912,9 +912,9 @@ The mapping of above defined payload format media type to the corresponding fiel
 * The media name in the "m=" line of SDP MUST be application.
 * The encoding name in the "a=rtpmap" line of SDP MUST be v3c
 * The clock rate in the "a=rtpmap" line MUST be 90000.
-* The OPTIONAL parameters v3c-unit-header, v3c-unit-type, v3c-vps-id, v3c-atlas-id, v3c-attr-idx, v3c-attr-part-idx, v3c-map-idx, v3c-aux-video-flag, sprop-max-don-diff, v3c-parameter-set, v3c-atlas-data, v3c-common-atlas-data, v3c-sei, v3c-tile-id, v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
+* The OPTIONAL parameters sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-max-don-diff, sprop-v3c-parameter-set, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
 
-The OPTIONAL parameters, when present in the V3C atlas component media line format parameters attribute, specify values that are valid for the coded V3C sequence until a new value is received in-band. Some OPTIONAL parameters, like v3c-parameter-set or v3c-unit-header, can't be carried in-band in the atlas stream and may thus be considered static for the session.
+The OPTIONAL parameters, when present in the V3C atlas component media line format parameters attribute, specify values that are valid for the coded V3C sequence until a new value is received in-band. Some OPTIONAL parameters, like sprop-v3c-parameter-set or sprop-v3c-unit-header, can't be carried in-band in the atlas stream and may thus be considered static for the session.
 
 An example of media representation corresponding to atlas data component (V3C_AD), where static V3C parameter set and V3C unit header is carried out-of-band in SDP, is as follows:
 
@@ -922,9 +922,9 @@ An example of media representation corresponding to atlas data component (V3C_AD
   m=application 49170 RTP/AVP 98
   a=rtpmap:98 v3c/90000
   a=fmtp:98
-    v3c-unit-header=CAAAAA==;
+    sprop-v3c-unit-header=CAAAAA==;
     v3c-ptl-tier-flag=1;
-    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+    sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
 ~~~
 
 ### For V3C video components
@@ -932,10 +932,10 @@ An example of media representation corresponding to atlas data component (V3C_AD
 * The media name in the "m=" line of SDP MUST be video.
 * The encoding name in the "a=rtpmap" line of SDP can be any video subtype, e.g., H.264, H.265, H.266 etc.
 * The clock rate in the "a=rtpmap" line MUST be 90000.
-* The OPTIONAL parameters v3c-unit-header, v3c-unit-type, v3c-vps-id, v3c-atlas-id, v3c-attr-idx, v3c-attr-part-idx, v3c-map-idx, v3c-aux-video-flag, sprop-max-don-diff, v3c-parameter-set, v3c-atlas-data, v3c-common-atlas-data, v3c-sei, v3c-tile-id, v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
+* The OPTIONAL parameters sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-max-don-diff, sprop-v3c-parameter-set, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
 * The OPTIONAL parameters MAY include any optional parameters from the respective video payload specifications. 
 
-The OPTIONAL parameters, when present in the V3C video component media line format parameters attribute, specify values that are valid for the coded V3C sequence until a new value is received in-band. Some OPTIONAL parameters like v3c-parameter-set or v3c-unit-header and can't be carried in-band in the video stream and may thus be considered static for session.
+The OPTIONAL parameters, when present in the V3C video component media line format parameters attribute, specify values that are valid for the coded V3C sequence until a new value is received in-band. Some OPTIONAL parameters like sprop-v3c-parameter-set or sprop-v3c-unit-header and can't be carried in-band in the video stream and may thus be considered static for session.
 
 An example of media representation corresponding to occupancy video component (V3C_OVD) in SDP is as follows:
 
@@ -943,7 +943,7 @@ An example of media representation corresponding to occupancy video component (V
   m=video 49170 RTP/AVP 99
   a=rtpmap:99 H265/90000
   a=fmtp:99 sprop-max-don-diff=0;
-            v3c-unit-header=EAAAAA==
+            sprop-v3c-unit-header=EAAAAA==
 ~~~
 
 Below is an example of media representation corresponding to packed video component (V3C_PVD), where static V3C parameter set, atlas data and common atlas data are carried out-of-band in SDP. The values are considered static for the session, as they can't be signaled in-band in a video stream.
@@ -952,14 +952,13 @@ Below is an example of media representation corresponding to packed video compon
   m=video 49170 RTP/AVP 99
   a=rtpmap:99 H265/90000
   a=fmtp:99 
-    v3c-unit-header=KAAAAA==;
-    v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM
-    5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
-    v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABa
-    AAAAAAA+;
-    v3c-common-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8
-    oqfhC5JQVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA=
-    =
+    sprop-v3c-unit-header=KAAAAA==;
+    sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM5QED
+    gQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
+    sprop-v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABaAAAA
+    AAA+;
+    sprop-v3c-common-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8oqfh
+    C5JQVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA==
 ~~~
 
 ## Grouping framework {#grouping-framework}
@@ -979,21 +978,22 @@ The following example shows an SDP including four media lines, three describing 
   a=group:V3C 1 2 3 4 
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
-  a=fmtp:96 v3c-unit-header=EAAAAA==
+  a=fmtp:96 sprop-v3c-unit-header=EAAAAA==
   a=mid:1
   m=video 40002 RTP/AVP 97 
   a=rtpmap:97 H264/90000
-  a=fmtp:97 v3c-unit-header=GAAAAA==
+  a=fmtp:97 sprop-v3c-unit-header=GAAAAA==
   a=mid:2
   m=video 40004 RTP/AVP 98 
   a=rtpmap:98 H264/90000
-  a=fmtp:98 v3c-unit-header=IAAAAA==
+  a=fmtp:98 sprop-v3c-unit-header=IAAAAA==
   a=mid:3
   m=application 40008 RTP/AVP 100 
   a=rtpmap:100 v3c/90000 
   a=fmtp:100 
-    v3c-unit-header=CAAAAA==;
-    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+    sprop-v3c-unit-header=CAAAAA==;
+    sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQ
+    AADkA==
   a=mid:4
 ~~~
 
@@ -1004,44 +1004,43 @@ The example below describes how content with two atlases can be signalled as sep
   a=group:V3C 1 2 3 4 5 6 7 8
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
-  a=fmtp:96 v3c-unit-header=EAAAAA==
+  a=fmtp:96 sprop-v3c-unit-header=EAAAAA==
   a=mid:1
   m=video 40002 RTP/AVP 97 
   a=rtpmap:97 H264/90000
-  a=fmtp:97 v3c-unit-header=GAAAAA==
+  a=fmtp:97 sprop-v3c-unit-header=GAAAAA==
   a=mid:2
   m=video 40004 RTP/AVP 98 
   a=rtpmap:98 H264/90000
-  a=fmtp:98 v3c-unit-header=IAAAAA==
+  a=fmtp:98 sprop-v3c-unit-header=IAAAAA==
   a=mid:3
   m=application 40008 RTP/AVP 100 
   a=rtpmap:100 v3c/90000 
   a=fmtp:100 
-    v3c-unit-header=CAAAAA==;
-    v3c-parameter-set=AAUH/AAAP/zwAAABAADwIAWhBwAAOADjgQAADgAA8CAFoQc
-    AADgA44EAAA6AkAgABRIA=;
-    v3c-common-atlas-data=YAEHgFA=,YgEAMAAAa+96Z5v6VP1D+P7LzRsbWDJ/yz
-    +ALzMZNfvCg2389Kjd+d6fZyM6QZBfhrDW3K0vaP2Rr8L+gLAq/ny3wAzs9veiXEj
-    jS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9UCodqj
-    LwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwCCf4Fno
-    gvB+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZoCmZmd
-    A=
+    sprop-v3c-unit-header=CAAAAA==;
+    sprop-v3c-parameter-set=AAUH/AAAP/zwAAABAADwIAWhBwAAOADjgQAADgAA8CA
+    FoQcAADgA44EAAA6AkAgABRIA=;
+    sprop-v3c-common-atlas-data=YAEHgFA=,YgEAMAAAa+96Z5v6VP1D+P7LzRsbWD
+    J/yz+ALzMZNfvCg2389Kjd+d6fZyM6QZBfhrDW3K0vaP2Rr8L+gLAq/ny3wAzs9veiX
+    EjjS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9UCodqj
+    LwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwCCf4Fnogv
+    B+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZoCmZmdA=
   a=mid:4
   m=video 40010 RTP/AVP 101
   a=rtpmap:101 H264/90000
-  a=fmtp:101 v3c-unit-header=EAIAAA==
+  a=fmtp:101 sprop-v3c-unit-header=EAIAAA==
   a=mid:5
   m=video 40012 RTP/AVP 102
   a=rtpmap:102 H264/90000
-  a=fmtp:102 v3c-unit-header=GAIAAA==
+  a=fmtp:102 sprop-v3c-unit-header=GAIAAA==
   a=mid:6
   m=video 40014 RTP/AVP 103 
   a=rtpmap:103 H264/90000
-  a=fmtp:103 v3c-unit-header=IAIAAA==
+  a=fmtp:103 sprop-v3c-unit-header=IAIAAA==
   a=mid:7
   m=application 40018 RTP/AVP 104 
   a=rtpmap:104 v3c/90000 
-  a=fmtp:104 v3c-unit-header=CAIAAA==
+  a=fmtp:104 sprop-v3c-unit-header=CAIAAA==
   a=mid:8
 ~~~
 
@@ -1056,35 +1055,44 @@ An example of offer which only sends V3C content. The following example contains
   a=rtpmap:96 H264/90000
   a=rtpmap:97 H265/90000
   a=rtpmap:98 H266/90000
-  a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
-  a=fmtp:97 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
-  a=fmtp:98 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
+  a=fmtp:96 
+    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
+  a=fmtp:97 
+    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
+  a=fmtp:98 
+    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
   a=sendonly
   a=mid:1
   m=video 40002 RTP/AVP 99 100 101
   a=rtpmap:99 H264/90000
   a=rtpmap:100 H265/90000
   a=rtpmap:101 H266/90000
-  a=fmtp:99 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-  a=fmtp:100 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
-  a=fmtp:101 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=fmtp:99 
+    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
+  a=fmtp:100 
+    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
+  a=fmtp:101 
+    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
   a=mid:2
   a=sendonly
   m=video 40004 RTP/AVP 102 103 104
   a=rtpmap:102 H264/90000
   a=rtpmap:103 H265/90000
   a=rtpmap:104 H266/90000
-  a=fmtp:102 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
-  a=fmtp:103 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
-  a=fmtp:104 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0 
+  a=fmtp:102 
+    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
+  a=fmtp:103 
+    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0 
+  a=fmtp:104 
+    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
   a=mid:3
   a=sendonly
   m=application 40006 RTP/AVP 105
   a=rtpmap:105 v3c/90000 
   a=fmtp:105 
-    v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
+    sprop-v3c-unit-type=1;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
     v3c-ptl-level-idc=60;
-    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+    sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
   a=mid:4
   a=sendonly
 ~~~
@@ -1120,24 +1128,27 @@ An example offer, which allows bundling different V3C components into one stream
   a=group:v3c 1 2 3 4 
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
-  a=fmtp:96 v3c-unit-type=2;v3c-vps-id=0;v3c-atlas-id=0
+  a=fmtp:96 
+    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
   a=mid:1
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
   m=video 40002 RTP/AVP 97 
   a=rtpmap:97 H264/90000
-  a=fmtp:97 v3c-unit-type=3;v3c-vps-id=0;v3c-atlas-id=0;
+  a=fmtp:97 
+    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
   a=mid:2
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
   m=video 40004 RTP/AVP 98 
   a=rtpmap:98 H264/90000
-  a=fmtp:98 v3c-unit-type=4;v3c-vps-id=0;v3c-atlas-id=0
+  a=fmtp:98 
+    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
   a=mid:3
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
   m=application 40006 RTP/AVP 99
   a=rtpmap:99 v3c/90000 
   a=fmtp:99 
-    v3c-unit-type=1;v3c-vps-id=0;v3c-atlas-id=0;
-    v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+    sprop-v3c-unit-type=1;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
+    sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
   a=mid:4
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
 ~~~

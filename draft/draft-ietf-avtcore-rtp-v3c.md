@@ -344,7 +344,7 @@ One of such derived specifications is {{ISO.IEC.23090-10}}, which defines how V3
 
 ## General
 
-This section describes details related to V3C atlas RTP payload format definitions. Aspects related to RTP header, RTP payload header and general payload structure are considered. 
+This section describes details related to V3C atlas RTP payload format definitions. Aspects related to RTP header, RTP payload header and general payload structure are considered. RTP payload format(s) for video components is defined in their respective RTP payload format specifications depending on the video codec used. 
 
 ## RTP header
 
@@ -657,7 +657,7 @@ For any two NAL units m and n, the following applies:
 
 # Packetization and de-packetization rules
 
-The following packetization rules apply:
+The following packetization rules apply for V3C atlas data:
 
 * If sprop-max-don-diff is greater than 0 for any of the RTP streams, the transmission order of NAL units carried in the RTP stream MAY be different than the NAL unit decoding order and the NAL unit output order. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams), the transmission order of NAL units carried in the RTP stream MUST be the same as the NAL unit decoding order.
 * A NAL unit of a small size SHOULD be encapsulated in an aggregation packet together with one or more other NAL units in order to avoid the unnecessary packetization overhead for small NAL units. For example, non-ACL NAL units such as access unit delimiters, parameter sets, or SEI NAL units are typically small and can often be aggregated with ACL NAL units without violating MTU size constraints.
@@ -673,6 +673,8 @@ The de-packetization process is implementation dependent. Therefore, the followi
 * When sprop-max-don-diff is equal to 0 for the received RTP stream, the NAL units carried in the RTP stream MAY be directly passed to the decoder in their transmission order, which is identical to their decoding order.
 * When sprop-max-don-diff is greater than 0 for any of the received RTP streams, the received NAL units need to be arranged into decoding order before handing them over to the decoder.
 * For further de-packetization examples, the reader is referred to Section 6 of {{RFC7798}}.
+
+Regarding the packetization of V3C video component data, the respective RTP video payload specification(s) define how packetization and de-packetization SHOULD be handled.
 
 # Payload format parameters
 
@@ -856,7 +858,7 @@ Circuit Breakers {{RFC8083}} is an update to RTP {{RFC3550}} that defines criter
 
 # Session description protocol {#Session-Description-Protocol}
 
-The mapping of above defined payload format media type to the corresponding fields in the Session Description Protocol (SDP) is done according to {{RFC8866}}.
+The mapping of V3C RTP payload format media type parameters to the corresponding fields in the Session Description Protocol (SDP) is done according to {{RFC8866}}. Grouping framework {{RFC5888}} is used to indicate which media lines (video and application) in the SDP constitute a V3C representation. 
 
 ## Mapping of payload type parameters to SDP
 
@@ -916,7 +918,7 @@ Below is an example of media representation corresponding to packed video compon
 
 ## Grouping framework {#grouping-framework}
 
-Different V3C components MAY be represented by their own respective RTP streams. A grouping tool, as defined in {{RFC5888}}, is extended to support V3C grouping.
+Different V3C components MAY be represented by their own respective RTP streams, whose payload formats are defined in the respective specifications. V3C atlas data RTP payload format is defined in this memo, whereas the video component RTP payload formats are defined for example in {{RFC6184}} or {{RFC7798}}. A grouping tool, as defined in {{RFC5888}}, is extended to idicate which media lines constitute a V3C representation.
 
 Group attribute with V3C type is provided to allow application to identify "m" lines that belong to the same V3C bitstream. Grouping type V3C MUST be used with the group attribute. The tokens that follow are mapped to 'mid'-values of individual media lines in the SDP. 
 
@@ -1148,7 +1150,7 @@ Furthermore new group type (V3C) for the group attribute will be registered as d
 | V3C grouping | V3C | NORMAL | "this memo" |
 {: #table-v3c-group-type title="Additional semantics for V3C SDP group type"}
 
-NOTE: (informative) "this memo" to be replaced wit the RFC number, once it becomes available.
+NOTE: (informative) "this memo" to be replaced with the RFC number, once it becomes available.
 
 # Security considerations {#Security-considerations}
 

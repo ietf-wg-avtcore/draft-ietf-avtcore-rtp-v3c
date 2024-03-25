@@ -196,10 +196,6 @@ DON     decoding order number
 
 IRAP    intra random access point
 
-MRMT    Multiple RTP streams on Multiple media Transports
-
-MRST    Multiple RTP streams over a Single media Transport
-
 MTU     maximum transmission unit
 
 NAL     network abstraction layer
@@ -207,8 +203,6 @@ NAL     network abstraction layer
 NALU    NAL unit
 
 RBSP    raw byte sequence payload
-
-SRST    Single RTP stream on a Single media Transport
 
 V3C     visual volumetric video-based coding
 
@@ -350,7 +344,7 @@ One of such derived specifications is {{ISO.IEC.23090-10}}, which defines how V3
 
 ## General
 
-This section describes details related to V3C atlas RTP payload format definitions. Aspects related to RTP header, RTP payload header and general payload structure are considered along with different transmission modes. 
+This section describes details related to V3C atlas RTP payload format definitions. Aspects related to RTP header, RTP payload header and general payload structure are considered. 
 
 ## RTP header
 
@@ -378,13 +372,9 @@ Marker bit (M): 1 bit
 
 Set for the last packet of the access unit, carried in the current RTP stream. This is in line with the normal use of the M bit in video formats to allow an efficient playout buffer handling.  
 
-When MRST or MRMT is in use, if an access unit appears in multiple RTP streams, the marker bit is set on each RTP stream's last packet of the access unit. 
-
 Payload Type (PT): 7 bits
     
 The assignment of an RTP payload type for this new packet format is outside the scope of this document and will not be specified here. The assignment of a payload type MUST be performed either through the profile used or in a dynamic way.
-
-NOTE: (informative) It is not required to use different payload type values for different RTP streams in MRST or MRMT.
 
 Sequence Number (SN): 16 bits
 
@@ -400,9 +390,7 @@ Receivers MUST use the RTP timestamp for the display process, even when the bits
 
 Synchronization source (SSRC): 32 bits
 
-Used to identify the source of the RTP packets.  
-
-When using SRST, by definition a single SSRC is used for all parts of a single bitstream. In MRST or MRMT, different SSRCs are used for each RTP stream containing a subset of the sub-layers of the single (temporally scalable) bitstream. A receiver is required to correctly associate the set of SSRCs that are included parts of the same bitstream.
+Used to identify the source of the RTP packets. By definition a single SSRC is used for all parts of a single bitstream.
 
 The remaining RTP header fields are used as specified in {{RFC3550}}.
 
@@ -426,26 +414,6 @@ NUT: nal_unit_type as specified in {{ISO.IEC.23090-5}} defines the type of the R
 NLI: nal_layer_id as specified in {{ISO.IEC.23090-5}} defines the identifier of the layer to which an ACL NAL unit belongs or the identifier of a layer to which a non-ACL NAL unit applies.
 
 TID: nal_temporal_id_plus1 minus 1 as specified in {{ISO.IEC.23090-5}} defines a temporal identifier for the NAL unit. The value of nal_temporal_id_plus1 MUST NOT be equal to 0.
-
-## Transmission modes
-
-This memo enables transmission of an atlas bitstream over:
-
-* a Single RTP stream on a Single media Transport (SRST),
-* Multiple RTP streams over a Single media Transport (MRST), or
-* Multiple RTP streams on Multiple media Transports (MRMT).
-
-When in MRST or MRMT, multiple RTP streams MAY be grouped together as specified in {{RFC5888}} and {{RFC9143}}.
-
-SRST or MRST SHOULD be used for point-to-point unicast scenarios, whereas MRMT SHOULD be used for point-to-multipoint multicast scenarios where different receivers require different operation points of the same atlas bitstream, to improve bandwidth utilizing efficiency.
-
-NOTE: A multicast may degrade to a unicast at some point when only one receiver is left. This is a justification of the first "SHOULD" instead of "MUST". There might be scenarios where MRMT is desirable but not possible, e.g., when IP multicast is not deployed in a certain network. This is a justification of the second "SHOULD" instead of "MUST".
-
-The transmission mode is indicated by the tx-mode media parameter. If tx-mode is equal to "SRST", SRST MUST be used. Otherwise, if tx-mode is equal to "MRST", MRST MUST be used. Otherwise (tx-mode is equal to "MRMT"), MRMT MUST be used.
-
-NOTE: (informative) When an RTP stream does not depend on other RTP streams, any of SRST, MRST, or MRMT may be in use for the RTP stream.
-
-Receivers MUST support all of SRST, MRST, and MRMT. The required support of MRMT by receivers does not imply that multicast must be supported by receivers.
 
 ## Payload structures
 
@@ -691,7 +659,7 @@ For any two NAL units m and n, the following applies:
 
 The following packetization rules apply:
 
-* If sprop-max-don-diff is greater than 0 for any of the RTP streams, the transmission order of NAL units carried in the RTP stream MAY be different than the NAL unit decoding order and the NAL unit output order. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams), the transmission order of NAL units carried in the RTP stream MUST be the same as the NAL unit decoding order and, when tx-mode is equal to "MRST" or "MRMT", MUST also be the same as the NAL unit output order.
+* If sprop-max-don-diff is greater than 0 for any of the RTP streams, the transmission order of NAL units carried in the RTP stream MAY be different than the NAL unit decoding order and the NAL unit output order. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams), the transmission order of NAL units carried in the RTP stream MUST be the same as the NAL unit decoding order.
 * A NAL unit of a small size SHOULD be encapsulated in an aggregation packet together with one or more other NAL units in order to avoid the unnecessary packetization overhead for small NAL units. For example, non-ACL NAL units such as access unit delimiters, parameter sets, or SEI NAL units are typically small and can often be aggregated with ACL NAL units without violating MTU size constraints.
 * Each non-ACL NAL unit SHOULD, when possible, from an MTU size perspective, be encapsulated in an aggregation packet together with its associated ACL NAL unit, as typically a non-ACL NAL unit would be meaningless without the associated ACL NAL unit being available.
 * For carrying exactly one NAL unit in an RTP packet, a single NAL unit packet MUST be used
@@ -720,7 +688,7 @@ Subtype name: v3c
 
 Required parameters: N/A
 
-Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-parameter-set, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, tx-mode and sprop-max-don-diff. 
+Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-parameter-set, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc and sprop-max-don-diff. 
 
 Encoding considerations: This type is only defined for transfer via RTP {{RFC3550}}.
 
@@ -863,21 +831,6 @@ v3c-ptl-toolset-idc provides a value corresponding to ptl_profile_toolset_idc de
 
 v3c-ptl-rec-idc provides a value corresponding to ptl_profile_reconstruction_idc
 defined in {{ISO.IEC.23090-5}}.
-
-~~~
-    tx-mode:
-~~~
-
-This parameter indicates whether the transmission mode is SRST, MRST, or MRMT.
-
-The value of tx-mode MUST be equal to "SRST", "MRST" or "MRMT". When not present, the value of tx-mode is inferred to be equal to "SRST".
-
-If the value is equal to "MRST", MRST MUST be in use. Otherwise, if the value is equal to "MRMT", MRMT MUST be in use. Otherwise (the value is equal to "SRST"), SRST MUST be in
-use.
-
-The value of tx-mode MUST be equal to "MRST" for all RTP streams in an MRST.
-
-The value of tx-mode MUST be equal to "MRMT" for all RTP streams in an MRMT.
 
 ~~~
     sprop-max-don-diff:

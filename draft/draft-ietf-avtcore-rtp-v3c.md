@@ -858,7 +858,54 @@ Circuit Breakers {{RFC8083}} is an update to RTP {{RFC3550}} that defines criter
 
 # Session description protocol {#Session-Description-Protocol}
 
-The mapping of V3C RTP payload format media type parameters to the corresponding fields in the Session Description Protocol (SDP) is done according to {{RFC8866}}. Grouping framework {{RFC5888}} is used to indicate which media lines (video and application) in the SDP constitute a V3C representation. 
+A new attribute "v3cfmtp" is defined for carrying V3C format media type parameters in the corresponding fields of the Session Description Protocol (SDP). Grouping framework {{RFC5888}} is used to indicate which media lines (video and application) in the SDP constitute a V3C representation. 
+
+## V3C format parameters "v3cfmtp" attribute {#v3cfmtp-attribute}
+
+This memo defines a new attribute for SDP, intended to carry V3C specific media format parameters. Its functionality is similar to "a=fmtp", with the exception that it MAY be used without fmt-token as a session level attribute. Furthermore, it allows to associate V3C specific format parameters with media that is not V3C.
+
+Contact name: See Authors' Addresses section of this memo.
+
+Contact email address: See Authors' Addresses section of this memo.
+
+Attribute name: v3cfmtp
+
+Attribute value: v3cfmtp-value
+
+Attribute syntax: 
+
+~~~
+  v3cfmtp-value = [fmt SP] v3c-format-specific-params
+  v3c-format-specific-params = byte-string
+  ; Notes:
+  ; - The V3C format parameters are V3C media type parameters and
+  ;   need to reflect their syntax.
+~~~~
+
+Attribute semantics: "v3cfmtp" attribute takes two forms depending on the usage level. When "v3cfmtp" is used as a session level attribute, it MUST NOT contain "fmt SP". Instead, it MUST only contain "v3c-format-specific-params". When "v3cfmtp" is used as a media level attribute, "v3cfmtp-value" MUST indicate the payload type of the related media as "fmt" value followed by "SP  v3c-format-specific-params". "v3c-format-specific-params" is a byte-string, which MUST contain at least one V3C specific media format parameter as defined in this memo. Multiple semicolon separated V3C media parameters MAY be stored in "v3c-format-specific-params" to be conveyed by SDP and given unchanged to the media tool that will use this format.
+
+Usage level: session, media
+
+Charset dependent: no
+
+Purpose: This attribute allows parameters that are specific to a V3C format to be conveyed in a way that SDP does not have to understand them. It allows to associate V3C specific parameters with the session or with other media lines.  
+
+O/A procedures: v3cfmtp attribute MAY be present both in offers and answers.
+
+Mux Category: NORMAL
+
+Reference: "this memo"
+
+NOTE: (informative) "this memo" to be replaced with the RFC number, once it becomes available.
+
+Example: First line describes session level usage of the attribute, second describes media level. 
+
+~~~
+  a=v3cfmtp:sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBA
+  CWAM5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
+  
+  a=v3cfmtp:99 sprop-v3c-unit-header=CAAAAA==;v3c-ptl-tier-flag=1;
+~~~
 
 ## Mapping of payload type parameters to SDP
 
@@ -1142,9 +1189,25 @@ A receiver of the SDP is required to support all parameters and values of the pa
 
 # IANA considerations
 
+This memo contains three considerations to IANA: new media type, new SDP attribute and new grouping type. 
+
+## V3C media type registration
+
 A new media type will be registered with IANA; see Section {{Media-type-definition}}.
 
-Furthermore new group type (V3C) for the group attribute will be registered as defined in {{grouping-framework}}. This document registers the semantics in {{table-v3c-group-type}} with IANA in the "Semantics for the 'group' SDP Attribute" subregistry (under the "Session Description Protocol (SDP) Parameters" registry):
+## V3C format parameters SDP attribute
+
+This document defines a new session and media level SDP attribute: "v3cfmtp". This attribute will be registered by IANA under attribute-field names (\<attribute-name>) registry in Session Description Protocol (SDP). The "v3cfmtp" attribute is used to convey V3C specific media format parameters for any media line. Its format is defined in Section {{v3cfmtp-attribute}}. Further semantics are provided in {{table-v3cfmtp-attribute}}. 
+
+| Type | SDP Name | Usage Level | Mux Category | Reference |
+| attribute | v3cfmtp | session, media | NORMAL | "this memo" | 
+{: #table-v3cfmtp-attribute title="Additional details for <attribute-name> Registry"}
+
+NOTE: (informative) "this memo" to be replaced with the RFC number, once it becomes available.
+
+## V3C grouping type extension
+
+Grouping is extended to establish relationships between substreams of a V3C representation. A new group type (V3C) for the group attribute will be registered as defined in {{grouping-framework}}. This document registers the semantics in {{table-v3c-group-type}} with IANA in the "Semantics for the 'group' SDP Attribute" subregistry (under the "Session Description Protocol (SDP) Parameters" registry):
 
 | Semantics | Token | Mux Category | Reference |
 | V3C grouping | V3C | NORMAL | "this memo" |

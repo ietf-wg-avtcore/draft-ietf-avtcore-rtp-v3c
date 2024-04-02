@@ -862,7 +862,7 @@ A new attribute "v3cfmtp" is defined for carrying V3C format media type paramete
 
 ## V3C format parameters "v3cfmtp" attribute {#v3cfmtp-attribute}
 
-This memo defines a new attribute for SDP, intended to carry V3C specific media format parameters. Its functionality is similar to "a=fmtp", with the exception that it MAY be used without fmt-token as a session level attribute. Furthermore, it allows to associate V3C specific format parameters with media that is not V3C.
+This memo defines a new attribute for SDP, intended to carry V3C specific media format parameters. Its functionality is similar to "a=fmtp", with the exception that it MAY be used without fmt-token as a session level attribute. Furthermore, it allows to associate V3C specific media format parameters with media that is not V3C.
 
 Contact name: See Authors' Addresses section of this memo.
 
@@ -934,10 +934,9 @@ An example of media representation corresponding to atlas data component (V3C_AD
 * The media name in the "m=" line of SDP MUST be video.
 * The encoding name in the "a=rtpmap" line of SDP can be any video subtype, e.g., H.264, H.265, H.266 etc.
 * The clock rate in the "a=rtpmap" line MUST be 90000.
-* The OPTIONAL parameters sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-max-don-diff, sprop-v3c-parameter-set, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
-* The OPTIONAL parameters MAY include any optional parameters from the respective video payload specifications. 
+* The OPTIONAL parameters sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-max-don-diff, sprop-v3c-parameter-set, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=v3cfmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
 
-The OPTIONAL parameters, when present in the V3C video component media line format parameters attribute, specify values that are valid for the coded V3C sequence until a new value is received in-band. Some OPTIONAL parameters like sprop-v3c-parameter-set or sprop-v3c-unit-header and can't be carried in-band in the video stream and may thus be considered static for session.
+The OPTIONAL parameters, when present in the video media line V3C format parameters ("v3cfmtp") attribute, specify values that are  considered static for the session.
 
 An example of media representation corresponding to occupancy video component (V3C_OVD) in SDP is as follows:
 
@@ -945,7 +944,7 @@ An example of media representation corresponding to occupancy video component (V
   m=video 49170 RTP/AVP 99
   a=rtpmap:99 H265/90000
   a=fmtp:99 sprop-max-don-diff=0;
-            sprop-v3c-unit-header=EAAAAA==
+  a=v3cfmtp:99 sprop-v3c-unit-header=EAAAAA==
 ~~~
 
 Below is an example of media representation corresponding to packed video component (V3C_PVD), where static V3C parameter set, atlas data and common atlas data are carried out-of-band in SDP. The values are considered static for the session, as they can't be signaled in-band in a video stream.

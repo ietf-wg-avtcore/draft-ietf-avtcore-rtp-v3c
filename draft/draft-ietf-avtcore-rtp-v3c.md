@@ -862,7 +862,7 @@ A new attribute "v3cfmtp" is defined for carrying V3C format media type paramete
 
 ## V3C format parameters "v3cfmtp" attribute {#v3cfmtp-attribute}
 
-This memo defines a new attribute for SDP, intended to carry V3C specific media format parameters. Its functionality is similar to "a=fmtp", with the exception that it MAY be used without fmt-token as a session level attribute. Furthermore, it allows to associate V3C specific media format parameters with media that is not V3C.
+This memo defines a new attribute for SDP, intended to carry V3C specific media format parameters. Its functionality is similar to "a=fmtp", with the exception that it SHALL be used without the fmt-token and that it can be used also on a session level. The attribute allows to associate V3C specific media format parameters with any media line in SDP.
 
 Contact name: See Authors' Addresses section of this memo.
 
@@ -875,20 +875,19 @@ Attribute value: v3cfmtp-value
 Attribute syntax: 
 
 ~~~
-  v3cfmtp-value = [fmt SP] v3c-format-specific-params
-  v3c-format-specific-params = byte-string
+  v3cfmtp-value = byte-string
   ; Notes:
   ; - The V3C format parameters are V3C media type parameters and
   ;   need to reflect their syntax.
 ~~~~
 
-Attribute semantics: "v3cfmtp" attribute takes two forms depending on the usage level. When "v3cfmtp" is used as a session level attribute, it MUST NOT contain "fmt SP". Instead, it MUST only contain "v3c-format-specific-params". When "v3cfmtp" is used as a media level attribute, "v3cfmtp-value" MUST indicate the payload type of the related media as "fmt" value followed by "SP  v3c-format-specific-params". "v3c-format-specific-params" is a byte-string, which MUST contain at least one V3C specific media format parameter as defined in this memo. Multiple semicolon separated V3C media parameters MAY be stored in "v3c-format-specific-params" to be conveyed by SDP and given unchanged to the media tool that will use this format.
+Attribute semantics: "v3cfmtp-value" is a byte-string, which MUST contain at least one V3C specific media format parameter as defined in this memo. Multiple semicolon separated V3C media parameters MAY be stored in "v3c-format-specific-params" to be conveyed by SDP and given unchanged to the media tool that will use this format.
 
 Usage level: session, media
 
 Charset dependent: no
 
-Purpose: This attribute allows parameters that are specific to a V3C format to be conveyed in a way that SDP does not have to understand them. It allows to associate V3C specific parameters with the session or with other media lines. Parameters signalled as part of session level attribute take effect when conflicting parameters are signalled as media level attribute.
+Purpose: This attribute allows parameters that are specific to a V3C format to be conveyed in a way that SDP does not have to understand them. It allows to associate V3C specific parameters with the session or with any media line. Parameters signalled as part of session level attribute take effect when conflicting parameters are signalled as media level attribute.
 
 O/A procedures: v3cfmtp attribute MAY be present both in offers and answers.
 
@@ -898,13 +897,13 @@ Reference: "this memo"
 
 NOTE: (informative) "this memo" to be replaced with the RFC number, once it becomes available.
 
-Example: First line describes session level usage of the attribute, second describes media level. 
+Example: First line describes session level usage of the attribute, signaling a V3C parameter set. Second line describes media level attribute, signaling V3C unit header and profile tier level flag for the associated media line. 
 
 ~~~
   a=v3cfmtp:sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBA
   CWAM5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
   
-  a=v3cfmtp:99 sprop-v3c-unit-header=CAAAAA==;v3c-ptl-tier-flag=1;
+  a=v3cfmtp:sprop-v3c-unit-header=CAAAAA==;v3c-ptl-tier-flag=1;
 ~~~
 
 ## Mapping of payload type parameters to SDP
@@ -917,7 +916,7 @@ Example: First line describes session level usage of the attribute, second descr
 * The OPTIONAL parameters sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, when present, MUST be included in the "a=fmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
 * The OPTIONAL parameters sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-max-don-diff, sprop-v3c-parameter-set, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc, when present, MUST be included in the "a=v3cfmtp" line of SDP. This parameter is expressed as a media type string, in the form of a semicolon-separated list of parameter=value pairs.
 
-The OPTIONAL parameters, when present in the V3C atlas component media line format parameters attribute, specify values that are valid for the coded V3C sequence until a new value is received in-band. Some OPTIONAL parameters, like sprop-v3c-parameter-set or sprop-v3c-unit-header, can't be carried in-band in the atlas stream and may thus be considered static for the session. The carriage of V3C payload format parameters in "a=fmtp" and "a=v3cfmtp" attributes is separated by logical context, where "a=fmtp" consists atlas level media format parameters and "a=v3cfmtp" contains V3C level media format parameters.  
+The OPTIONAL parameters, when present in the V3C atlas component media line format parameters attribute, specify values that are valid for the coded V3C sequence until a new value is received in-band. Some OPTIONAL parameters, like sprop-v3c-parameter-set or sprop-v3c-unit-header, can't be carried in-band in the atlas stream and may thus be considered static for the session. The carriage of V3C payload format parameters in "a=fmtp" and "a=v3cfmtp" attributes is separated by logical context, where "a=fmtp" consists atlas level media format parameters and "a=v3cfmtp" contains V3C level media format parameters.
 
 An example of media representation corresponding to atlas data component (V3C_AD), where static V3C parameter set and V3C unit header is carried out-of-band in SDP, is as follows:
 
@@ -925,9 +924,7 @@ An example of media representation corresponding to atlas data component (V3C_AD
   m=application 49170 RTP/AVP 98
   a=rtpmap:98 v3c/90000
   a=fmtp:98 sprop-v3c-tile-id=0,1
-  a=v3cfmtp:98  
-    sprop-v3c-unit-header=CAAAAA==;
-    v3c-ptl-tier-flag=1;
+  a=v3cfmtp:sprop-v3c-unit-header=CAAAAA==;v3c-ptl-tier-flag=1;
     sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
 ~~~
 
@@ -946,16 +943,15 @@ An example of media representation corresponding to occupancy video component (V
   m=video 49170 RTP/AVP 99
   a=rtpmap:99 H265/90000
   a=fmtp:99 sprop-max-don-diff=0;
-  a=v3cfmtp:99 sprop-v3c-unit-header=EAAAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=EAAAAA==
 ~~~
 
-Below is an example of media representation corresponding to packed video component (V3C_PVD), where static V3C parameter set, atlas data and common atlas data are carried out-of-band in SDP. The values are considered static for the session, as they can't be signaled in-band in a video stream.
+Below is an example of media representation corresponding to packed video component (V3C_PVD), where static V3C parameter set, atlas data and common atlas data are carried out-of-band in SDP. The values are considered static for the session, as they can't be signaled in-band in the video stream.
 
 ~~~
   m=video 49170 RTP/AVP 99
   a=rtpmap:99 H265/90000
-  a=v3cfmtp:99 
-    sprop-v3c-unit-header=KAAAAA==;
+  a=v3cfmtp:sprop-v3c-unit-header=KAAAAA==;
     sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM5QED
     gQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
     sprop-v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABaAAAA
@@ -983,20 +979,19 @@ The following example shows an SDP including four media lines, three describing 
     DkA== 
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
-  a=v3cfmtp:96 sprop-v3c-unit-header=EAAAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=EAAAAA==
   a=mid:1
   m=video 40002 RTP/AVP 97 
   a=rtpmap:97 H264/90000
-  a=v3cfmtp:97 sprop-v3c-unit-header=GAAAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=GAAAAA==
   a=mid:2
   m=video 40004 RTP/AVP 98 
   a=rtpmap:98 H264/90000
-  a=v3cfmtp:98 sprop-v3c-unit-header=IAAAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=IAAAAA==
   a=mid:3
   m=application 40008 RTP/AVP 100 
   a=rtpmap:100 v3c/90000 
-  a=v3cfmtp:100 
-    sprop-v3c-unit-header=CAAAAA==;
+  a=v3cfmtp:sprop-v3c-unit-header=CAAAAA==;
   a=mid:4
 ~~~
 
@@ -1009,15 +1004,15 @@ The example below describes how content with two atlases can be signalled as sep
     ADgAA8CAFoQcAADgA44EAAA6AkAgABRIA=;
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
-  a=v3cfmtp:96 sprop-v3c-unit-header=EAAAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=EAAAAA==
   a=mid:1
   m=video 40002 RTP/AVP 97 
   a=rtpmap:97 H264/90000
-  a=v3cfmtp:97 sprop-v3c-unit-header=GAAAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=GAAAAA==
   a=mid:2
   m=video 40004 RTP/AVP 98 
   a=rtpmap:98 H264/90000
-  a=v3cfmtp:98 sprop-v3c-unit-header=IAAAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=IAAAAA==
   a=mid:3
   m=application 40008 RTP/AVP 100 
   a=rtpmap:100 v3c/90000 
@@ -1027,24 +1022,23 @@ The example below describes how content with two atlases can be signalled as sep
     EjjS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9UCodqj
     LwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwCCf4Fnogv
     B+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZoCmZmdA=
-  a=v3cfmtp:100 
-    sprop-v3c-unit-header=CAAAAA==;
+  a=v3cfmtp:sprop-v3c-unit-header=CAAAAA==;
   a=mid:4
   m=video 40010 RTP/AVP 101
   a=rtpmap:101 H264/90000
-  a=v3cfmtp:101 sprop-v3c-unit-header=EAIAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=EAIAAA==
   a=mid:5
   m=video 40012 RTP/AVP 102
   a=rtpmap:102 H264/90000
-  a=v3cfmtp:102 sprop-v3c-unit-header=GAIAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=GAIAAA==
   a=mid:6
   m=video 40014 RTP/AVP 103 
   a=rtpmap:103 H264/90000
-  a=v3cfmtp:103 sprop-v3c-unit-header=IAIAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=IAIAAA==
   a=mid:7
   m=application 40018 RTP/AVP 104 
   a=rtpmap:104 v3c/90000 
-  a=v3cfmtp:104 sprop-v3c-unit-header=CAIAAA==
+  a=v3cfmtp:sprop-v3c-unit-header=CAIAAA==
   a=mid:8
 ~~~
 
@@ -1055,48 +1049,36 @@ An example of offer which only sends V3C content. The following example contains
 ~~~
   ...
   a=group:v3c 1 2 3 4 
+  a=v3cfmtp:v3c-ptl-level-idc=60;
+    sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
   m=video 40000 RTP/AVP 96 97 98
   a=rtpmap:96 H264/90000
   a=rtpmap:97 H265/90000
   a=rtpmap:98 H266/90000
-  a=v3cfmtp:96 
-    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
-  a=v3cfmtp:97 
-    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
-  a=v3cfmtp:98 
-    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
+  a=v3cfmtp:sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0
   a=sendonly
   a=mid:1
   m=video 40002 RTP/AVP 99 100 101
   a=rtpmap:99 H264/90000
   a=rtpmap:100 H265/90000
   a=rtpmap:101 H266/90000
-  a=v3cfmtp:99 
-    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
-  a=v3cfmtp:100 
-    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
-  a=v3cfmtp:101 
-    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
+  a=v3cfmtp:sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0
   a=mid:2
   a=sendonly
   m=video 40004 RTP/AVP 102 103 104
   a=rtpmap:102 H264/90000
   a=rtpmap:103 H265/90000
   a=rtpmap:104 H266/90000
-  a=v3cfmtp:102 
-    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
-  a=v3cfmtp:103 
-    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0 
-  a=v3cfmtp:104 
-    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
+  a=v3cfmtp:sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0
   a=mid:3
   a=sendonly
   m=application 40006 RTP/AVP 105
   a=rtpmap:105 v3c/90000 
-  a=v3cfmtp:105 
-    sprop-v3c-unit-type=1;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
-    v3c-ptl-level-idc=60;
-    sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
+  a=v3cfmtp:sprop-v3c-unit-type=1;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0;
   a=mid:4
   a=sendonly
 ~~~
@@ -1132,26 +1114,26 @@ An example offer, which allows bundling different V3C components into one stream
   a=group:v3c 1 2 3 4 
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
-  a=v3cfmtp:96 
-    sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
+  a=v3cfmtp:sprop-v3c-unit-type=2;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0
   a=mid:1
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
   m=video 40002 RTP/AVP 97 
   a=rtpmap:97 H264/90000
-  a=v3cfmtp:97 
-    sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
+  a=v3cfmtp:sprop-v3c-unit-type=3;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0;
   a=mid:2
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
   m=video 40004 RTP/AVP 98 
   a=rtpmap:98 H264/90000
-  a=v3cfmtp:98 
-    sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0
+  a=v3cfmtp:sprop-v3c-unit-type=4;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0
   a=mid:3
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
   m=application 40006 RTP/AVP 99
   a=rtpmap:99 v3c/90000 
-  a=v3cfmtp:99 
-    sprop-v3c-unit-type=1;sprop-v3c-vps-id=0;sprop-v3c-atlas-id=0;
+  a=v3cfmtp:sprop-v3c-unit-type=1;sprop-v3c-vps-id=0;
+    sprop-v3c-atlas-id=0;
     sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
   a=mid:4
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid

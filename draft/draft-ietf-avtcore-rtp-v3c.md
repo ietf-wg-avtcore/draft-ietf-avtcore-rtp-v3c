@@ -2,7 +2,7 @@
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
 docname: draft-ietf-avtcore-rtp-v3c-06
-date: 2024-03-18
+date: 2024-04-12
 
 ipr: trust200902
 area: Application
@@ -900,8 +900,8 @@ NOTE: (informative) "this memo" to be replaced with the RFC number, once it beco
 Example: First line describes session level usage of the attribute, signaling a V3C parameter set. Second line describes media level attribute, signaling V3C unit header and profile tier level flag for the associated media line. 
 
 ~~~
-  a=v3cfmtp:sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBA
-  CWAM5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
+  a=v3cfmtp:sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQ
+  BACWAM5QEDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
   
   a=v3cfmtp:sprop-v3c-unit-header=CAAAAA==;v3c-ptl-tier-flag=1;
 ~~~
@@ -952,12 +952,12 @@ Below is an example of media representation corresponding to packed video compon
   m=video 49170 RTP/AVP 99
   a=rtpmap:99 H265/90000
   a=v3cfmtp:sprop-v3c-unit-header=KAAAAA==;
-    sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM5QED
-    gQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
-    sprop-v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABaAAAA
-    AAA+;
-    sprop-v3c-common-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8oqfh
-    C5JQVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA==
+    sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQBACWAM5Q
+    EDgQCAIAAAAABP8CzwAAAAAAAAAQAAAtAE/wLPAAAAAAAg=;
+    sprop-v3c-atlas-data=SAGAFAQBaKjuXgABQEKA,SgHmIA==,LgFoDOAFAABaAA
+    AAAAA+;
+    sprop-v3c-common-atlas-data=YAEHgFA=,YgEAMAAAC/B0qcvv/Dbr/pTvb8oq
+    fhC5JQVS9jn7kAQT/As9EFyrjRBcmxEQe+j5DuGbTT9mZmZAQAAAoA==
 ~~~
 
 ## Grouping framework {#grouping-framework}
@@ -975,8 +975,8 @@ The following example shows an SDP including four media lines, three describing 
 ~~~
   ...
   a=group:V3C 1 2 3 4
-  a=v3cfmtp:sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAA
-    DkA== 
+  a=v3cfmtp:sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQ
+    AADkA== 
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
   a=v3cfmtp:sprop-v3c-unit-header=EAAAAA==
@@ -1000,8 +1000,8 @@ The example below describes how content with two atlases can be signalled as sep
 ~~~
   ...
   a=group:V3C 1 2 3 4 5 6 7 8
-  a=v3cfmtp:sprop-v3c-parameter-set=AAUH/AAAP/zwAAABAADwIAWhBwAAOADjgQA
-    ADgAA8CAFoQcAADgA44EAAA6AkAgABRIA=;
+  a=v3cfmtp:sprop-v3c-parameter-set=AAUH/AAAP/zwAAABAADwIAWhBwAAOADjg
+    QAADgAA8CAFoQcAADgA44EAAA6AkAgABRIA=;
   m=video 40000 RTP/AVP 96
   a=rtpmap:96 H264/90000
   a=v3cfmtp:sprop-v3c-unit-header=EAAAAA==
@@ -1017,11 +1017,12 @@ The example below describes how content with two atlases can be signalled as sep
   m=application 40008 RTP/AVP 100 
   a=rtpmap:100 v3c/90000 
   a=fmtp:100
-    sprop-v3c-common-atlas-data=YAEHgFA=,YgEAMAAAa+96Z5v6VP1D+P7LzRsbWD
-    J/yz+ALzMZNfvCg2389Kjd+d6fZyM6QZBfhrDW3K0vaP2Rr8L+gLAq/ny3wAzs9veiX
-    EjjS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9UCodqj
-    LwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwCCf4Fnogv
-    B+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZoCmZmdA=
+    sprop-v3c-common-atlas-data=YAEHgFA=,YgEAMAAAa+96Z5v6VP1D+P7LzRsb
+    WDJ/yz+ALzMZNfvCg2389Kjd+d6fZyM6QZBfhrDW3K0vaP2Rr8L+gLAq/ny3wAzs9
+    veiXEjjS67MfH+H4xV/RgW4fkl/YkINe/OsWCOBwPAVLACCf4FnogwYZKIME6oiD9
+    UCodqjLwCCf4FnogxqBiIMZNwiEBpJIduBUoCCf4FnogwOeSIMCaGiEA9VIdtGwwC
+    Cf4FnogvB+aILvWIiEBB6IdqobKfmZmZoCmZmefmZmZoCmZmefmZmZoCmZmefmZmZ
+    oCmZmdA=
   a=v3cfmtp:sprop-v3c-unit-header=CAAAAA==;
   a=mid:4
   m=video 40010 RTP/AVP 101

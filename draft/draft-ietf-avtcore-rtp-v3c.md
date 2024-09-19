@@ -928,7 +928,7 @@ An example of media representation corresponding to atlas data component (V3C_AD
     sprop-v3c-parameter-set=AQD/AAAP/zwAAAAAADwIAQ5BwAAOADjgQAADkA==
 ~~~
 
-### For V3C video components
+### For V3C video components {#v3c-video-components}
 
 * The media name in the "m=" line of SDP MUST be video.
 * The encoding name in the "a=rtpmap" line of SDP can be any video subtype, e.g., H.264, H.265, H.266 etc.
@@ -1044,6 +1044,8 @@ The example below describes how content with two atlases can be signalled as sep
 ~~~
 
 ## Offer and answer considerations
+
+V3C coded content consist of metadata, i.e. atlas data and the video coded bitstreams represented as separate media lines in the SDP (unless packed video is used {{v3c-video-components}}). During the session negotiation offerer lists different V3C components (video & metadata) and informs which medial lines SHOULD be consumed together. The receiver CAN select media components as suggested by the offer or select subset of the components and formulate the answer accordingly. This freedom allows receiver to consume subset of the V3C coded media in scenarios, where it is fully or partially ignorant of the V3C coding scheme.
 
 An example of offer which only sends V3C content. The following example contains video components as three different versions (H.264, H.265, H.266). Further differences between the alternatives would be signaled as part of the media attribute parameters, as is the practice with regular video streams. 
 

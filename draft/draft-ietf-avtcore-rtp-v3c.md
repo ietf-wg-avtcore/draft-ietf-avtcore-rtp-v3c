@@ -1194,7 +1194,7 @@ NOTE: (informative) "this memo" to be replaced with the RFC number, once it beco
 
 ## V3C grouping type extension
 
-Grouping is extended to establish relationships between substreams of a V3C representation. A new group type (V3C) for the group attribute will be registered as defined in {{grouping-framework}}. This document registers the semantics in {{table-v3c-group-type}} with IANA in the "Semantics for the 'group' SDP Attribute" subregistry (under the "Session Description Protocol (SDP) Parameters" registry):
+Grouping is extended to establish relationships between substreams of a V3C representation. A new group type (V3C) for the group attribute will be registered as defined in {{grouping-framework}}. This document registers the semantics in {{table-v3c-group-type}} with IANA in the "Semantics for the 'group' SDP Attribute" registry (under the "Session Description Protocol (SDP) Parameters" registry group):
 
 | Semantics | Token | Mux Category | Reference |
 | V3C grouping | V3C | NORMAL | "this memo" |

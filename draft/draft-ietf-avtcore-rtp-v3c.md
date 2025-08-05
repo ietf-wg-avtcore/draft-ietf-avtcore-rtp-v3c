@@ -59,7 +59,6 @@ normative:
   RFC3550:
   RFC4648:
   RFC5888: 
-  RFC7798:
   RFC8083:
   RFC9143:
   RFC8866:

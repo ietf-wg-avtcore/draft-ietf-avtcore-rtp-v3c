@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-08
-date: 2025-03-28
+docname: draft-ietf-avtcore-rtp-v3c-09
+date: 2025-08-05
 
 ipr: trust200902
 area: Application
@@ -43,10 +43,10 @@ normative:
     title: "Information technology — Coded representation of immersive media — Part 5: Visual volumetric video-based coding (V3C) and video-based point cloud compression (V-PCC)"
     author: 
       org: "ISO/IEC"
-    date: 2021
+    date: 2025
     seriesinfo:
       ISO/IEC: 23090-5
-    target: https://www.iso.org/standard/73025.html
+    target: https://www.iso.org/standard/89030.html
   ISO.IEC.23090-12:
     title: "Information technology — Coded representation of immersive media — Part 12: MPEG Immersive video (MIV)"
     author: 
@@ -57,14 +57,8 @@ normative:
     target: "https://www.iso.org/standard/79113.html"
   RFC2119:
   RFC3550:
-  RFC3551:
-  RFC3711:
-  RFC4585:
   RFC4648:
-  RFC5124:
-  RFC5888:
-  RFC6184:
-  RFC6190:
+  RFC5888: 
   RFC7798:
   RFC8083:
   RFC9143:
@@ -111,8 +105,15 @@ informative:
     seriesinfo:
       ISO/IEC: FDIS 23090-10
     target: "https://www.iso.org/standard/78991.html"
+  RFC3551:
+  RFC3711:
+  RFC4585:
+  RFC5124:
+  RFC6184:
+  RFC6190:
   RFC7201:
   RFC7202:
+  RFC7798:
   
 
 entity:

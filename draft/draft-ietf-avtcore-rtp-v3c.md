@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-09
-date: 2025-08-05
+docname: draft-ietf-avtcore-rtp-v3c-11  
+date: 2025-08-11
 
 ipr: trust200902
 area: Application
@@ -692,7 +692,7 @@ Required parameters: N/A
 
 Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-parameter-set, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc and sprop-max-don-diff. 
 
-Encoding considerations: This type is only defined for transfer via RTP {{RFC3550}}.
+Encoding considerations: framed
 
 Security considerations: Please see {{Security-considerations}}.
 
@@ -704,7 +704,7 @@ Applications that use this media type: Any application that relies on V3C-based 
 
 Additional information: N/A
 
-Person & email address to contact for further information: 
+Person & email address to contact for further information: Lauri Ilola (lauri.ilola@nokia.com) or Lukasz Kondrad (lukasz.kondrad@nokia.com)
 
 Intended usage: COMMON
 
@@ -1206,7 +1206,9 @@ NOTE: (informative) "this memo" to be replaced with the RFC number, once it beco
 
 RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification {{RFC3550}}, and in any applicable RTP profile such as RTP/AVP {{RFC3551}}, RTP/AVPF {{RFC4585}}, RTP/SAVP {{RFC3711}}, or RTP/SAVPF {{RFC5124}}. However, as "Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution" {{RFC7202}} discusses, it is not an RTP payload format's responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lays on anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in "Options for Securing RTP Sessions" {{RFC7201}}. Applications SHOULD use one or more appropriate strong security mechanisms. The rest of this Security Considerations section discusses the security impacting properties of the payload format itself.
 
-This RTP payload format and its media decoder do not exhibit any significant non-uniformity in the receiver-side computational complexity for packet processing, and thus are unlikely to pose a denial-of-service threat due to the receipt of pathological data. Nor does the RTP payload format contain any active content.
+This RTP payload format and its media decoder do not exhibit any significant non-uniformity in the receiver-side computational complexity for packet processing, and thus are unlikely to pose a denial-of-service threat due to the receipt of pathological data. Nor does the RTP payload format contain any active content. 
+
+Components of a system using this media type SHALL NOT construct RTP payloads that contain executable content. The implementer of the RTP payload format SHALL guarantee that the received content is properly depacketized and fed to a V3C standard compliant decoder. What the receiver does with the decoded bitstream is unspecified.
 
 --- back
 

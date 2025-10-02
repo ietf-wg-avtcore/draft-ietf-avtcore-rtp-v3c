@@ -666,15 +666,15 @@ The following packetization rules apply for V3C atlas data:
 
 The general concept behind de-packetization is to get the NAL units out of the RTP packets in an RTP stream and all RTP streams the RTP stream depends on, if any, and pass them to the decoder in the NAL unit decoding order.
 
-The de-packetization process is implementation dependent. Therefore, the following de-packetization rules SHOULD be taken as an example.
+The de-packetization process is implementation dependent. Therefore, the following de-packetization rules should be taken as an example.
 
 * All normal RTP mechanisms related to buffer management apply. In particular, duplicated or outdated RTP packets (as indicated by the RTP sequence number and the RTP timestamp) are removed. To determine the exact time for decoding, factors such as a possible intentional delay to allow for proper inter-stream synchronization must be factored in.
-* NAL units with NAL unit type values in the range of 0 to 55, inclusive, MAY be passed to the decoder. NAL-unit-like structures with NAL unit type values in the range of 56 to 63, inclusive, MUST NOT be passed to the decoder.
+* NAL units with NAL unit type values in the range of 0 to 55, inclusive, may be passed to the decoder. NAL-unit-like structures with NAL unit type values in the range of 56 to 63, inclusive, MUST NOT be passed to the decoder.
 * When sprop-max-don-diff is equal to 0 for the received RTP stream, the NAL units carried in the RTP stream MAY be directly passed to the decoder in their transmission order, which is identical to their decoding order.
 * When sprop-max-don-diff is greater than 0 for any of the received RTP streams, the received NAL units need to be arranged into decoding order before handing them over to the decoder.
 * For further de-packetization examples, the reader is referred to Section 6 of {{RFC7798}}.
 
-Regarding the packetization of V3C video component data, the respective RTP video payload specification(s) define how packetization and de-packetization SHOULD be handled.
+Regarding the packetization of V3C video component data, the respective RTP video payload specification(s) define how packetization and de-packetization should be handled.
 
 # Payload format parameters
 

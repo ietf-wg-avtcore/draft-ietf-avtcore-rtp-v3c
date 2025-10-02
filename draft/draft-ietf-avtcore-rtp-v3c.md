@@ -394,7 +394,7 @@ Used to identify the source of the RTP packets. By definition a single SSRC is u
 
 The remaining RTP header fields are used as specified in {{RFC3550}}.
 
-## RTP payload header
+## RTP payload header {#rtp-payload-header}
 
 The first two bytes of the payload of an RTP packet are referred to as the payload header. The payload header consists of the same fields (F, NUT, NLI, and TID) as the NAL unit header as shown in {{Atlas-NAL-units}}, irrespective of the type of the payload structure. For convenience the structure of RTP payload header is described below in {{fig-RTP-payload-header}}.
 
@@ -662,7 +662,7 @@ The following packetization rules apply for V3C atlas data:
 * If sprop-max-don-diff is greater than 0 for any of the RTP streams, the transmission order of NAL units carried in the RTP stream MAY be different than the NAL unit decoding order and the NAL unit output order. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams), the transmission order of NAL units carried in the RTP stream MUST be the same as the NAL unit decoding order.
 * A NAL unit of a small size SHOULD be encapsulated in an aggregation packet together with one or more other NAL units in order to avoid the unnecessary packetization overhead for small NAL units. For example, non-ACL NAL units such as access unit delimiters, parameter sets, or SEI NAL units are typically small and can often be aggregated with ACL NAL units without violating MTU size constraints.
 * Each non-ACL NAL unit SHOULD, when possible, from an MTU size perspective, be encapsulated in an aggregation packet together with its associated ACL NAL unit, as typically a non-ACL NAL unit would be meaningless without the associated ACL NAL unit being available.
-* For carrying exactly one NAL unit in an RTP packet, a single NAL unit packet MUST be used
+* For carrying exactly one NAL unit in an RTP packet, a single NAL unit ({{#Single-NAL-unit-packet}}) packet MUST be used
 
 The general concept behind de-packetization is to get the NAL units out of the RTP packets in an RTP stream and all RTP streams the RTP stream depends on, if any, and pass them to the decoder in the NAL unit decoding order.
 

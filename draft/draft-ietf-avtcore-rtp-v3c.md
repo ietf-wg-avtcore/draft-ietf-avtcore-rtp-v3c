@@ -326,13 +326,13 @@ nal_unit(NumBytesInNalUnit){
 }
 ~~~
 
-nal_forbidden_zero_bit MUST be equal to 0. (F defined in {{rtp-payload-header}})
+nal_forbidden_zero_bit MUST be equal to 0.
 
-nal_unit_type indicates the type of the RBSP data structure contained in the NAL unit (NUT defined in {{rtp-payload-header}})
+nal_unit_type indicates the type of the RBSP data structure contained in the NAL unit.
 
-nal_layer_id indicates the identifier of the layer to which an ACL NAL unit belongs or the identifier of a layer to which a non-ACL NAL unit applies. (NLI defined in {{rtp-payload-header}})
+nal_layer_id indicates the identifier of the layer to which an ACL NAL unit belongs or the identifier of a layer to which a non-ACL NAL unit applies.
 
-nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit. The value of nal_temporal_id_plus1 MUST NOT be equal to 0. (TID defined in {{rtp-payload-header}})
+nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit. The value of nal_temporal_id_plus1 MUST NOT be equal to 0.
 
 ## Systems and transport interfaces (informative)
 

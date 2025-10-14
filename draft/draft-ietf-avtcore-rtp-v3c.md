@@ -666,7 +666,7 @@ The following packetization rules apply for V3C atlas data:
 
 The general concept behind de-packetization is to get the NAL units out of the RTP packets in an RTP stream and all RTP streams the RTP stream depends on, if any, and pass them to the decoder in the NAL unit decoding order.
 
-The de-packetization process is implementation dependent. Therefore, the following de-packetization rules should be taken as an example.
+The de-packetization process is implementation dependent. Therefore, the following de-packetization rules SHOULD be taken as an example.
 
 * All normal RTP mechanisms related to buffer management apply. In particular, duplicated or outdated RTP packets (as indicated by the RTP sequence number and the RTP timestamp) are removed. To determine the exact time for decoding, factors such as a possible intentional delay to allow for proper inter-stream synchronization must be factored in.
 * NAL units with NAL unit type values in the range of 0 to 55, inclusive, may be passed to the decoder. NAL-unit-like structures with NAL unit type values in the range of 56 to 63, inclusive, MUST NOT be passed to the decoder.

@@ -850,11 +850,13 @@ When not present, the value of sprop-max-don-diff is inferred to be equal to 0.
 
 # Congestion control considerations
 
-Congestion control for RTP SHALL be used in accordance with {{RFC3550}}, and with any applicable RTP profile: e.g., {{RFC3551}}. An additional requirement if best-effort service is being used is users of this payload format MUST monitor packet loss to ensure that the packet loss rate is within acceptable parameters.
+Congestion control for RTP SHALL be used in accordance with RTP {{RFC3550}} and with any applicable RTP profile, e.g., AVP {{RFC3551}}.
 
-Simple bitrate adaptation for congestion control can be achieved when real-time coding is used for V3C video components, where quality parameter can be adaptively tuned. Video coding specifications MAY define further adaptation techniques.
+If a best-effort service is being used, users of this payload format MUST monitor packet loss to ensure that the packet loss rate is within an acceptable range. Packet loss is considered acceptable if a TCP flow across the same network path, and experiencing the same network conditions, would achieve an average throughput, measured on a reasonable timescale, that is not less than that of the RTP flow (see section 10 of {{RFC3550}}).
 
-Circuit Breakers {{RFC8083}} is an update to RTP {{RFC3550}} that defines criteria for when one is required to stop sending RTP Packet Streams. The circuit breakers is to be implemented and followed.
+This condition can be satisfied by implementing congestion-control mechanisms to adapt the transmission rate. A simple bitrate adaptation for congestion control can be achieved when real-time coding is used for V3C video components, where quality parameter can be adaptively tuned. Video coding specifications MAY define further adaptation techniques.
+
+An alternative method is to arrange for a receiver to leave the session if the loss rate is unacceptably high, for example using a Circuit Breaker {{RFC8083}} that defines criteria for when one the RTP flow must stop sending RTP Packet Streams.
 
 # Session description protocol {#Session-Description-Protocol}
 

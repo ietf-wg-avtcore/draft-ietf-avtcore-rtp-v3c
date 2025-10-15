@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-11  
-date: 2025-08-11
+docname: draft-ietf-avtcore-rtp-v3c-12
+date: 2025-10-15
 
 ipr: trust200902
 area: Application

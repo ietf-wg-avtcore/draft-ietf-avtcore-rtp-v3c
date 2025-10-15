@@ -388,7 +388,7 @@ If the NAL unit has no timing properties of its own (e.g., parameter set and SEI
 
 Receivers MUST use the RTP timestamp for the display process, even when the bitstream contains atlas frame timing SEI messages as specified in {{ISO.IEC.23090-5}}. 
 
-Synchronization source (SSRC): 32 bits.
+Synchronization source (SSRC): 32 bits
 
 Used to identify the source of the RTP packets. By definition, a single SSRC is used for all parts of a single bitstream.
 
@@ -710,7 +710,7 @@ Intended usage: COMMON
 
 Restrictions on usage: N/A
 
-Author: See Authors' Addresses section of this memo.
+Author: See Authors' Addresses section of this memo
 
 Change controller: IETF <avtcore@ietf.org>
 
@@ -891,13 +891,13 @@ Charset dependent: no
 
 Purpose: This attribute allows parameters that are specific to a V3C format to be conveyed in a way that SDP does not have to understand them. It allows to associate V3C specific parameters with the session or with any media line. Parameters signalled as part of session level attribute take effect when conflicting parameters are signalled as media level attribute.
 
-O/A procedures: v3cfmtp attribute MAY be present both in offers and answers.
+O/A procedures: v3cfmtp attribute MAY be present both in offers and answers
 
 Mux Category: NORMAL
 
 Reference: "this memo"
 
-RFC-EDITOR: Please replace "this memo" with the published RFC number.
+RFC-EDITOR: Please replace "this memo" with the published RFC number
 
 Example: First line describes session level usage of the attribute, signaling a V3C parameter set. Second line describes media level attribute, signaling V3C unit header and profile tier level flag for the associated media line. 
 

@@ -56,9 +56,11 @@ normative:
       ISO/IEC: 23090-12
     target: "https://www.iso.org/standard/79113.html"
   RFC2119:
+  RFC3264:
   RFC3550:
   RFC4648:
-  RFC5888: 
+  RFC4566:
+  RFC5888:
   RFC8083:
   RFC9143:
   RFC8866:
@@ -881,9 +883,10 @@ Attribute syntax:
   ; Notes:
   ; - The V3C format parameters are V3C media type parameters and
   ;   need to reflect their syntax.
+  ; - "byte-string" is as defined in RFC 4566.
 ~~~~
 
-Attribute semantics: "v3cfmtp-value" is a byte-string, which MUST contain at least one V3C specific media format parameter as defined in this memo. Multiple semicolon-separated V3C media parameters MAY be stored in "v3c-format-specific-params" to be conveyed by SDP and given unchanged to the media tool that will use this format.
+Attribute semantics: "v3cfmtp-value" is a byte-string, which MUST contain at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs MAY be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string SHALL be ignored.
 
 Usage level: session, media
 
@@ -1047,9 +1050,30 @@ The example below describes how content with two atlases can be signalled as sep
 
 ## Offer and answer considerations
 
-V3C coded content consists of metadata, i.e. atlas data and the video coded bitstreams represented as separate media lines in the SDP (unless packed video is used {{v3c-video-components}}). During the session negotiation the offerer lists different V3C components (video & metadata) and informs the receiver which media lines SHOULD be consumed together. The receiver CAN select media components as suggested by the offer or select subset of the components and formulate the answer accordingly. This freedom allows the receiver to consume a subset of the V3C coded media in scenarios where it is fully or partially ignorant of the V3C coding scheme.
+### Unicast
 
-An example of an offer which only sends V3C content. The following example contains video components as three different versions (H.264, H.265, H.266). Further differences between the alternatives would be signaled as part of the media attribute parameters, as is the practice with regular video streams. 
+This section describes the negotiation of unicast streaming using the offer/answer model as described in {{RFC3264}}. V3C coded content consists of an atlas bitstream and one or more video coded bitstreams, together known as V3C components. Atlas and video bitstreams are represented as separate media lines in the SDP.
+
+During the session negotiation the offerer lists all V3C components available and informs the receiver which media lines SHOULD be consumed together. The receiver CAN select V3C components as suggested by the offerer, or select a subset of the V3C components by omitting the undesired media lines in the answer. This allows the receiver to consume a subset of the V3C components in scenarios where it is fully or partially ignorant of the V3C coding scheme.
+
+The following limitations and rules pertaining to the V3C atlas component media configuration apply:
+* The parameters identifying the V3C atlas component media configuration is identified by v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, and v3c-ptl-toolset-idc. These media configuration parameters, except level-id, MUST be used symmetrically.
+* Send only properties, identified by sprop-prefix, are considered declarative and SHOULD be omitted in the answers.
+
+The answerer MUST structure its answer according to one of the following two options:
+* maintain all configuration parameters with the values remaining the same as in the offer for the media format (payload type), with the exception that the value of v3c-ptl-level-idc is changeable as long as the highest level indicated by the answer is not higher than that indicated by the offer, or
+* remove media line in which one or more of the parameter values are not supported.
+
+The following limitations and rules pertaining to the V3C video component media configuration apply:
+* The parameters identifying a video coded V3C component media configuration format are according to the respective RTP video payload specification. 
+
+The answerer MUST structure its answer according to one of the following two options:
+*	maintain all configuration parameters with the values remaining the same as in the offer for the media format (payload type), with the exceptions specified in the respective RTP video payload specification;
+* remove the video coded V3C component media line completely when one or more of the parameter values are not supported.
+
+To simplify handling and matching of these configurations, the same RTP payload type number used in the offer SHOULD also be used in the answer, as specified in {{RFC3264}}.
+
+An example of an offer which only sends V3C content. The following example contains video components as three different versions (H.264, H.265, H.266). Further differences between the alternatives would be signaled as part of the media attribute parameters, as is the practice with regular video streams.
 
 ~~~
   ...
@@ -1169,6 +1193,13 @@ An example answer, which accepts bundling of different V3C components.
   a=mid:4
   a=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid
 ~~~
+
+### Multicast
+For bitstreams being delivered over multicast, the following rules apply:
+* The atlas V3C component media configuration is identified by v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, and v3c-ptl-toolset-idc. These atlas format configuration parameters MUST be used symmetrically; that is, the answerer MUST either maintain all configuration parameters or remove the media line, including any associated video coded V3C component media lines. This implies that v3c-ptl-level-idc for offer/answer in multicast is not changeable.
+* The video coded V3C component media configuration format is according the respective RTP video payload specification. 
+* To simplify the handling and matching of these configurations, the same RTP payload type number used in the offer SHOULD also be used in the answer, as specified in {{RFC3264}}. An answer MUST NOT contain a payload type number used in the offer unless the configuration is the same as in the offer.
+* Parameter sets received MUST be associated with the originating source and MUST only be used in decoding the incoming bitstream from the same source.
 
 ## Declarative SDP considerations
 

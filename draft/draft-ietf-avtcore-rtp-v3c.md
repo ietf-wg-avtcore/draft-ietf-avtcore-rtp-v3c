@@ -62,6 +62,7 @@ normative:
   RFC4566:
   RFC5888:
   RFC8083:
+  RFC8174:
   RFC9143:
   RFC8866:
 
@@ -128,15 +129,17 @@ A visual volumetric video-based coding (V3C) {{ISO.IEC.23090-5}} bitstream is co
 
 # Introduction
 
-Volumetric video, similar to traditional 2D video, when uncompressed, is represented by a large amount of data. The Visual Volumetric Video-based Coding (V3C) specification {{ISO.IEC.23090-5}} leverages the compression efficiency of existing 2D video codecs to reduce the amount of data needed for storage and transmission of volumetric video. V3C is a generic mechanism for volumetric video coding, and it can be used by applications targeting volumetric content, such as point clouds, Video-based Point Cloud Compression (V-PCC) {{ISO.IEC.23090-5}}, and  immersive video with depth, MPEG Immersive Video (MIV) {{ISO.IEC.23090-12}}.
+Volumetric video, similar to conventional 2D video, when uncompressed, is represented by a large amount of data. The Visual Volumetric Video-based Coding (V3C) specification {{ISO.IEC.23090-5}} leverages the compression efficiency of existing 2D video codecs to reduce the amount of data needed for storage and transmission of volumetric video. V3C is a generic mechanism for volumetric video coding, and it can be used by applications targeting volumetric content, such as point clouds, Video-based Point Cloud Compression (V-PCC) {{ISO.IEC.23090-5}}, and  immersive video with depth, MPEG Immersive Video (MIV) {{ISO.IEC.23090-12}}.
 
 A V3C encoder converts volumetric frames, i.e., 3D volumetric information, into a collection of 2D frames and associated data, known as atlas data. The converted 2D frames are subsequently coded using any video or image codec, e.g., ISO/IEC International Standard 14496-10 (Advanced Video Coding, AVC/H.264) {{ISO.IEC.14496-10}}, ISO/IEC International Standard 23008-2 (High Efficiency Video Coding, HEVC/H.265) {{ISO.IEC.23008-2}} or ISO/IEC International Standard 23090-3 (Versatile Video Coding, VVC/H.266) {{ISO.IEC.23090-3}}. The atlas data is coded with mechanisms specified in {{ISO.IEC.23090-5}}.
 
-V3C utilizes high level syntax (HLS) design, familiar from traditional 2D video codecs, to represent the associated coded data, i.e., atlas data. The coded atlas data is represented by Network Abstraction Layer (NAL) units. Consequently, RTP payload format for V3C atlas data described in this memo shares design philosophy, security, congestion control, and overall implementation complexity with the other NAL unit-based RTP payload formats such as the ones defined in {{RFC6184}}, {{RFC6190}}, and {{RFC7798}}.
+V3C utilizes high level syntax (HLS) design, familiar from conventional 2D video codecs, to represent the associated coded data, i.e., atlas data. The coded atlas data is represented by Network Abstraction Layer (NAL) units. Consequently, RTP payload format for V3C atlas data described in this memo shares design philosophy, security, congestion control, and overall implementation complexity with the other NAL unit-based RTP payload formats such as the ones defined in {{RFC6184}}, {{RFC6190}}, and {{RFC7798}}.
 
 # Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in {{RFC2119}}.
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
 All fields defined in this specification related to RTP payload structures SHALL be considered in network order.
 
@@ -182,7 +185,7 @@ visual volumetric video-based coding (V3C) component: atlas, occupancy, geometry
 
 visual volumetric video-based coding (V3C) parameter set: syntax structure containing syntax elements that apply to zero or more entire CVSs and may be referred to by syntax elements found in the V3C unit header.
 
-volumetric frame: set of 3D points specified by their cartesian coordinates and zero or more corresponding sets of attributes at a particular time instance.
+volumetric frame: set of 3D points specified by their Cartesian coordinates and zero or more corresponding sets of attributes at a particular time instance.
 
 ## Abbreviations {#abbreviations}
 
@@ -216,7 +219,7 @@ VPS     V3C parameter set
 
 V3C encoding of a volumetric frame is achieved through a conversion of the volumetric frame from its 3D representation into multiple 2D representations and a generation of associated data documenting such conversions and transformations. The associated data, also known as the atlas data, provides information on how to reproject the 2D representations back into the 3D volumetric frame. 
 
-2D representations, known as V3C video components, of volumetric frame are encoded using traditional 2D video codecs. V3C video component may, for example, include occupancy, geometry, or attribute data. The occupancy data informs a V3C decoder which pixels in other V3C video components contribute to reconstructed 3D representation. The geometry data describes information on the position of the reconstructed voxels, while attribute data provides additional properties for the voxels, e.g., colour or material information. 
+2D representations, known as V3C video components, of volumetric frame are encoded using conventional 2D video codecs. V3C video component may, for example, include occupancy, geometry, or attribute data. The occupancy data informs a V3C decoder which pixels in other V3C video components contribute to reconstructed 3D representation. The geometry data describes information on the position of the reconstructed voxels, while attribute data provides additional properties for the voxels, e.g., colour or material information. 
 
 Atlas data, known as V3C atlas component, provides information to interpret V3C video components and enables the reconstruction from a 2D representation back into a 3D representation of volumetric frame. Atlas data is composed of a collection of patches. Each patch identifies a region in the V3C video components and provides information necessary to perform the appropriate inverse projection of the indicated region back into 3D space. The shape of the patch region is determined by a 2D bounding box associated with each patch as well as their coding order. The shape of these patches is also further refined based on occupancy data. 
 
@@ -245,7 +248,7 @@ Generally, it is useful to signal V3C parameter set out-of-band, because it desc
 
 In the V3C bitstream the atlas component is identified by vuh_unit_type equal to V3C_AD, or V3C_CAD in case of common atlas data, in the V3C unit header. The V3C atlas component consists of atlas NAL units that define header and payload pairs, see {{Atlas-NAL-units}}. V3C video components are identified by vuh_unit_type equal to V3C_OVD, V3C_GVD, V3C_AVD, and V3C_PVD. V3C video components can be further differentiated by other values in the V3C unit header such as vuh_attribute_index, vuh_attribute_partition_index, vuh_map_index, and vuh_auxiliary_video_flag. By mapping the V3C parameter set information to vuh_attribute_index, a V3C decoder identifies which attribute a given V3C video component contains, e.g., colour.
 
-The information supplied by V3C unit header should be provided in one form or another to a V3C decoder, e.g., as part of SDP as described in this memo in {{Session-Description-Protocol}}. The four-byte V3C unit header syntax and semantics are copied below as defined in {{ISO.IEC.23090-5}}, but the syntax is subject to change. Implementations should always refer to the latest specification of {{ISO.IEC.23090-5}}. The syntax of four-byte V3C unit header is provided here for informative purposes only. 
+The information supplied by V3C unit header should be provided in one form or another to a V3C decoder, e.g., as part of SDP as described in this memo in {{Session-Description-Protocol}}. The four-byte V3C unit header syntax and semantics are copied below as defined in {{ISO.IEC.23090-5}}, but the syntax is subject to change. Implementations should always refer to the latest specification of {{ISO.IEC.23090-5}}. The syntax of four-byte V3C unit header is provided here for informative purposes only. The integers in the parentheses, e.g., unsigned int(5), indicate the number of bits used by the syntax element.
 
 ~~~
 v3c_unit_header( ) {
@@ -514,7 +517,7 @@ If sprop-max-don-diff is greater than 0 for any of the RTP streams, an AU begins
 
 When sprop-max-don-diff is equal to 0 for all the RTP streams, DOND / DONL fields MUST NOT be present in an aggregation unit. The aggregation units MUST be stored in the aggregation packet so that the decoding order of the containing NAL units is preserved. This means that the first aggregation unit in the aggregation packet SHOULD contain the NAL unit that SHOULD be decoded first.
 
-If sprop-v3c-tile-id-pres is equal to 2 and the AU NAL unit header type is in range 0-35, inclusive, the 16-bit v3c-tile-id field MUST be present in the aggregation unit after the conditional DOND/DONL field. Otherwise v3c-tile-id field MUST NOT be present in the aggregation unit.
+If sprop-v3c-tile-id-pres is equal to 2 and the AU NAL unit header type is in range 0-35, inclusive, the 16-bit v3c-tile-id field MUST be present in the aggregation unit after the conditional DOND/DONL field, otherwise v3c-tile-id field MUST NOT be present in the aggregation unit.
 
 The conditional fields of the aggregation unit are followed by a 16-bit NALU size field, which provides the size of the NAL unit (in bytes) in the aggregation unit. The remainder of the data in the aggregation unit SHOULD contain the NAL unit (including the unmodified NAL unit header).
 
@@ -1213,11 +1216,11 @@ This memo contains three considerations to IANA: new media type, new SDP attribu
 
 ## V3C media type registration
 
-A new media type will be registered with IANA; see Section {{Media-type-definition}}.
+A new media type will be registered with IANA; see {{Media-type-definition}}.
 
 ## V3C format parameters SDP attribute
 
-This document defines a new session and media level SDP attribute: "v3cfmtp". This attribute will be registered by IANA under attribute-field names (\<attribute-name>) registry in Session Description Protocol (SDP). The "v3cfmtp" attribute is used to convey V3C specific media format parameters for any media line. Its format is defined in Section {{v3cfmtp-attribute}}. Further semantics are provided in {{table-v3cfmtp-attribute}}. 
+This document defines a new session and media level SDP attribute: "v3cfmtp". This attribute will be registered by IANA under attribute-field names (\<attribute-name>) registry in Session Description Protocol (SDP). The "v3cfmtp" attribute is used to convey V3C specific media format parameters for any media line. Its format is defined in {{v3cfmtp-attribute}}. Further semantics are provided in {{table-v3cfmtp-attribute}}. 
 
 | Type | SDP Name | Usage Level | Mux Category | Reference |
 | attribute | v3cfmtp | session, media | NORMAL | "this memo" | 
@@ -1237,7 +1240,7 @@ RFC-EDITOR: Please replace "this memo" with the published RFC number.
 
 # Security considerations {#Security-considerations}
 
-RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification {{RFC3550}}, and in any applicable RTP profile such as RTP/AVP {{RFC3551}}, RTP/AVPF {{RFC4585}}, RTP/SAVP {{RFC3711}}, or RTP/SAVPF {{RFC5124}}. However, as "Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution" {{RFC7202}} discusses, it is not an RTP payload format's responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lays on anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in "Options for Securing RTP Sessions" {{RFC7201}}. Applications SHOULD use one or more appropriate strong security mechanisms. The rest of this Security Considerations section discusses the security impacting properties of the payload format itself.
+RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification {{RFC3550}}, and in any applicable RTP profile such as RTP/AVP {{RFC3551}}, RTP/AVPF {{RFC4585}}, RTP/SAVP {{RFC3711}}, or RTP/SAVPF {{RFC5124}}. However, as "Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution" {{RFC7202}} discusses, it is not an RTP payload format's responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lies with anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in "Options for Securing RTP Sessions" {{RFC7201}}. Applications SHOULD use one or more appropriate strong security mechanisms. The rest of this Security Considerations section discusses the security impacting properties of the payload format itself.
 
 This RTP payload format and its media decoder do not exhibit any significant non-uniformity in the receiver-side computational complexity for packet processing, and thus are unlikely to pose a denial-of-service threat due to the receipt of pathological data. Nor does the RTP payload format contain any active content. 
 

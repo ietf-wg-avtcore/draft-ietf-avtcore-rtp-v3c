@@ -889,7 +889,7 @@ Attribute syntax:
   ; - "byte-string" is as defined in RFC 4566.
 ~~~~
 
-Attribute semantics: "v3cfmtp-value" is a byte-string, which MUST contain at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs MAY be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string SHALL be ignored.
+Attribute semantics: "v3cfmtp-value" is a byte-string, as defined in {{RFC4566}}, which MUST contain at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs MAY be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string SHALL be ignored.
 
 Usage level: session, media
 

@@ -703,7 +703,9 @@ Security considerations: Please see {{Security-considerations}}.
 
 Interoperability considerations: N/A
 
-Published specification: Please refer to {{ISO.IEC.23090-5}}
+Published specification: "this memo" 
+
+RFC-EDITOR: Please replace "this memo" with the published RFC number
 
 Applications that use this media type: Any application that relies on V3C-based media services over RTP
 
@@ -713,7 +715,7 @@ Person & email address to contact for further information: Lauri Ilola (lauri.il
 
 Intended usage: COMMON
 
-Restrictions on usage: N/A
+Restrictions on usage: This media type depends on RTP framing and, hence, is only defined for transfer via RTP {{RFC3550}}. Transport within other framing protocols is not defined at this time.
 
 Author: See Authors' Addresses section of this memo
 
@@ -865,7 +867,7 @@ An alternative method is to arrange for a receiver to leave the session if the l
 
 # Session description protocol {#Session-Description-Protocol}
 
-A new attribute "v3cfmtp" is defined for carrying V3C format media type parameters in the corresponding fields of the Session Description Protocol (SDP). Grouping framework {{RFC5888}} is used to indicate which media lines (video and application) in the SDP constitute a V3C representation. 
+A new attribute "v3cfmtp" is defined for carrying V3C format media type parameters in the corresponding fields of the Session Description Protocol (SDP) {{RFC8866}}. Grouping framework {{RFC5888}} is used to indicate which media lines (video and application) in the SDP constitute a V3C representation. 
 
 ## V3C format parameters "v3cfmtp" attribute {#v3cfmtp-attribute}
 

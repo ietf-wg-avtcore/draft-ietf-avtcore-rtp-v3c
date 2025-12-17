@@ -2,7 +2,7 @@
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
 docname: draft-ietf-avtcore-rtp-v3c-13
-date: 2025-10-15
+date: 2025-12-17
 
 ipr: trust200902
 area: Application
@@ -59,7 +59,6 @@ normative:
   RFC3264:
   RFC3550:
   RFC4648:
-  RFC4566:
   RFC5888:
   RFC8083:
   RFC8174:
@@ -888,10 +887,10 @@ Attribute syntax:
   ; Notes:
   ; - The V3C format parameters are V3C media type parameters and
   ;   need to reflect their syntax.
-  ; - "byte-string" is as defined in RFC 4566.
+  ; - "byte-string" is as defined in RFC 8866.
 ~~~~
 
-Attribute semantics: "v3cfmtp-value" is a byte-string, as defined in {{RFC4566}}, which MUST contain at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs MAY be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string SHALL be ignored.
+Attribute semantics: "v3cfmtp-value" is a byte-string, as defined in {{RFC8866}}, which MUST contain at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs MAY be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string SHALL be ignored.
 
 Usage level: session, media
 

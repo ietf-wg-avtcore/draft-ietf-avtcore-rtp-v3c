@@ -1,7 +1,7 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-12
+docname: draft-ietf-avtcore-rtp-v3c-13
 date: 2025-10-15
 
 ipr: trust200902
@@ -1059,7 +1059,7 @@ The example below describes how content with two atlases can be signalled as sep
 
 This section describes the negotiation of unicast streaming using the offer/answer model as described in {{RFC3264}}. V3C coded content consists of an atlas bitstream and one or more video coded bitstreams, together known as V3C components. Atlas and video bitstreams are represented as separate media lines in the SDP.
 
-During the session negotiation the offerer lists all V3C components available and informs the receiver which media lines SHOULD be consumed together. The receiver CAN select V3C components as suggested by the offerer, or select a subset of the V3C components by omitting the undesired media lines in the answer. This allows the receiver to consume a subset of the V3C components in scenarios where it is fully or partially ignorant of the V3C coding scheme.
+During the session negotiation the offerer lists all V3C components available and informs the answerer which media lines SHOULD be consumed together. The answerer CAN select V3C components as suggested by the offerer, or select a subset of the V3C components by setting the port to zero for the undesired media lines in the answer. This allows the answerer to consume a subset of the V3C components in scenarios where it is fully or partially ignorant of the V3C coding scheme.
 
 The following limitations and rules pertaining to the V3C atlas component media configuration apply:
 * The parameters identifying the V3C atlas component media configuration is identified by v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, and v3c-ptl-toolset-idc. These media configuration parameters, except level-id, MUST be used symmetrically.
@@ -1067,14 +1067,14 @@ The following limitations and rules pertaining to the V3C atlas component media 
 
 The answerer MUST structure its answer according to one of the following two options:
 * maintain all configuration parameters with the values remaining the same as in the offer for the media format (payload type), with the exception that the value of v3c-ptl-level-idc is changeable as long as the highest level indicated by the answer is not higher than that indicated by the offer, or
-* remove media line in which one or more of the parameter values are not supported.
+* remove media line in which one or more of the parameter values are not supported by setting the port to zero in the answer.
 
 The following limitations and rules pertaining to the V3C video component media configuration apply:
 * The parameters identifying a video coded V3C component media configuration format are according to the respective RTP video payload specification. 
 
 The answerer MUST structure its answer according to one of the following two options:
 *	maintain all configuration parameters with the values remaining the same as in the offer for the media format (payload type), with the exceptions specified in the respective RTP video payload specification;
-* remove the video coded V3C component media line completely when one or more of the parameter values are not supported.
+* remove the video coded V3C component media line completely when one or more of the parameter values are not supported by setting the port to zero in the answer.
 
 To simplify handling and matching of these configurations, the same RTP payload type number used in the offer SHOULD also be used in the answer, as specified in {{RFC3264}}.
 
@@ -1203,14 +1203,14 @@ An example answer, which accepts bundling of different V3C components.
 For bitstreams being delivered over multicast, the following rules apply:
 * The atlas V3C component media configuration is identified by v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, and v3c-ptl-toolset-idc. These atlas format configuration parameters MUST be used symmetrically; that is, the answerer MUST either maintain all configuration parameters or remove the media line, including any associated video coded V3C component media lines. This implies that v3c-ptl-level-idc for offer/answer in multicast is not changeable.
 * The video coded V3C component media configuration format is according the respective RTP video payload specification. 
-* To simplify the handling and matching of these configurations, the same RTP payload type number used in the offer SHOULD also be used in the answer, as specified in {{RFC3264}}. An answer MUST NOT contain a payload type number used in the offer unless the configuration is the same as in the offer.
+* To simplify the handling and matching of these configurations, the same RTP payload type number used in the offer MUST also be used in the answer.
 * Parameter sets received MUST be associated with the originating source and MUST only be used in decoding the incoming bitstream from the same source.
 
 ## Declarative SDP considerations
 
-When V3C content over RTP is offered with SDP in a declarative style, the parameters capable of indicating both bitstream properties as well as receiver capabilities are used to indicate only bitstream properties. For example, in this case, the parameters v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc and v3c-ptl-rec-idc declare the values used by the bitstream, not the capabilities for receiving bitstreams.
+When V3C content over RTP is offered with SDP in a declarative style, the parameters capable of indicating both bitstream properties as well as answerer capabilities are used to indicate only bitstream properties. For example, in this case, the parameters v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc and v3c-ptl-rec-idc declare the values used by the bitstream, not the capabilities for receiving bitstreams.
 
-A receiver of the SDP is required to support all parameters and values of the parameters provided; otherwise, the receiver MUST reject or not participate in the session. It falls on the creator of the session to use values that are expected to be supported by the receiving application.
+An answerer of the SDP is required to support all parameters and values of the parameters provided; otherwise, the answerer MUST reject or not participate in the session. It falls on the creator of the session to use values that are expected to be supported by the receiving application.
 
 # IANA considerations
 

@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-14
-date: 2025-12-18
+docname: draft-ietf-avtcore-rtp-v3c-15
+date: 2025-12-19
 
 ipr: trust200902
 area: Application
@@ -1070,7 +1070,7 @@ The answerer MUST structure its answer according to one of the following two opt
 
 * maintain all configuration parameters with the values remaining the same as in the offer for the media format (payload type), with the exception that the value of v3c-ptl-level-idc is changeable as long as the highest level indicated by the answer is not higher than that indicated by the offer, or
 
-* remove media line in which one or more of the parameter values are not supported by setting the port to zero in the answer.
+* reject media line in which one or more of the parameter values are not supported by setting the port to zero in the answer.
 
 The following limitations and rules pertaining to the V3C video component media configuration apply:
 
@@ -1080,7 +1080,7 @@ The answerer MUST structure its answer according to one of the following two opt
 
 *	maintain all configuration parameters with the values remaining the same as in the offer for the media format (payload type), with the exceptions specified in the respective RTP video payload specification;
 
-* remove the video coded V3C component media line completely when one or more of the parameter values are not supported by setting the port to zero in the answer.
+* reject the video coded V3C component media line completely when one or more of the parameter values are not supported by setting the port to zero in the answer.
 
 To simplify handling and matching of these configurations, the same RTP payload type number used in the offer SHOULD also be used in the answer, as specified in {{RFC3264}}.
 
@@ -1208,7 +1208,7 @@ An example answer, which accepts bundling of different V3C components.
 ### Multicast
 For bitstreams being delivered over multicast, the following rules apply:
 
-* The atlas V3C component media configuration is identified by v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, and v3c-ptl-toolset-idc. These atlas format configuration parameters MUST be used symmetrically; that is, the answerer MUST either maintain all configuration parameters or remove the media line, including any associated video coded V3C component media lines. This implies that v3c-ptl-level-idc for offer/answer in multicast is not changeable.
+* The atlas V3C component media configuration is identified by v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, and v3c-ptl-toolset-idc. These atlas format configuration parameters MUST be used symmetrically; that is, the answerer MUST either maintain all configuration parameters or reject the media line, including any associated video coded V3C component media lines. This implies that v3c-ptl-level-idc for offer/answer in multicast is not changeable.
 
 * The video coded V3C component media configuration format is according the respective RTP video payload specification. 
 

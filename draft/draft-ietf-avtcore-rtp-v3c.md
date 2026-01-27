@@ -734,37 +734,37 @@ Provisional registration? (standards tree only): No
     sprop-v3c-unit-header: 
 ~~~
 
-provides bytes corresponding to a V3C unit header as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the 4 bytes of V3C unit header.
+provides bytes corresponding to a V3C unit header as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the 4 bytes of V3C unit header. V3C unit header indicates which V3C component the media corresponds to. 
 
 ~~~
     sprop-v3c-unit-type: 
 ~~~
 
-sprop-v3c-unit-type provides a V3C unit type value corresponding to vuh_unit_type defined in {{ISO.IEC.23090-5}}, i.e., defines V3C sub-bitstream type.
+sprop-v3c-unit-type provides a V3C unit type value corresponding to vuh_unit_type defined in {{ISO.IEC.23090-5}}, i.e., defines V3C sub-bitstream type such as geomery, occupancy, atlas data or attribute.
 
 ~~~
     sprop-v3c-vps-id:
 ~~~
 
-sprop-v3c-vps-id provides a value corresponding to vuh_v3c_parameter_set_id defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-vps-id provides a value corresponding to active vuh_v3c_parameter_set_id defined in {{ISO.IEC.23090-5}}, i.e., defines the value of the acitve V3C parameter set id. 
 
 ~~~
     sprop-v3c-atlas-id:
 ~~~
 
-sprop-v3c-atlas-id provides a value corresponding to vuh_atlas_id defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-atlas-id provides a value corresponding to vuh_atlas_id defined in {{ISO.IEC.23090-5}}. When a V3C bitstream consists of multiple atlases, this parameter indicates the atlas id for the media component. 
 
 ~~~
     sprop-v3c-attr-idx: 
 ~~~
 
-sprop-v3c-attr-idx provides a value corresponding to vuh_attribute_index defined in {{ISO.IEC.23090-5}}. 
+sprop-v3c-attr-idx provides a value corresponding to vuh_attribute_index defined in {{ISO.IEC.23090-5}}. An attribute in V3C determines a feature of a reconstructed volumetric primitive, this could be for example texture (color), transparency, reflectance, or normal. The attribute index defines which type of attribute the media corresponds to. 
 
 ~~~
     sprop-v3c-attr-part-idx: 
 ~~~
 
-sprop-v3c-attr-part-idx provides a value corresponding to vuh_attribute_partition_index defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-attr-part-idx provides a value corresponding to vuh_attribute_partition_index defined in {{ISO.IEC.23090-5}}. In V3C, an attribute can be partitioned into multiple components. This may for example be warranted, when an attribute consists of four dimensions but the video codec only supports coding three channels of data. 
 
 ~~~
     sprop-v3c-map-idx:

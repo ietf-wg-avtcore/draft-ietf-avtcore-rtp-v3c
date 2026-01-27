@@ -51,10 +51,10 @@ normative:
     title: "Information technology — Coded representation of immersive media — Part 12: MPEG Immersive video (MIV)"
     author: 
       org: "ISO/IEC"
-    date: 2022
+    date: 2025
     seriesinfo:
       ISO/IEC: 23090-12
-    target: "https://www.iso.org/standard/79113.html"
+    target: "https://www.iso.org/standard/87643.html"
   RFC2119:
   RFC3264:
   RFC3550:
@@ -336,13 +336,13 @@ nal_unit(NumBytesInNalUnit){
 }
 ~~~
 
-nal_forbidden_zero_bit MUST be equal to 0.
+nal_forbidden_zero_bit provides means for indicating errors in NAL units.
 
 nal_unit_type indicates the type of the RBSP data structure contained in the NAL unit.
 
 nal_layer_id indicates the identifier of the layer to which an ACL NAL unit belongs or the identifier of a layer to which a non-ACL NAL unit applies.
 
-nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit. The value of nal_temporal_id_plus1 MUST NOT be equal to 0.
+nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit.
 
 ## Systems and transport interfaces (informative)
 
@@ -431,6 +431,8 @@ The three different payload structures are as follows:
 
 NOTE: (informative) This memo does not limit the size of NAL units encapsulated in NAL unit packets and fragmentation units. {{ISO.IEC.23090-5}} does not restrict the maximum size of a NAL unit directly either. Instead, a NAL unit sample stream format may be used, which provides flexibility to signal NAL unit size up to UINT64_MAX bytes. 
 
+NOTE: Some of the fields described in the payload structures are conditional and their presence is indicated through the relevant parameters as defined in {{Optional-parameters-definition}}. These parameters are assumed to be made available prior to sending any RTP packets.
+
 ### Single NAL unit packet {#Single-NAL-unit-packet}
 
 Single NAL unit packet contains exactly one NAL unit, and consists of an RTP payload header and the following conditional fields: 16-bit DONL and 16-bit v3c-tile-id. The rest of the payload data contains the NAL unit payload data (excluding the NAL unit header). A single NAL unit packet MUST only contain atlas NAL units of the types defined in Table 4 of {{ISO.IEC.23090-5}}. The structure of the single NAL unit packet is shown below in {{fig-single-nal-unit-packet}}.
@@ -456,11 +458,13 @@ The RTP payload header MUST be an exact copy of the NAL unit header of the conta
 
 A NAL unit stream composed by de-packetizing single NAL unit packets in RTP sequence number order MUST conform to the NAL unit decoding order, when DONL is not present. 
 
-The DONL field, when present, specifies the value of the 16-bit decoding order number of the contained NAL unit. If sprop-max-don-diff is greater than 0 for any of the RTP streams, the DONL field MUST be present, and the variable DONL for the contained NAL unit is derived as equal to the value of the DONL field. Otherwise (sprop-max-don-diff is equal to 0 for all the RTP streams), the DONL field MUST NOT be present.
+The DONL field, when present, specifies the value of the 16-bit decoding order number of the contained NAL unit. The decoding order number indicates the order in which the received NAL units should be reordered to form a bitstream that can be successfully decoded. If sprop-max-don-diff is greater than 0 for any of the RTP streams, the DONL field MUST be present, otherwise the DONL field MUST NOT be present.
 
 The v3c-tile-id field, when present, specifies the 16-bit tile identifier for the NAL unit, as signalled in V3C atlas tile header defined in {{ISO.IEC.23090-5}}. If sprop-v3c-tile-id-pres is equal to 1 and RTP payload header NUT is in range 0-35, inclusive, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present. 
 
 NOTE: (informative) Only values for NAL unit type (NUT) in range 0-35, inclusive, are allocated for atlas tile layer data in {{ISO.IEC.23090-5}}.
+
+The presence of the "OPTIONAL RTP padding" is indicated by the padding (P) bit in the RTP header. As defined in {{RFC3550}} the last octet of the padding contains a count of how many padding octets should be ignored, including itself.
 
 ### Aggregation packet {#Aggregation-packet}
 
@@ -489,7 +493,9 @@ All ACL NAL units in an aggregation packet have the same TID value since they be
 
 The v3c-tile-id field, when present, specifies the 16-bit tile identifier for all ACL NAL units in the AP. If sprop-v3c-tile-id-pres is equal to 1, the v3c-tile-id field MUST be present. Otherwise, the v3c-tile-id field MUST NOT be present.
 
-An AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
+The presence of the "OPTIONAL RTP padding" is indicated by the padding (P) bit in the RTP header. As defined in {{RFC3550}} the last octet of the padding contains a count of how many padding octets should be ignored, including itself.
+
+An AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the local MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
 
 ~~~
    0                   1                   2                   3
@@ -520,7 +526,7 @@ The conditional fields of the aggregation unit are followed by a 16-bit NALU siz
 
 Fragmentation Units (FUs) are introduced to enable fragmenting a single NAL unit into multiple RTP packets, possibly without co-operation or knowledge of the encoder. A fragment of a NAL unit consists of an integer number of consecutive octets of that NAL unit. Fragments of the same NAL unit MUST be sent in consecutive order with ascending RTP sequence numbers (with no other RTP packets within the same RTP stream being sent between the first and last fragment.
 
-When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fragmented NAL unit. Aggregation packets MUST NOT be fragmented. FUs MUST NOT be nested; i.e., an FU MUST NOT contain a subset of another FU. The RTP header timestamp of an RTP packet carrying an FU is set to the NALU-time of the fragmented NAL unit.
+When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fragmented NAL unit. Aggregation packets MUST NOT be fragmented. FUs MUST NOT be nested; i.e., an FU must not contain a subset of another FU. The RTP header timestamp of an RTP packet carrying an FU is set to the NALU-time of the fragmented NAL unit.
 
 An FU consists of an RTP payload header with NUT equal to 57, an 8-bit FU header, a conditional 16-bit DONL field, a conditional 16-bit v3c-tile-id field, and an FU payload. The structure of an FU is illustrated below in {{fig-fragmentation-unit}}. 
 
@@ -543,6 +549,8 @@ An FU consists of an RTP payload header with NUT equal to 57, an 8-bit FU header
 
 The fields in the RTP payload header are set as follows. The NUT field MUST be equal to 57. The rest of the fields MUST be equal to the fragmented NAL unit.
 
+The presence of the "OPTIONAL RTP padding" is indicated by the padding (P) bit in the RTP header. As defined in {{RFC3550}} the last octet of the padding contains a count of how many padding octets should be ignored, including itself.
+
 The FU header consists of an S bit, an E bit, and a 6-bit FUT field. The structure of FU header is illustrated below in {{fig-fragmentation-unit-header}}.
 
 ~~~
@@ -557,7 +565,7 @@ When set to 1, the S bit indicates the start of a fragmented NAL unit, i.e., the
 
 When set to 1, the E bit indicates the end of a fragmented NAL unit, i.e., the last byte of the payload is also the last byte of the fragmented NAL unit. When the FU payload is not the last fragment of a fragmented NAL unit, the E bit MUST be set to 0.
 
-The field FUT MUST be equal to the nal_unit_type field of the fragmented NAL unit.
+The field FUT MUST be equal to the nal_unit_type of the fragmented NAL unit.
 
 A non-fragmented NAL unit MUST NOT be transmitted in one FU; i.e., the Start bit and End bit MUST NOT both be set to 1 in the same FU header.
 
@@ -718,7 +726,7 @@ Change controller: IETF <avtcore@ietf.org>
 
 Provisional registration? (standards tree only): No
 
-## Optional parameters definition
+## Optional parameters definition {#Optional-parameters-definition}
 
 ~~~
     sprop-v3c-unit-header: 
@@ -862,7 +870,7 @@ An alternative method is to arrange for a receiver to leave the session if the l
 
 As an example, both the sender and the receiver may have their own definition for an acceptable packet loss rate. In such a case the receiver may decide to quit a stream when it finds the packet loss rate too high. Similarly the sender may decide to drop a receiver when the reports it receives indicate packet loss rates that are too high from its perspective. These decisions can be made independently either by the receiver or the sender.
 
-As an example of a bitrate adaptation technique, a sender or a receiver may adapt bitrates of specific sub-streams. The adaptation should be done in a manner that effects the quality of the experience as a whole, while keeping the subjective quality of experience as high as possible. In an implementation this could mean dropping less important sub-streams fully, or reducing the bitrates of the most important sub-streams throughout the session.
+As an example of a bitrate adaptation technique, a sender or a receiver may adapt bitrates of specific sub-streams. The adaptation should be done in a manner that considers the effects on the quality of the experience as a whole, keeping the subjective quality of experience as high as possible. In an implementation this could mean dropping less important sub-streams fully, or reducing the bitrates of the most important sub-streams throughout the session.
 
 # Session description protocol {#Session-Description-Protocol}
 

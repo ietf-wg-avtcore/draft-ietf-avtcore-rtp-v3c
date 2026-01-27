@@ -116,14 +116,16 @@ informative:
     target: "https://www.iso.org/standard/78991.html"
   RFC3551:
   RFC3711:
+  RFC4303:
   RFC4585:
   RFC5124:
   RFC6184:
   RFC6190:
   RFC7201:
   RFC7202:
+  RFC7296:
   RFC7798:
-  
+  RFC9325:
 
 entity:
         SELF: "[RFCXXXX]"
@@ -1260,7 +1262,15 @@ RFC-EDITOR: Please replace "this memo" with the published RFC number.
 
 # Security considerations {#Security-considerations}
 
-RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification {{RFC3550}}, and in any applicable RTP profile such as RTP/AVP {{RFC3551}}, RTP/AVPF {{RFC4585}}, RTP/SAVP {{RFC3711}}, or RTP/SAVPF {{RFC5124}}. However, as "Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution" {{RFC7202}} discusses, it is not an RTP payload format's responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lies with anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in "Options for Securing RTP Sessions" {{RFC7201}}. Applications SHOULD use one or more appropriate strong security mechanisms. The rest of this Security Considerations section discusses the security impacting properties of the payload format itself.
+RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification {{RFC3550}}, and in any applicable RTP profile such as RTP/AVP {{RFC3551}}, RTP/AVPF {{RFC4585}}, RTP/SAVP {{RFC3711}}, or RTP/SAVPF {{RFC5124}}. However, as "Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution" {{RFC7202}} discusses, it is not an RTP payload format's responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lies with anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in "Options for Securing RTP Sessions" {{RFC7201}}.
+
+This document does not mandate a specific security mechanism. Instead, applications are responsible for selecting mechanisms that follow current best practices for confidentiality, integrity, and source authentication, and that reflect the evolving security landscape beyond what is covered in {{RFC7201}}. For modern best practices, applications can consider the following options:
+
+* (D)TLS-based protection: For guidance on using TLS 1.3 and DTLS, applications should refer to BCP 195, including {{RFC9325}}, which provides up-to-date recommendations.
+
+* IPsec-based protection: Relevant and current protocol specifications include {{RFC4303}} (ESP) and {{RFC7296}} (IKEv2).
+
+The rest of this Security Considerations section discusses the security impacting properties of the payload format itself.
 
 A V3C session can consist of multiple sub-streams carried over different RTP streams. Security considerations such as source authentication SHOULD be applied to all its constituent sub-streams. All receivers of V3C data SHOULD exercise source caution and only receive data from senders that they can trust. Furthermore, this RTP payload format supports multiple RTP streams for different components necessary to produce the decoded output, thus it depends on that all RTP streams and the signalling components, e.g. SDP as well as RTCP, are authentic to what the sender intended. 
 

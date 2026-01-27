@@ -1,8 +1,8 @@
 ---
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
-docname: draft-ietf-avtcore-rtp-v3c-15
-date: 2025-12-19
+docname: draft-ietf-avtcore-rtp-v3c-16
+date: 2025-01-27
 
 ipr: trust200902
 area: Application
@@ -856,13 +856,17 @@ When not present, the value of sprop-max-don-diff is inferred to be equal to 0.
 
 # Congestion control considerations
 
-Congestion control for RTP SHALL be used in accordance with RTP {{RFC3550}} and with any applicable RTP profile, e.g., AVP {{RFC3551}}.
+Congestion control for RTP SHALL be used in accordance with RTP {{RFC3550}} and with any applicable RTP profile, e.g., AVP {{RFC3551}}. This section only applies for unicast streaming, leaving considerations for multicast streaming out of scope.
 
-If a best-effort service is being used, users of this payload format MUST monitor packet loss to ensure that the packet loss rate is within an acceptable range. Packet loss is considered acceptable if a TCP flow across the same network path, and experiencing the same network conditions, would achieve an average throughput, measured on a reasonable timescale, that is not less than that of the RTP flow (see section 10 of {{RFC3550}}).
+Users of this payload format MUST monitor packet loss to ensure that the packet loss rate is within an acceptable range. Packet loss is considered acceptable if a TCP flow across the same network path, and experiencing the same network conditions, would achieve an average throughput, measured on a reasonable timescale, that is not less than that of the RTP flow (see section 10 of {{RFC3550}}).
 
 This condition can be satisfied by implementing congestion-control mechanisms to adapt the transmission rate. A simple bitrate adaptation for congestion control can be achieved when real-time coding is used for V3C video components, where quality parameter can be adaptively tuned. Video coding specifications MAY define further adaptation techniques.
 
 An alternative method is to arrange for a receiver to leave the session if the loss rate is unacceptably high, for example using a Circuit Breaker {{RFC8083}} that defines criteria for when one the RTP flow must stop sending RTP Packet Streams.
+
+As an example, both the sender and the receiver may have their own definition for an acceptable packet loss rate. In such a case the receiver may decide to quit a stream when it finds the packet loss rate too high. Similarly the sender may decide to drop a receiver when the reports it receives indicate packet loss rates that are too high from its perspective. These decisions can be made independently either by the receiver or the sender.
+
+As an example of a bitrate adaptation technique, a sender or a receiver may adapt bitrates of specific sub-streams. The adaptation should be done in a manner that effects the quality of the experience as a whole, while keeping the subjective quality of experience as high as possible. In an implementation this could mean dropping less important sub-streams fully, or reducing the bitrates of the most important sub-streams throughout the session.
 
 # Session description protocol {#Session-Description-Protocol}
 
@@ -1254,7 +1258,9 @@ RFC-EDITOR: Please replace "this memo" with the published RFC number.
 
 RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification {{RFC3550}}, and in any applicable RTP profile such as RTP/AVP {{RFC3551}}, RTP/AVPF {{RFC4585}}, RTP/SAVP {{RFC3711}}, or RTP/SAVPF {{RFC5124}}. However, as "Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution" {{RFC7202}} discusses, it is not an RTP payload format's responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lies with anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in "Options for Securing RTP Sessions" {{RFC7201}}. Applications SHOULD use one or more appropriate strong security mechanisms. The rest of this Security Considerations section discusses the security impacting properties of the payload format itself.
 
-This RTP payload format and its media decoder do not exhibit any significant non-uniformity in the receiver-side computational complexity for packet processing, and thus are unlikely to pose a denial-of-service threat due to the receipt of pathological data. Nor does the RTP payload format contain any active content. 
+A V3C session can consist of multiple sub-streams carried over different RTP streams. Security considerations such as source authentication SHOULD be applied to all its constituent sub-streams. All receivers of V3C data SHOULD exercise source caution and only receive data from senders that they can trust. Furthermore, this RTP payload format supports multiple RTP streams for different components necessary to produce the decoded output, thus it depends on that all RTP streams and the signalling components, e.g. SDP as well as RTCP, are authentic to what the sender intended. 
+
+This RTP payload format and its media decoder do not exhibit significant non-uniformity in the receiver-side computational complexity for packet processing, and thus are unlikely to pose a denial-of-service threat due to the receipt of pathological data. Nor does the RTP payload format contain any active content. 
 
 Components of a system using this media type SHALL NOT construct RTP payloads that contain executable content. The implementer of the RTP payload format SHALL guarantee that the received content is properly depacketized and fed to a V3C standard compliant decoder. What the receiver does with the decoded bitstream is unspecified.
 

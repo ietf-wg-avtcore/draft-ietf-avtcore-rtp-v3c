@@ -75,7 +75,7 @@ informative:
       ISO/IEC: 14496-10
     target: "https://www.iso.org/standard/75400.html"
   ISO.IEC.14496-12:
-    title: "Information technology — Coding of audio-visual objects — Part 12: ISO base media file format"
+    title: "Information technology - Coding of audio-visual objects — Part 12: ISO base media file format"
     author: 
       org: "ISO/IEC"
     date: 2020
@@ -83,15 +83,23 @@ informative:
       ISO/IEC: 14496-12
     target: "https://www.iso.org/standard/74428.html"
   ISO.IEC.23008-2:
-    title: "Information technology — High efficiency coding and media delivery in heterogeneous environments — Part 2: High efficiency video coding"
+    title: "Information technology - High efficiency coding and media delivery in heterogeneous environments — Part 2: High efficiency video coding"
     author: 
       org: "ISO/IEC"
     date: 2020
     seriesinfo:
       ISO/IEC: 23008-2
     target: "https://www.iso.org/standard/75484.html"
+  ISO.IEC.23009-1:
+    title: "Information technology - Dynamic adaptive streaming over HTTP (DASH) - Part 1: Media presentation description and segment formats"
+    author: 
+      org: "ISO/IEC"
+    date: 2022
+    seriesinfo:
+      ISO/IEC: 23009-1
+    target: "https://www.iso.org/standard/83314.html"
   ISO.IEC.23090-3:
-    title: "Information technology — Coded representation of immersive media — Part 3: Versatile video coding"
+    title: "Information technology - Coded representation of immersive media - Part 3: Versatile video coding"
     author: 
       org: "ISO/IEC"
     date: 2021
@@ -99,7 +107,7 @@ informative:
       ISO/IEC: 23090-3
     target: "https://www.iso.org/standard/73022.html"
   ISO.IEC.23090-10:
-    title: "Information technology — Coded representation of immersive media — Part 10: Carriage of visual volumetric video-based coding data"
+    title: "Information technology - Coded representation of immersive media - Part 10: Carriage of visual volumetric video-based coding data"
     author: 
       org: "ISO/IEC"
     date: 2022
@@ -122,21 +130,19 @@ entity:
 
 --- abstract
 
-A visual volumetric video-based coding (V3C) {{ISO.IEC.23090-5}} bitstream is composed of V3C units that contain V3C atlas sub-bitstreams, V3C video sub-bitstreams, and a V3C parameter set. This memo describes an RTP payload format for V3C atlas sub-bitstreams. The RTP payload format for V3C video sub-bitstreams is defined by relevant Internet Standards for the applicable video codec. The V3C RTP payload format allows for packetization of one or more V3C atlas Network Abstraction Layer (NAL) units in an RTP packet payload as well as fragmentation of a V3C atlas NAL unit into multiple RTP packets. The memo also describes the mechanisms for grouping RTP streams of V3C component sub-bitstreams, providing a complete solution for streaming V3C encoded content. 
+A visual volumetric video-based coding (V3C) ISO/IEC 23090-5 bitstream is composed of V3C units that contain V3C atlas sub-bitstreams, V3C video sub-bitstreams, and a V3C parameter set. This memo describes an RTP payload format for V3C atlas sub-bitstreams. The RTP payload format for V3C video sub-bitstreams is defined by relevant IETF RFC for the applicable video codec. The V3C RTP payload format allows for packetization of one or more V3C atlas Network Abstraction Layer (NAL) units in an RTP packet payload as well as fragmentation of a V3C atlas NAL unit into multiple RTP packets. The memo also describes the mechanisms for grouping RTP streams of V3C component sub-bitstreams, providing a complete solution for streaming V3C encoded content. 
 
 --- middle
 
 # Introduction
 
-Volumetric video, similar to conventional 2D video, when uncompressed, is represented by a large amount of data. The Visual Volumetric Video-based Coding (V3C) specification {{ISO.IEC.23090-5}} leverages the compression efficiency of existing 2D video codecs to reduce the amount of data needed for storage and transmission of volumetric video. V3C is a generic mechanism for volumetric video coding, and it can be used by applications targeting volumetric content, such as point clouds, Video-based Point Cloud Compression (V-PCC) {{ISO.IEC.23090-5}}, and  immersive video with depth, MPEG Immersive Video (MIV) {{ISO.IEC.23090-12}}.
+Volumetric video, similar to conventional 2D video, when uncompressed, is represented by a large amount of data. It enables capture of an object or a scene in three dimensions (3D) and its playback independent from the original capture position(s) or orientation(s). The Visual Volumetric Video-based Coding (V3C) specification {{ISO.IEC.23090-5}} leverages the compression efficiency of existing 2D video codecs to reduce the amount of data needed for storage and transmission of volumetric video. V3C is a generic mechanism for volumetric video coding, and it can be used by applications targeting volumetric content, such as point clouds, Video-based Point Cloud Compression (V-PCC) {{ISO.IEC.23090-5}}, and  immersive video with depth, MPEG Immersive Video (MIV) {{ISO.IEC.23090-12}}.
 
 A V3C encoder converts volumetric frames, i.e., 3D volumetric information, into a collection of 2D frames and associated data, known as atlas data. The converted 2D frames are subsequently coded using any video or image codec, e.g., ISO/IEC International Standard 14496-10 (Advanced Video Coding, AVC/H.264) {{ISO.IEC.14496-10}}, ISO/IEC International Standard 23008-2 (High Efficiency Video Coding, HEVC/H.265) {{ISO.IEC.23008-2}} or ISO/IEC International Standard 23090-3 (Versatile Video Coding, VVC/H.266) {{ISO.IEC.23090-3}}. The atlas data is coded with mechanisms specified in {{ISO.IEC.23090-5}}.
 
 V3C utilizes high level syntax (HLS) design, familiar from conventional 2D video codecs, to represent the associated coded data, i.e., atlas data. The coded atlas data is represented by Network Abstraction Layer (NAL) units. Consequently, RTP payload format for V3C atlas data described in this memo shares design philosophy, security, congestion control, and overall implementation complexity with the other NAL unit-based RTP payload formats such as the ones defined in {{RFC6184}}, {{RFC6190}}, and {{RFC7798}}.
 
 # Conventions
-
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in {{RFC2119}}.
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
@@ -218,7 +224,7 @@ VPS     V3C parameter set
 
 V3C encoding of a volumetric frame is achieved through a conversion of the volumetric frame from its 3D representation into multiple 2D representations and a generation of associated data documenting such conversions and transformations. The associated data, also known as the atlas data, provides information on how to reproject the 2D representations back into the 3D volumetric frame. 
 
-2D representations, known as V3C video components, of volumetric frame are encoded using conventional 2D video codecs. V3C video component may, for example, include occupancy, geometry, or attribute data. The occupancy data informs a V3C decoder which pixels in other V3C video components contribute to reconstructed 3D representation. The geometry data describes information on the position of the reconstructed voxels, while attribute data provides additional properties for the voxels, e.g., colour or material information. 
+2D representations, known as V3C video components, of volumetric frame are encoded using conventional 2D video codecs. V3C video component may, for example, include occupancy, geometry, or attribute data. The occupancy data informs a V3C decoder which pixels in other V3C video components contribute to reconstructed 3D representation. The geometry data describes information on the position of the reconstructed voxels, while attribute data provides additional properties for the voxels, e.g., colour or material information. A voxel is the smallest discrete addressable element in a 3D space, analogous to a pixel in 2D.
 
 Atlas data, known as V3C atlas component, provides information to interpret V3C video components and enables the reconstruction from a 2D representation back into a 3D representation of volumetric frame. Atlas data is composed of a collection of patches. Each patch identifies a region in the V3C video components and provides information necessary to perform the appropriate inverse projection of the indicated region back into 3D space. The shape of the patch region is determined by a 2D bounding box associated with each patch as well as their coding order. The shape of these patches is also further refined based on occupancy data. 
 
@@ -342,7 +348,7 @@ nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit. 
 
 In addition to releasing specifications on V3C applications {{ISO.IEC.23090-5}} and {{ISO.IEC.23090-12}}, MPEG conducted further systems level work on file formats to encapsulate compressed V3C content. The seventh edition of the ISOBMFF specification {{ISO.IEC.14496-12}} introduces a new media handler 'volv', intended to support volumetric visual media. It also specifies other structures to enable development of derived specifications detailing how various volumetric visual media may be stored in ISOBMFF.
 
-One of such derived specifications is {{ISO.IEC.23090-10}}, which defines how V3C content can be stored in a file and streamed over DASH. To a large extent ISO/IEC 23090-10 focuses on describing how ISOBMFF boxes and syntax elements may be used to store volumetric media, but in some cases new boxes and syntax elements are introduced to accommodate the fundamentally different type of new media. While the specification is not directly relevant for defining RTP payload format for V3C atlas data, it is a useful resource that may be considered especially when designing ingestion of encoded V3C content into RTP streaming pipelines.
+One of such derived specifications is {{ISO.IEC.23090-10}}, which defines how V3C content can be stored in a file and streamed over DASH {{ISO.IEC.23009-1}}. To a large extent ISO/IEC 23090-10 focuses on describing how ISOBMFF boxes and syntax elements may be used to store volumetric media, but in some cases new boxes and syntax elements are introduced to accommodate the fundamentally different type of new media. While the specification is not directly relevant for defining RTP payload format for V3C atlas data, it is a useful resource that may be considered especially when designing ingestion of encoded V3C content into RTP streaming pipelines.
 
 # V3C atlas RTP payload format
 
@@ -352,7 +358,7 @@ This section describes details related to V3C atlas RTP payload format definitio
 
 ## RTP header
 
-The format of the RTP header is specified in {{RFC3550}} and replicated below in {{fig-RTP-header}} for convenience. This payload format uses the fields of the header in a manner consistent with that specification.
+The format of the RTP header is specified in {{RFC3550}} and replicated below in {{fig-RTP-header}} for convenience. V3C RTP payload format uses the fields of the RTP header in a manner consistent with {{RFC3550}}. Unless contextualized below, the meaning of the fields depicted in {{fig-RTP-header}} is the same as in Section 5.1 of {{RFC3550}}.
 
 ~~~
    0                   1                   2                   3
@@ -370,8 +376,6 @@ The format of the RTP header is specified in {{RFC3550}} and replicated below in
 ~~~
 {: #fig-RTP-header title="RTP Header"}
 
-The RTP header information to be set according to this RTP payload format is set as follows:
-
 Marker bit (M): 1 bit
 
 Set for the last packet of the access unit, carried in the current RTP stream. This is in line with the normal use of the M bit in video formats to allow an efficient playout buffer handling.
@@ -380,10 +384,6 @@ Payload Type (PT): 7 bits
     
 The assignment of an RTP payload type for this new packet format is outside the scope of this document and will not be specified here. The assignment of a payload type MUST be performed either through the profile used or in a dynamic way.
 
-Sequence Number (SN): 16 bits
-
-Set and used in accordance with  {{RFC3550}}.
-
 Timestamp: 32 bits 
     
 The RTP timestamp is set to the sampling timestamp of the content. A 90 kHz clock rate MUST be used.
@@ -391,10 +391,6 @@ The RTP timestamp is set to the sampling timestamp of the content. A 90 kHz cloc
 If the NAL unit has no timing properties of its own (e.g., parameter set and SEI NAL units), the RTP timestamp MUST be set to the RTP timestamp of the coded atlas of the access unit in which the NAL unit (according to Section 8.4.5.3 of {{ISO.IEC.23090-5}}) is included.
 
 Receivers MUST use the RTP timestamp for the display process, even when the bitstream contains atlas frame timing SEI messages as specified in {{ISO.IEC.23090-5}}. 
-
-Synchronization source (SSRC): 32 bits
-
-Used to identify the source of the RTP packets. By definition, a single SSRC is used for all parts of a single bitstream.
 
 The remaining RTP header fields are used as specified in {{RFC3550}}.
 
@@ -411,7 +407,7 @@ The first two bytes of the payload of an RTP packet are referred to as the paylo
 ~~~
 {: #fig-RTP-payload-header title="RTP Payload Header"}
 
-F: the nal_forbidden_zero_bit as specified in {{ISO.IEC.23090-5}} MUST be equal to 0.
+F: the nal_forbidden_zero_bit as specified in {{ISO.IEC.23090-5}} is equal to 0. A value equal to 1 indicates that the payload may contain errors or syntax violations.
 
 NUT: the nal_unit_type as specified in {{ISO.IEC.23090-5}} defines the type of the RBSP data structure contained in the NAL unit payload. The NUT value could carry other meaning depending on the RTP packet type.
 

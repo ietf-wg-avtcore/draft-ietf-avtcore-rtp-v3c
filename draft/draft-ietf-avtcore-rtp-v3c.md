@@ -336,13 +336,13 @@ nal_unit(NumBytesInNalUnit){
 }
 ~~~
 
-nal_forbidden_zero_bit MUST be equal to 0.
+nal_forbidden_zero_bit provides means for indicating errors in NAL units.
 
 nal_unit_type indicates the type of the RBSP data structure contained in the NAL unit.
 
 nal_layer_id indicates the identifier of the layer to which an ACL NAL unit belongs or the identifier of a layer to which a non-ACL NAL unit applies.
 
-nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit. The value of nal_temporal_id_plus1 MUST NOT be equal to 0.
+nal_temporal_id_plus1 minus 1 indicates a temporal identifier for the NAL unit.
 
 ## Systems and transport interfaces (informative)
 
@@ -495,7 +495,7 @@ The v3c-tile-id field, when present, specifies the 16-bit tile identifier for al
 
 The presence of the "OPTIONAL RTP padding" is indicated by the padding (P) bit in the RTP header. As defined in {{RFC3550}} the last octet of the padding contains a count of how many padding octets should be ignored, including itself.
 
-An AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
+An AP MUST carry at least two aggregation units (AU) and can carry as many aggregation units as necessary. However, the total amount of data in an AP MUST fit into an IP packet, and the size SHOULD be chosen so that the resulting IP packet is smaller than the local MTU size so to avoid IP layer fragmentation. The structure of the AU depends both on the presence of the decoding order number, the sequence order of the AU in the AP and the presence of v3c-tile-id field. The structure of an AU is shown in {{fig-aggregation-unit}}.
 
 ~~~
    0                   1                   2                   3
@@ -526,7 +526,7 @@ The conditional fields of the aggregation unit are followed by a 16-bit NALU siz
 
 Fragmentation Units (FUs) are introduced to enable fragmenting a single NAL unit into multiple RTP packets, possibly without co-operation or knowledge of the encoder. A fragment of a NAL unit consists of an integer number of consecutive octets of that NAL unit. Fragments of the same NAL unit MUST be sent in consecutive order with ascending RTP sequence numbers (with no other RTP packets within the same RTP stream being sent between the first and last fragment.
 
-When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fragmented NAL unit. Aggregation packets MUST NOT be fragmented. FUs MUST NOT be nested; i.e., an FU MUST NOT contain a subset of another FU. The RTP header timestamp of an RTP packet carrying an FU is set to the NALU-time of the fragmented NAL unit.
+When a NAL unit is fragmented and conveyed within FUs, it is referred to as a fragmented NAL unit. Aggregation packets MUST NOT be fragmented. FUs MUST NOT be nested; i.e., an FU must not contain a subset of another FU. The RTP header timestamp of an RTP packet carrying an FU is set to the NALU-time of the fragmented NAL unit.
 
 An FU consists of an RTP payload header with NUT equal to 57, an 8-bit FU header, a conditional 16-bit DONL field, a conditional 16-bit v3c-tile-id field, and an FU payload. The structure of an FU is illustrated below in {{fig-fragmentation-unit}}. 
 
@@ -565,7 +565,7 @@ When set to 1, the S bit indicates the start of a fragmented NAL unit, i.e., the
 
 When set to 1, the E bit indicates the end of a fragmented NAL unit, i.e., the last byte of the payload is also the last byte of the fragmented NAL unit. When the FU payload is not the last fragment of a fragmented NAL unit, the E bit MUST be set to 0.
 
-The field FUT MUST be equal to the nal_unit_type field of the fragmented NAL unit.
+The field FUT MUST be equal to the nal_unit_type of the fragmented NAL unit.
 
 A non-fragmented NAL unit MUST NOT be transmitted in one FU; i.e., the Start bit and End bit MUST NOT both be set to 1 in the same FU header.
 

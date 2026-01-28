@@ -690,43 +690,11 @@ Regarding the packetization of V3C video component data, the respective RTP vide
 
 This section specifies the optional parameters. A mapping of the parameters into the Session Description Protocol (SDP) {{RFC8866}} is also provided for applications that use SDP. Equivalent parameters could be defined elsewhere for use with control protocols that do not use SDP.
 
+The receiver MUST ignore any parameter unspecified in this section.
+
 ## Media type registration {#Media-type-definition}
 
-The receiver MUST ignore any parameter unspecified in this memo.
-
-Type name: application
-
-Subtype name: v3c
-
-Required parameters: sprop-v3c-parameter-set
-
-Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc and sprop-max-don-diff. 
-
-Encoding considerations: framed
-
-Security considerations: Please see {{Security-considerations}}.
-
-Interoperability considerations: N/A
-
-Published specification: "this memo" 
-
-RFC-EDITOR: Please replace "this memo" with the published RFC number
-
-Applications that use this media type: Any application that relies on V3C-based media services over RTP
-
-Additional information: N/A
-
-Person & email address to contact for further information: Lauri Ilola (lauri.ilola@nokia.com) or Lukasz Kondrad (lukasz.kondrad@nokia.com)
-
-Intended usage: COMMON
-
-Restrictions on usage: This media type depends on RTP framing and, hence, is only defined for transfer via RTP {{RFC3550}}. Transport within other framing protocols is not defined at this time.
-
-Author: See Authors' Addresses section of this memo
-
-Change controller: IETF <avtcore@ietf.org>
-
-Provisional registration? (standards tree only): No
+See {{Media-type-registration}} for information related to media type registration.
 
 ## Required parameters definition {#Required-parameters-definition}
 
@@ -735,8 +703,6 @@ Provisional registration? (standards tree only): No
 ~~~
 
 sprop-v3c-parameter-set provides V3C parameter set bytes as defined in {{ISO.IEC.23090-5}}. The value contains a base64 encoded {{RFC4648}} representation of the v3c_parameter_set() syntax element.
-
-sprop-v3c-parameter-set MUST be present.
 
 ## Optional parameters definition {#Optional-parameters-definition}
 
@@ -806,7 +772,7 @@ When sprop-v3c-unit-header is present sprop-v3c-aux-video-flag MUST NOT be prese
 
 ~~~
     sprop-v3c-tile-id:
-~~~
+~~~ 
 
 sprop-v3c-tile-id indicates that the RTP stream contains only portion of the tiles in an atlas. The value of sprop-v3c-tile-id contains a comma-separated (',') list of integer values, which indicate the tile ids that are present in the corresponding RTP stream. 
 
@@ -943,43 +909,11 @@ A new attribute "v3cfmtp" is defined for carrying V3C format media type paramete
 
 ## V3C format parameters "v3cfmtp" attribute {#v3cfmtp-attribute}
 
-This memo defines a new attribute for SDP, intended to carry V3C specific media format parameters. Its functionality is similar to "a=fmtp", with the exception that it SHALL be used without the fmt-token and that it can be used also on a session level. The attribute allows to associate V3C specific media format parameters with any media line in SDP.
+This memo defines a new attribute for SDP, intended to carry V3C specific media format parameters. Its functionality is similar to "a=fmtp", with the exception that it SHALL be used without the fmt-token and that it can be used also on a session level. The attribute allows to associate V3C specific media format parameters with any media line in SDP. The detailed information on the new attribute (a=v3cfmtp) is provided in {{v3cfmtp-attribute-registration}}.
 
-Contact name: See Authors' Addresses section of this memo.
+The value of the v3cfmtp attribute is a byte-string, as defined in {{RFC8866}}, which contains at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs can be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string are be ignored. 
 
-Contact email address: See Authors' Addresses section of this memo.
-
-Attribute name: v3cfmtp
-
-Attribute value: v3cfmtp-value
-
-Attribute syntax: 
-
-~~~
-  v3cfmtp-value = byte-string
-  ; Notes:
-  ; - The V3C format parameters are V3C media type parameters and
-  ;   need to reflect their syntax.
-  ; - "byte-string" is as defined in RFC 8866.
-~~~~
-
-Attribute semantics: "v3cfmtp-value" is a byte-string, as defined in {{RFC8866}}, which MUST contain at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs MAY be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string SHALL be ignored.
-
-Usage level: session, media
-
-Charset dependent: no
-
-Purpose: This attribute allows parameters that are specific to a V3C format to be conveyed in a way that SDP does not have to understand them. It allows to associate V3C specific parameters with the session or with any media line. Parameters signalled as part of session level attribute take effect when conflicting parameters are signalled as media level attribute.
-
-O/A procedures: v3cfmtp attribute MAY be present both in offers and answers
-
-Mux Category: NORMAL
-
-Reference: "this memo"
-
-RFC-EDITOR: Please replace "this memo" with the published RFC number
-
-Example: First line describes session level usage of the attribute, signaling a V3C parameter set. Second line describes media level attribute, signaling V3C unit header and profile tier level flag for the associated media line. 
+An example of the usage of the new attribute: First line describes session level usage of the attribute, signaling a V3C parameter set. Second line describes media level attribute, signaling V3C unit header and profile tier level flag for the associated media line. 
 
 ~~~
   a=v3cfmtp:sprop-v3c-parameter-set=AUH/AAAP/zwAAAAAACgIAtEAgQLAIAAUQ
@@ -1044,7 +978,7 @@ Below is an example of media representation corresponding to packed video compon
 
 ## Grouping framework {#grouping-framework}
 
-Different V3C components MAY be represented by their own respective RTP streams, whose payload formats are defined in the respective specifications. V3C atlas data RTP payload format is defined in this memo, whereas the video component RTP payload formats are defined for example in {{RFC6184}} or {{RFC7798}}. A grouping tool, as defined in {{RFC5888}}, is extended to indicate which media lines constitute a V3C representation.
+Different V3C components MAY be represented by their own respective RTP streams, whose payload formats are defined in the respective specifications. V3C atlas data RTP payload format is defined in this memo, whereas the video component RTP payload formats are defined for example in {{RFC6184}} or {{RFC7798}}. A grouping tool, as defined in {{RFC5888}}, is extended to indicate which media lines constitute a V3C representation. Further details on the new grouping type provided in {{v3c-group-type-registration}}.
 
 Group attribute with V3C type is provided to allow application to identify "m" lines that belong to the same V3C bitstream. Grouping type V3C MUST be used with the group attribute. The tokens that follow are mapped to 'mid'-values of individual media lines in the SDP. 
 
@@ -1299,13 +1233,81 @@ An answerer of the SDP is required to support all parameters and values of the p
 
 This memo contains three considerations to IANA: new media type, new SDP attribute and new grouping type. 
 
-## V3C media type registration
+## V3C media type registration {#Media-type-registration}
 
-A new media type will be registered with IANA; see {{Media-type-definition}}.
+A new media type is requested to be registered with IANA.
 
-## V3C format parameters SDP attribute
+Type name: application
 
-This document defines a new session and media level SDP attribute: "v3cfmtp". This attribute will be registered by IANA under attribute-field names (\<attribute-name>) registry in Session Description Protocol (SDP). The "v3cfmtp" attribute is used to convey V3C specific media format parameters for any media line. Its format is defined in {{v3cfmtp-attribute}}. Further semantics are provided in {{table-v3cfmtp-attribute}}. 
+Subtype name: v3c
+
+Required parameters: sprop-v3c-parameter-set
+
+Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc and sprop-max-don-diff. 
+
+Encoding considerations: framed
+
+Security considerations: Please see {{Security-considerations}}.
+
+Interoperability considerations: N/A
+
+Published specification: "this memo" 
+
+RFC-EDITOR: Please replace "this memo" with the published RFC number
+
+Applications that use this media type: Any application that relies on V3C-based media services over RTP
+
+Additional information: N/A
+
+Person & email address to contact for further information: Lauri Ilola (lauri.ilola@nokia.com) or Lukasz Kondrad (lukasz.kondrad@nokia.com)
+
+Intended usage: COMMON
+
+Restrictions on usage: This media type depends on RTP framing and, hence, is only defined for transfer via RTP {{RFC3550}}. Transport within other framing protocols is not defined at this time.
+
+Author: See Authors' Addresses section of this memo
+
+Change controller: IETF <avtcore@ietf.org>
+
+Provisional registration? (standards tree only): No
+
+## V3C format parameters SDP attribute {#v3cfmtp-attribute-registration}
+
+A new SDP attribute is requested to be registered with IANA.
+
+Contact name: See Authors' Addresses section of this memo.
+
+Contact email address: See Authors' Addresses section of this memo.
+
+Attribute name: v3cfmtp
+
+Attribute value: v3cfmtp-value
+
+Attribute syntax: 
+
+~~~
+  v3cfmtp-value = byte-string
+  ; Notes:
+  ; - The V3C format parameters are V3C media type parameters and
+  ;   need to reflect their syntax.
+  ; - "byte-string" is as defined in RFC 8866.
+~~~~
+
+Attribute semantics: "v3cfmtp-value" is a byte-string, as defined in {{RFC8866}}, which contains at least one V3C specific media format parameter as a "parameter=value"-pair as defined in this memo. Multiple semicolon-separated V3C media "parameter=value"-pairs can be stored in the byte-string to be conveyed by SDP and given unchanged to the media tool that will use this format. White spaces in the byte-string are be ignored.
+
+Usage level: session, media
+
+Charset dependent: no
+
+Purpose: This attribute allows parameters that are specific to a V3C format to be conveyed in a way that SDP does not have to understand them. It allows to associate V3C specific parameters with the session or with any media line. Parameters signalled as part of session level attribute take effect when conflicting parameters are signalled as media level attribute.
+
+O/A procedures: v3cfmtp attribute can be present both in offers and answers
+
+Mux Category: NORMAL
+
+Reference: "this memo"
+
+RFC-EDITOR: Please replace "this memo" with the published RFC number
 
 | Type | SDP Name | Usage Level | Mux Category | Reference |
 | attribute | v3cfmtp | session, media | NORMAL | "this memo" | 
@@ -1313,9 +1315,9 @@ This document defines a new session and media level SDP attribute: "v3cfmtp". Th
 
 RFC-EDITOR: Please replace "this memo" with the published RFC number.
 
-## V3C grouping type extension
+## V3C grouping type extension {#v3c-group-type-registration}
 
-Grouping is extended to establish relationships between substreams of a V3C representation. A new group type (V3C) for the group attribute will be registered as defined in {{grouping-framework}}. This document registers the semantics in {{table-v3c-group-type}} with IANA in the "Semantics for the 'group' SDP Attribute" registry (under the "Session Description Protocol (SDP) Parameters" registry group):
+SDP Group attribute is extended to establish relationships between substreams of a V3C representation. This document requests IANA to register the semantics in {{table-v3c-group-type}} in the "Semantics for the 'group' SDP Attribute" registry (under the "Session Description Protocol (SDP) Parameters" registry group):
 
 | Semantics | Token | Mux Category | Reference |
 | V3C grouping | V3C | NORMAL | "this memo" |

@@ -698,9 +698,9 @@ Type name: application
 
 Subtype name: v3c
 
-Required parameters: N/A
+Required parameters: sprop-v3c-parameter-set
 
-Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-parameter-set, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc and sprop-max-don-diff. 
+Optional parameters: sprop-v3c-unit-header, sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, sprop-v3c-aux-video-flag, sprop-v3c-tile-id, sprop-v3c-tile-id-pres, sprop-v3c-atlas-data, sprop-v3c-common-atlas-data, sprop-v3c-sei, v3c-ptl-level-idc, v3c-ptl-tier-flag, v3c-ptl-codec-idc, v3c-ptl-toolset-idc, v3c-ptl-rec-idc and sprop-max-don-diff. 
 
 Encoding considerations: framed
 
@@ -728,123 +728,161 @@ Change controller: IETF <avtcore@ietf.org>
 
 Provisional registration? (standards tree only): No
 
+## Required parameters definition {#Required-parameters-definition}
+
+~~~
+    sprop-v3c-parameter-set: 
+~~~
+
+sprop-v3c-parameter-set provides V3C parameter set bytes as defined in {{ISO.IEC.23090-5}}. The value contains a base64 encoded {{RFC4648}} representation of the v3c_parameter_set() syntax element.
+
+sprop-v3c-parameter-set MUST be present.
+
 ## Optional parameters definition {#Optional-parameters-definition}
 
 ~~~
     sprop-v3c-unit-header: 
 ~~~
 
-provides bytes corresponding to a V3C unit header as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the 4 bytes of V3C unit header.
+sprop-v3c-unit-header provides bytes corresponding to a V3C unit header as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the 4 bytes of V3C unit header. V3C unit header indicates the details of which V3C component the media corresponds to.
+
+sprop-v3c-unit-header contains the same information as sprop-v3c-unit-type, sprop-v3c-vps-id, sprop-v3c-atlas-id, sprop-v3c-attr-idx, sprop-v3c-attr-part-idx, sprop-v3c-map-idx, and sprop-v3c-aux-video-flag combined. To avoid the potential of signaling conflicting information, when sprop-v3c-unit-header is present the separate parameters MUST NOT be present.
 
 ~~~
     sprop-v3c-unit-type: 
 ~~~
 
-sprop-v3c-unit-type provides a V3C unit type value corresponding to vuh_unit_type defined in {{ISO.IEC.23090-5}}, i.e., defines V3C sub-bitstream type.
+sprop-v3c-unit-type provides a V3C unit type value corresponding to vuh_unit_type defined in {{ISO.IEC.23090-5}}, i.e., defines V3C sub-bitstream type such as geometry, occupancy, atlas data or attribute. 
+
+When sprop-v3c-unit-header is present sprop-v3c-unit-type MUST NOT be present. When present, the value of sprop-v3c-unit-type SHALL be in the range of 1 to 31, inclusive.
 
 ~~~
     sprop-v3c-vps-id:
 ~~~
 
-sprop-v3c-vps-id provides a value corresponding to vuh_v3c_parameter_set_id defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-vps-id provides a value corresponding to active vuh_v3c_parameter_set_id defined in {{ISO.IEC.23090-5}}, i.e., defines the value of the active V3C parameter set id. 
+
+When sprop-v3c-unit-header is present sprop-v3c-vps-id MUST NOT be present. When present, the value of sprop-v3c-vps-id SHALL be in the range of 0 to 15, inclusive.
 
 ~~~
     sprop-v3c-atlas-id:
 ~~~
 
-sprop-v3c-atlas-id provides a value corresponding to vuh_atlas_id defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-atlas-id provides a value corresponding to vuh_atlas_id defined in {{ISO.IEC.23090-5}}. When a V3C bitstream consists of multiple atlases, this parameter indicates the atlas id for the media component. 
+
+When sprop-v3c-unit-header is present sprop-v3c-atlas-id MUST NOT be present. When present, the value of sprop-v3c-atlas-id SHALL be in the range of 0 to 63, inclusive.
 
 ~~~
     sprop-v3c-attr-idx: 
 ~~~
 
-sprop-v3c-attr-idx provides a value corresponding to vuh_attribute_index defined in {{ISO.IEC.23090-5}}. 
+sprop-v3c-attr-idx provides a value corresponding to vuh_attribute_index defined in {{ISO.IEC.23090-5}}. An attribute in V3C determines a feature of a reconstructed volumetric primitive, this could be for example texture (color), transparency, reflectance, or normal. The attribute index defines which type of attribute the media corresponds to. 
+
+When sprop-v3c-unit-header is present sprop-v3c-attr-idx MUST NOT be present. When present, the value of sprop-v3c-attr-idx SHALL be in the range of 0 to 127, inclusive.
 
 ~~~
     sprop-v3c-attr-part-idx: 
 ~~~
 
-sprop-v3c-attr-part-idx provides a value corresponding to vuh_attribute_partition_index defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-attr-part-idx provides a value corresponding to vuh_attribute_partition_index defined in {{ISO.IEC.23090-5}}. In V3C, an attribute can be partitioned into multiple components. This may for example be useful, when an attribute consists of four dimensions but the video codec only supports coding three channels of data. 
+
+When sprop-v3c-unit-header is present sprop-v3c-attr-part-idx MUST NOT be present. When present, the value of sprop-v3c-attr-part-idx SHALL be in the range of 0 to 31, inclusive.
 
 ~~~
     sprop-v3c-map-idx:
 ~~~
 
-sprop-v3c-map-idx provides a value corresponding to vuh_map_index defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-map-idx provides a value corresponding to vuh_map_index defined in {{ISO.IEC.23090-5}}. Maps in V3C allow storing multiple layers of projected volumetric data.
+
+When sprop-v3c-unit-header is present sprop-v3c-map-idx MUST NOT be present. When present, the value of sprop-v3c-map-idx SHALL be in the range of 0 to 15, inclusive.
 
 ~~~
-    sprop-v3c-aux-video-flag: 
+    sprop-v3c-aux-video-flag:
 ~~~
 
-sprop-v3c-aux-video-flag provides a value corresponding to vuh_auxiliary_video_flag defined in {{ISO.IEC.23090-5}}.
+sprop-v3c-aux-video-flag provides a value corresponding to vuh_auxiliary_video_flag defined in {{ISO.IEC.23090-5}}. Auxiliary video in V3C can be used to pack volumetric data directly in a video frame without projecting it into a 2D plane first. 
 
-~~~
-    sprop-v3c-parameter-set: 
-~~~
-
-sprop-v3c-parameter-set provides V3C parameter set bytes as defined in {{ISO.IEC.23090-5}}. The value contains base64 encoded {{RFC4648}} representation of the V3C parameter set bytes.
+When sprop-v3c-unit-header is present sprop-v3c-aux-video-flag MUST NOT be present. When present, the value of sprop-v3c-aux-video-flag SHALL be either 0 or 1. 
 
 ~~~
     sprop-v3c-tile-id:
 ~~~
 
-sprop-v3c-tile-id indicates that the RTP stream contains only portion of the tiles in the atlas. sprop-v3c-tile-id is a comma-separated (',') list of integer values, which indicate the sprop-v3c-tile-ids that are present in the RTP stream.
+sprop-v3c-tile-id indicates that the RTP stream contains only portion of the tiles in an atlas. The value of sprop-v3c-tile-id contains a comma-separated (',') list of integer values, which indicate the tile ids that are present in the corresponding RTP stream. 
+
+When sprop-v3c-tile-id is not present, the RTP stream is expected to contain all tiles or only consist of a single tile. 
 
 ~~~
     sprop-v3c-tile-id-pres:
 ~~~
 
-sprop-v3c-tile-id-pres indicates that the RTP packets contain v3c-tile-id field.
+sprop-v3c-tile-id-pres indicates that the RTP packets contain v3c-tile-id field. 
+
+When present, the value of sprop-v3c-tile-id-pres SHALL be either 0 or 1. When not present, the default value of sprop-v3c-tile-id-pres is 0.
 
 ~~~
     sprop-v3c-atlas-data:
 ~~~
 
-sprop-v3c-atlas-data MAY be used to convey any atlas data NAL units of the V3C atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the atlas NAL units as specified in {{ISO.IEC.23090-5}}. 
-The NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
+sprop-v3c-atlas-data MAY be used to convey any atlas data NAL units of the V3C atlas sub bitstream for out-of-band transmission. The value contains a comma-separated (',') list of base64 encoded {{RFC4648}} representations of the atlas NAL units as specified in {{ISO.IEC.23090-5}}. 
+
+When present, the atlas NAL units stored in the sprop-v3c-atlas-data shall be applied for duration of the entire stream, until an in-band atlas NAL unit with the same NAL unit type overrides it. 
 
 ~~~
     sprop-v3c-common-atlas-data:
 ~~~
 
-sprop-v3c-common-atlas-data MAY be used to convey common atlas data NAL units of the V3C common atlas sub bitstream for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of the common atlas NAL units (i.e., NAL_CASPS and NAL_CAF_IDR) as specified in {{ISO.IEC.23090-5}}. The NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
+sprop-v3c-common-atlas-data MAY be used to convey common atlas data NAL units of the V3C common atlas sub bitstream for out-of-band transmission. The value contains a comma-separated (',') list of base64 encoded {{RFC4648}} representations of the common atlas NAL units (i.e., NAL_CASPS and NAL_CAF_IDR) as specified in {{ISO.IEC.23090-5}}. 
+
+When present, the common atlas NAL units stored in the sprop-v3c-common-atlas-data shall be applied for duration of the entire stream, until an in-band common atlas NAL unit with the same NAL unit type overrides it. 
 
 ~~~
     sprop-v3c-sei:
 ~~~
 
-sprop-v3c-sei MAY be used to convey SEI NAL units of V3C atlas and common atlas sub bitstreams for out-of-band transmission. The value is a comma-separated (',') list of encoded representations of SEI NAL units (i.e., NAL_PREFIX_NSEI and NAL_SUFFIX_NSEI, NAL_PREFIX_ESEI, NAL_SUFFIX_ESEI) as specified in  {{ISO.IEC.23090-5}}. The SEI NAL units SHOULD be encoded as base64 {{RFC4648}} representations.
+sprop-v3c-sei MAY be used to convey SEI NAL units of V3C atlas and common atlas sub bitstreams for out-of-band transmission. The value is a comma-separated (',') list of base64 encoded {{RFC4648}} representations of SEI NAL units (i.e., NAL_PREFIX_NSEI and NAL_SUFFIX_NSEI, NAL_PREFIX_ESEI, NAL_SUFFIX_ESEI) as specified in  {{ISO.IEC.23090-5}}.
+
+When present, the SEI NAL units stored in the sprop-v3c-sei shall be applied for duration of the entire stream, until an in-band SEI NAL unit with the same SEI payload type overrides it.
 
 ~~~
     v3c-ptl-level-idc: 
 ~~~
 
-v3c-ptl-level-idc provides a value corresponding to ptl_level_idc defined in {{ISO.IEC.23090-5}}. 
+v3c-ptl-level-idc provides a value corresponding to ptl_level_idc defined in {{ISO.IEC.23090-5}}. The value of v3c-ptl-level-idc indicates the level to which the V3C bitstream conforms.
+
+When present, the value of v3c-ptl-level-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-level-idc SHALL be in the range of 0 to 255, inclusive. 
 
 ~~~
     v3c-ptl-tier-flag: 
 ~~~
 
-v3c-ptl-tier-flag provides a value corresponding to ptl_tier_flag defined in  {{ISO.IEC.23090-5}}.
+v3c-ptl-tier-flag provides a value corresponding to ptl_tier_flag defined in  {{ISO.IEC.23090-5}}. The value of v3c-ptl-tier-flag indicates the tier context necessary to interpret the value of v3c-ptl-level-idc.
+
+When present, the value of v3c-ptl-tier-flag SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-tier-flag SHALL be either 0 or 1. 
 
 ~~~
     v3c-ptl-codec-idc: 
 ~~~
 
-v3c-ptl-codec-idc provides a value corresponding to ptl_profile_codec_group_idc defined in  {{ISO.IEC.23090-5}}.
+v3c-ptl-codec-idc provides a value corresponding to ptl_profile_codec_group_idc defined in  {{ISO.IEC.23090-5}}. The value of v3c-ptl-codec-idc indicates the codec group profile component to which the V3C bitstream conforms. 
+
+When present, the value of v3c-ptl-codec-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-codec-idc SHALL be in the range of 0 to 127, inclusive.  
 
 ~~~
     v3c-ptl-toolset-idc:
 ~~~
 
-v3c-ptl-toolset-idc provides a value corresponding to ptl_profile_toolset_idc defined in {{ISO.IEC.23090-5}}.
+v3c-ptl-toolset-idc provides a value corresponding to ptl_profile_toolset_idc defined in {{ISO.IEC.23090-5}}. The value of v3c-ptl-toolset-idc indicates the toolset combination profile component to which the V3C bitstream conforms.
+
+When present, the value of v3c-ptl-toolset-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-toolset-idc SHALL be in the range of 0 to 255, inclusive. 
 
 ~~~
     v3c-ptl-rec-idc: 
 ~~~
 
-v3c-ptl-rec-idc provides a value corresponding to ptl_profile_reconstruction_idc
-defined in {{ISO.IEC.23090-5}}.
+v3c-ptl-rec-idc provides a value corresponding to ptl_profile_reconstruction_idc as defined in {{ISO.IEC.23090-5}}. The value of v3c-ptl-rec-idc indicates the reconstruction profile component to which the V3C bitstream is recommended to conform. 
+
+When present, the value of v3c-ptl-rec-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-rec-idc SHALL be in the range of 0 to 255, inclusive. 
 
 ~~~
     sprop-max-don-diff:
@@ -859,6 +897,31 @@ Otherwise, this parameter specifies the maximum absolute difference between the 
 The value of sprop-max-don-diff MUST be an integer in the range of 0 to 32767, inclusive.
 
 When not present, the value of sprop-max-don-diff is inferred to be equal to 0.
+
+## Mapping of parameters to V3C syntax
+
+| Parameter | Required | V3C syntax counter part | ISO/IEC 23090-5 section reference |
+| sprop-v3c-parameter-set | YES | v3c_parameter_set() | 8.3.4.1 |
+| sprop-v3c-unit-header | NO | v3c_unit_header() | 8.3.2.2 |
+| sprop-v3c-unit-type | NO | vuh_unit_type | 8.4.2.2 |
+| sprop-v3c-vps-id | NO | vuh_v3c_parameter_set_id | 8.4.2.2 |
+| sprop-v3c-atlas-id | NO | vuh_atlas_id | 8.4.2.2 |
+| sprop-v3c-attr-idx | NO | vuh_attribute_index | 8.4.2.2 |
+| sprop-v3c-attr-part-idx | NO | vuh_attribute_partition_index | 8.4.2.2 |
+| sprop-v3c-map-idx | NO | vuh_map_index | 8.4.2.2 |
+| sprop-v3c-aux-video-flag | NO | vuh_auxiliary_video_flag | 8.4.2.2 |
+| sprop-v3c-tile-id | NO | - | - |
+| sprop-v3c-tile-id-pres | NO | - | - |
+| sprop-v3c-atlas-data | NO | nal_unit() | 8.3.5.1 |
+| sprop-v3c-common-atlas-data | NO | nal_unit() | 8.3.5.1 |
+| ssprop-v3c-sei | NO | nal_unit() | 8.3.5.1 |
+| v3c-ptl-level-idc | NO | ptl_level_idc | 8.4.4.2 |
+| v3c-ptl-tier-flag | NO | ptl_tier_flag | 8.4.4.2 |
+| v3c-ptl-codec-idc | NO | ptl_profile_codec_group_idc | 8.4.4.2 |
+| v3c-ptl-toolset-idc | NO | ptl_profile_toolset_idc | 8.4.4.2 |
+| v3c-ptl-rec-idc | NO | ptl_profile_reconstruction_idc | 8.4.4.2 |
+| sprop-max-don-diff | NO | - | - |
+{: #mapping-of-parameters title="Mapping of parameters to V3C syntax"}
 
 # Congestion control considerations
 

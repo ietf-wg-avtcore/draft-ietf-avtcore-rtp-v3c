@@ -2,7 +2,7 @@
 title: RTP Payload Format for Visual Volumetric Video-based Coding (V3C)
 abbrev: RTP payload format for V3C
 docname: draft-ietf-avtcore-rtp-v3c-16
-date: 2025-01-27
+date: 2025-01-28
 
 ipr: trust200902
 area: Application
@@ -816,7 +816,7 @@ When present, the SEI NAL units stored in the sprop-v3c-sei shall be applied for
 
 v3c-ptl-level-idc provides a value corresponding to ptl_level_idc defined in {{ISO.IEC.23090-5}}. The value of v3c-ptl-level-idc indicates the level to which the V3C bitstream conforms.
 
-When present, the value of v3c-ptl-level-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-level-idc SHALL be in the range of 0 to 255, inclusive. 
+When present, the value of v3c-ptl-level-idc SHALL NOT conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-level-idc SHALL be in the range of 0 to 255, inclusive. 
 
 ~~~
     v3c-ptl-tier-flag: 
@@ -824,7 +824,7 @@ When present, the value of v3c-ptl-level-idc SHALL not conflict the correspondin
 
 v3c-ptl-tier-flag provides a value corresponding to ptl_tier_flag defined in  {{ISO.IEC.23090-5}}. The value of v3c-ptl-tier-flag indicates the tier context necessary to interpret the value of v3c-ptl-level-idc.
 
-When present, the value of v3c-ptl-tier-flag SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-tier-flag SHALL be either 0 or 1. 
+When present, the value of v3c-ptl-tier-flag SHALL NOT conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-tier-flag SHALL be either 0 or 1. 
 
 ~~~
     v3c-ptl-codec-idc: 
@@ -832,7 +832,7 @@ When present, the value of v3c-ptl-tier-flag SHALL not conflict the correspondin
 
 v3c-ptl-codec-idc provides a value corresponding to ptl_profile_codec_group_idc defined in  {{ISO.IEC.23090-5}}. The value of v3c-ptl-codec-idc indicates the codec group profile component to which the V3C bitstream conforms. 
 
-When present, the value of v3c-ptl-codec-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-codec-idc SHALL be in the range of 0 to 127, inclusive.  
+When present, the value of v3c-ptl-codec-idc SHALL NOT conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-codec-idc SHALL be in the range of 0 to 127, inclusive.  
 
 ~~~
     v3c-ptl-toolset-idc:
@@ -840,7 +840,7 @@ When present, the value of v3c-ptl-codec-idc SHALL not conflict the correspondin
 
 v3c-ptl-toolset-idc provides a value corresponding to ptl_profile_toolset_idc defined in {{ISO.IEC.23090-5}}. The value of v3c-ptl-toolset-idc indicates the toolset combination profile component to which the V3C bitstream conforms.
 
-When present, the value of v3c-ptl-toolset-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-toolset-idc SHALL be in the range of 0 to 255, inclusive. 
+When present, the value of v3c-ptl-toolset-idc SHALL NOT conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-toolset-idc SHALL be in the range of 0 to 255, inclusive. 
 
 ~~~
     v3c-ptl-rec-idc: 
@@ -848,7 +848,7 @@ When present, the value of v3c-ptl-toolset-idc SHALL not conflict the correspond
 
 v3c-ptl-rec-idc provides a value corresponding to ptl_profile_reconstruction_idc as defined in {{ISO.IEC.23090-5}}. The value of v3c-ptl-rec-idc indicates the reconstruction profile component to which the V3C bitstream is recommended to conform. 
 
-When present, the value of v3c-ptl-rec-idc SHALL not conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-rec-idc SHALL be in the range of 0 to 255, inclusive. 
+When present, the value of v3c-ptl-rec-idc SHALL NOT conflict the corresponding value in the sprop-v3c-parameter-set. The value of v3c-ptl-rec-idc SHALL be in the range of 0 to 255, inclusive. 
 
 ~~~
     sprop-max-don-diff:
